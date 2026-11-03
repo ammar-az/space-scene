@@ -1,7 +1,8 @@
+import { roundDiameter } from "./sizes.ts";
 import { z } from "zod";
 
-export const SCHEMA_VERSION = 1;
-export const GENERATOR_VERSION = "1";
+export const SCHEMA_VERSION = 2;
+export const GENERATOR_VERSION = "2";
 const number = (min: number, max: number) => z.number().min(min).max(max);
 const color = z
   .string()
@@ -27,6 +28,12 @@ const family = z.strictObject({
   accent: color,
   detail: number(0, 2),
   intense: z.boolean().optional(),
+  bandShadow: color.optional(),
+  palette: z
+    .array(z.strictObject({ color, accent: color }))
+    .min(1)
+    .max(16)
+    .optional(),
 });
 
 export const planetSchema = z.strictObject({
@@ -35,20 +42,73 @@ export const planetSchema = z.strictObject({
   visible: z.boolean(),
   type: z.enum(["rocky", "gas", "icy"]),
   locked: z.boolean(),
-  radius: number(1, 14),
+  earthlike: z
+    .strictObject({
+      enabled: z.boolean(),
+      oceanColor: color,
+      landColor: color,
+      desertColor: color,
+      landCoverage: number(0.05, 0.85),
+      continentScale: number(1, 5),
+    })
+    .optional(),
+  diameter: number(0.01, 1000000).transform(roundDiameter),
   moonCount: number(0, 12).int(),
-  ringCount: number(0, 4).int(),
+  atmosphere: z
+    .strictObject({
+      visible: z.boolean(),
+      color,
+      density: number(0, 1),
+      height: number(0.005, 0.2),
+    })
+    .optional(),
+  clouds: z
+    .strictObject({
+      visible: z.boolean(),
+      color,
+      coverage: number(0, 1),
+      opacity: number(0, 1),
+      scale: number(1, 12),
+      altitude: number(0.005, 0.08),
+      speed: number(-10, 10),
+      evolution: number(0, 2).optional(),
+    })
+    .optional(),
+  ringCount: number(0, 4).int(), // Legacy belts; explicit rings take precedence.
+  rings: z
+    .strictObject({
+      amount: number(0, 1),
+      width: number(0.05, 1),
+      opacity: number(0, 1),
+      innerRadius: number(1.05, 2.5),
+    })
+    .optional(),
+  moons: z
+    .strictObject({
+      colors: z.array(color).min(1).max(8),
+      radius: range(1.2, 12),
+      speed: range(-60, 60),
+      size: range(0.03, 0.4),
+      inclination: range(-80, 80),
+    })
+    .optional(),
   seeds: z.strictObject({
     surface: planetSeed,
     moons: planetSeed,
     rings: planetSeed,
     weather: planetSeed,
+    clouds: planetSeed.optional(),
   }),
   families: z.strictObject({ rocky: family, gas: family, icy: family }),
   ranges: z.strictObject({
-    radius: range(1, 14),
+    diameter: range(0.01, 1000000).transform(
+      ([low, high]) =>
+        [roundDiameter(low), roundDiameter(high)] as [number, number],
+    ),
     moons: range(0, 12, true),
     rings: range(0, 4, true),
+    ringAmount: range(0, 1).optional(),
+    ringProbability: number(0, 1).optional(),
     detail: range(0, 2),
   }),
   orbit: z.strictObject({
@@ -59,6 +119,14 @@ export const planetSchema = z.strictObject({
     phase: number(0, 360),
     speed: number(-20, 20),
     center: vector,
+    ellipse: z
+      .strictObject({
+        radiusX: number(1, 500),
+        radiusZ: number(1, 500),
+        rotation: number(-180, 180),
+        anchor: z.enum(["center", "sun"]),
+      })
+      .optional(),
   }),
   spin: z.strictObject({
     tilt: number(-180, 180),
@@ -98,7 +166,7 @@ export const sceneSchema = z
     sun: z.strictObject({
       visible: z.boolean(),
       seed,
-      radius: number(5, 80),
+      diameter: number(0.01, 1000000000).transform(roundDiameter),
       color,
       highlight: color,
       shadow: color,
@@ -106,10 +174,33 @@ export const sceneSchema = z
       position: vector,
     }),
     planets: z.array(planetSchema).max(64),
+    sizing: z.strictObject({
+      planetCompression: number(0, 1),
+      planetScale: number(1, 5).transform(roundDiameter),
+      starScale: number(0.1, 1).transform(roundDiameter),
+    }),
+    layout: z
+      .strictObject({
+        orbitScale: number(0.5, 5),
+        orbitSpacing: number(0.5, 5),
+      })
+      .optional(),
     view: z.strictObject({
       preset: z.enum(["overhead", "centered", "offset"]),
       framing: z.enum(["standard", "portfolio"]).optional(),
-      zoom: number(0.35, 4),
+      camera: z
+        .strictObject({
+          azimuth: number(-180, 180),
+          elevation: number(-90, 90),
+          target: z.tuple([
+            number(-1000000, 1000000),
+            number(-1000000, 1000000),
+            number(-1000000, 1000000),
+          ]),
+          baseHeight: number(1, 1000000),
+        })
+        .optional(),
+      zoom: number(0.01, 4),
       pan: vector,
     }),
     motion: z.strictObject({

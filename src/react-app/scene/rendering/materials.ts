@@ -11,7 +11,8 @@ import {
 } from "../utils/giantStorms.ts";
 import { planetShadowFragment } from "../utils/planetShadowShader.ts";
 import { maxPlanetShadowCasters } from "../utils/planetShadows.ts";
-import { createRingProfile, ringPixels } from "../utils/planetSystems.ts";
+import { ringPixels } from "../utils/planetSystems.ts";
+import type { RingProfile } from "../utils/planetSystems.ts";
 import type { SceneModel } from "../model/schema.ts";
 
 export function dataTexture(
@@ -160,7 +161,13 @@ export function createPlanetSurface(
     uniforms: {
       u_map: { value: placeholder },
       u_equalArea: { value: options.type === "giant" ? 1 : 0 },
-      u_relief: { value: options.type === "terrestrial" ? 0.07 : 0 },
+      u_relief: {
+        value: options.earthlike?.enabled
+          ? 0.035
+          : options.type === "terrestrial"
+            ? 0.07
+            : 0,
+      },
       u_fill: { value: options.detail === "moon" ? 0.28 : 0.4 },
       u_terminatorStart: { value: -0.4 },
       u_sun: { value: new THREE.Vector3() },
@@ -287,16 +294,13 @@ export function createGlow(color: string) {
   });
 }
 export function createRingMaterial(
-  color: string,
-  seed: string | number,
-  inner: number,
-  outer: number,
+  profile: RingProfile & { complexity?: number },
 ) {
-  const profile = createRingProfile(seed, color);
+  const { inner, outer } = profile;
   const texture = dataTexture({
     width: 512,
     height: 1,
-    pixels: ringPixels(profile),
+    pixels: ringPixels(profile, profile.complexity ?? 1),
   });
   texture.wrapS = texture.wrapT = THREE.ClampToEdgeWrapping;
   const material = new THREE.ShaderMaterial({

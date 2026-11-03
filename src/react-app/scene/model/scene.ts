@@ -1,3 +1,4 @@
+import { defaultSizing, roundDiameter } from "./sizes.ts";
 import { seededRandom } from "../utils/seededRandom.ts";
 import type { Planet, SceneModel } from "./schema.ts";
 
@@ -43,9 +44,15 @@ export function createPlanet(
     type,
     visible: true,
     locked: false,
-    radius: type === "rocky" ? 3.6 : 7,
+    diameter: type === "rocky" ? 12.76 : 120,
     moonCount: type === "rocky" ? 1 : 4,
     ringCount: type === "gas" ? 1 : 0,
+    rings: {
+      amount: type === "gas" ? 0.55 : 0,
+      width: 1,
+      opacity: 1,
+      innerRadius: 1.35,
+    },
     seeds: {
       surface: seed,
       moons: streamSeed(seed, "moons"),
@@ -58,9 +65,10 @@ export function createPlanet(
       icy: { color: "#73b7b7", accent: "#d2e7e2", detail: 0.35 },
     },
     ranges: {
-      radius: [2.5, 8],
+      diameter: type === "rocky" ? [5, 20] : [50, 150],
       moons: [0, 5],
       rings: [0, 2],
+      ringAmount: [0, 1],
       detail: [0.4, 1.4],
     },
     orbit: {
@@ -71,6 +79,12 @@ export function createPlanet(
       phase: (25 + index * 115) % 360,
       speed: 3 / (1 + index * 0.7),
       center: [0, 0, 0],
+      ellipse: {
+        radiusX: Math.min(225, 80 + index * 36),
+        radiusZ: Math.min(225, 80 + index * 36) * Math.sqrt(1 - 0.04 ** 2),
+        rotation: 0,
+        anchor: "center",
+      },
     },
     spin: {
       tilt: 12,
@@ -87,13 +101,14 @@ export function createScene(): SceneModel {
   const gas = createPlanet("planet-2", 7284, 1, "gas");
   gas.orbit.phase = 325;
   gas.spin.tilt = 24;
-  gas.radius = 7.5;
+  gas.diameter = 140;
   const icy = createPlanet("planet-3", 5921, 2, "icy");
   icy.orbit.phase = 35;
   icy.spin.tilt = 65;
-  icy.radius = 5.5;
+  icy.diameter = 50;
   icy.moonCount = 2;
   icy.ringCount = 1;
+  icy.rings!.amount = 0.4;
   return {
     name: "Untitled space",
     timeline: { elapsed: 0, solar: 0 },
@@ -117,7 +132,7 @@ export function createScene(): SceneModel {
     sun: {
       visible: true,
       seed: 1871,
-      radius: 55,
+      diameter: 110,
       color: "#ffb400",
       highlight: "#fff01d",
       shadow: "#b52d00",
@@ -125,12 +140,13 @@ export function createScene(): SceneModel {
       position: [0, 0, 0],
     },
     planets: [rocky, gas, icy],
+    sizing: { ...defaultSizing },
     view: { preset: "offset", framing: "portfolio", zoom: 1, pan: [0, 0, 0] },
     motion: { playing: true, speed: 1, orbitLines: true, orbitEpoch: 0 },
   };
 }
 
-export type RerollScope = "all" | "surface" | "moons" | "rings";
+export type RerollScope = "all" | "surface" | "moons" | "rings" | "clouds";
 /** Separate streams and explicit values keep unrelated settings stable and JSON portable. */
 export function rerollPlanet(
   planet: Planet,
@@ -147,22 +163,33 @@ export function rerollPlanet(
     const random = seededRandom(`${nonce}:${planet.id}:${channel}`)();
     return integer
       ? min + Math.floor(random * (max - min + 1))
-      : Math.round((min + random * (max - min)) * 100) / 100;
+      : Math.max(
+          min,
+          Math.min(max, Math.round((min + random * (max - min)) * 100) / 100),
+        );
   };
   if (scope === "all" || scope === "surface") {
     next.seeds.surface = streamSeed(nonce, `${planet.id}:surface`);
     next.seeds.weather = streamSeed(nonce, `${planet.id}:weather`);
-    const palette =
-      palettes[next.type][
-        sample("palette", [0, palettes[next.type].length - 1], true)
-      ];
+    const family = next.families[next.type];
+    const allowed =
+      family.palette ??
+      palettes[next.type].map(([color, accent]) => ({ color, accent }));
+    const palette = allowed[sample("palette", [0, allowed.length - 1], true)];
     next.families[next.type] = {
-      color: palette[0],
-      accent: palette[1],
+      ...family,
+      ...palette,
       detail: sample("detail", next.ranges.detail),
     };
   }
-  if (scope === "all") next.radius = sample("radius", next.ranges.radius);
+  if (
+    scope === "clouds" ||
+    (scope === "all" && (next.clouds || next.seeds.clouds !== undefined))
+  ) {
+    next.seeds.clouds = streamSeed(nonce, `${planet.id}:clouds`);
+  }
+  if (scope === "all")
+    next.diameter = roundDiameter(sample("diameter", next.ranges.diameter));
   if (scope === "all" || scope === "moons") {
     next.seeds.moons = streamSeed(nonce, `${planet.id}:moons`);
     next.moonCount = sample("moons", next.ranges.moons, true);
@@ -170,6 +197,23 @@ export function rerollPlanet(
   if (scope === "all" || scope === "rings") {
     next.seeds.rings = streamSeed(nonce, `${planet.id}:rings`);
     next.ringCount = sample("rings", next.ranges.rings, true);
+    if (next.rings || next.ranges.ringAmount) {
+      next.rings = {
+        amount: 0,
+        width: 1,
+        opacity: 1,
+        innerRadius: 1.35,
+        ...next.rings,
+      };
+      next.rings.amount =
+        next.ranges.ringProbability !== undefined &&
+        seededRandom(`${nonce}:${planet.id}:ring-chance`)() >=
+          next.ranges.ringProbability
+          ? 0
+          : sample("ring-amount", next.ranges.ringAmount ?? [0, 1]);
+      if (next.ranges.ringProbability !== undefined)
+        next.ringCount = next.rings.amount > 0 ? 1 : 0;
+    }
   }
   return next;
 }

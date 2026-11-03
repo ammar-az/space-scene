@@ -1,4 +1,34 @@
-import type { CSSProperties, ReactNode } from "react";
+import { useEffect, useRef } from "react";
+import type { CSSProperties, InputHTMLAttributes, ReactNode } from "react";
+
+/** Native change commits a color; React's onChange also handles every picker preview. */
+export function ColorInput({
+  value,
+  onCommit,
+  ...props
+}: Omit<
+  InputHTMLAttributes<HTMLInputElement>,
+  "type" | "value" | "defaultValue" | "onChange" | "onInput"
+> & {
+  value: string;
+  onCommit(value: string): void;
+}) {
+  const input = useRef<HTMLInputElement>(null);
+  useEffect(() => {
+    if (input.current) input.current.value = value;
+  }, [value]);
+  useEffect(() => {
+    const element = input.current;
+    if (!element) return;
+    const commit = () => {
+      if (element.value.toLowerCase() !== value.toLowerCase())
+        onCommit(element.value);
+    };
+    element.addEventListener("change", commit);
+    return () => element.removeEventListener("change", commit);
+  }, [onCommit, value]);
+  return <input {...props} ref={input} type="color" defaultValue={value} />;
+}
 
 export function Icon({ name, size = 18 }: { name: string; size?: number }) {
   const paths: Record<string, ReactNode> = {
@@ -93,6 +123,13 @@ export function Icon({ name, size = 18 }: { name: string; size?: number }) {
         <path d="m9 3 1.8 5.2L16 10l-5.2 1.8L9 17l-1.8-5.2L2 10l5.2-1.8L9 3ZM18 13l1.2 3.8L23 18l-3.8 1.2L18 23l-1.2-3.8L13 18l3.8-1.2L18 13Z" />
       </>
     ),
+    camera: (
+      <>
+        <rect x="3" y="6" width="18" height="14" rx="3" />
+        <circle cx="12" cy="13" r="4" />
+        <path d="m8 6 1-3h6l1 3" />
+      </>
+    ),
     chevron: <path d="m9 5 7 7-7 7" />,
   };
   return (
@@ -118,6 +155,7 @@ export function Slider({
   max,
   step = 1,
   unit = "",
+  precise = false,
   onChange,
 }: {
   label: string;
@@ -126,16 +164,39 @@ export function Slider({
   max: number;
   step?: number;
   unit?: string;
+  precise?: boolean;
   onChange(value: number): void;
 }) {
   return (
     <label className="slider-field">
       <span>
         {label}
-        <output>
-          {Number(value.toFixed(2))}
-          {unit}
-        </output>
+        {precise ? (
+          <input
+            className="precise-value"
+            type="number"
+            aria-label={`${label} value`}
+            key={value}
+            defaultValue={Number(value.toFixed(4))}
+            min={min}
+            max={max}
+            step={step}
+            onBlur={(event) => {
+              const next = event.currentTarget.valueAsNumber;
+              if (Number.isFinite(next))
+                onChange(Math.max(min, Math.min(max, next)));
+              else event.currentTarget.value = String(value);
+            }}
+            onKeyDown={(event) => {
+              if (event.key === "Enter") event.currentTarget.blur();
+            }}
+          />
+        ) : (
+          <output>
+            {Number(value.toFixed(2))}
+            {unit}
+          </output>
+        )}
       </span>
       <input
         type="range"
@@ -155,6 +216,7 @@ export function RangeField({
   min,
   max,
   step = 1,
+  logarithmic = false,
   onChange,
 }: {
   label: string;
@@ -162,8 +224,17 @@ export function RangeField({
   min: number;
   max: number;
   step?: number;
+  logarithmic?: boolean;
   onChange(value: [number, number]): void;
 }) {
+  const sliderMin = logarithmic ? 0 : min,
+    sliderMax = logarithmic ? 1000 : max;
+  const toSlider = (value: number) =>
+    logarithmic ? (Math.log(value / min) / Math.log(max / min)) * 1000 : value;
+  const fromSlider = (value: number) =>
+    logarithmic
+      ? Math.round(min * Math.pow(max / min, value / 1000) * 100) / 100
+      : value;
   return (
     <div className="range-field">
       <span>{label}</span>
@@ -171,31 +242,37 @@ export function RangeField({
         className="range-track"
         style={
           {
-            "--range-low": `${((value[0] - min) / (max - min)) * 100}%`,
-            "--range-high": `${((value[1] - min) / (max - min)) * 100}%`,
+            "--range-low": `${((toSlider(value[0]) - sliderMin) / (sliderMax - sliderMin)) * 100}%`,
+            "--range-high": `${((toSlider(value[1]) - sliderMin) / (sliderMax - sliderMin)) * 100}%`,
           } as CSSProperties
         }
       >
         <input
           type="range"
           aria-label={`${label} minimum slider`}
-          min={min}
-          max={max}
-          step={step}
-          value={value[0]}
+          min={sliderMin}
+          max={sliderMax}
+          step={logarithmic ? 1 : step}
+          value={toSlider(value[0])}
           onChange={(event) =>
-            onChange([Math.min(value[1], Number(event.target.value)), value[1]])
+            onChange([
+              Math.min(value[1], fromSlider(Number(event.target.value))),
+              value[1],
+            ])
           }
         />
         <input
           type="range"
           aria-label={`${label} maximum slider`}
-          min={min}
-          max={max}
-          step={step}
-          value={value[1]}
+          min={sliderMin}
+          max={sliderMax}
+          step={logarithmic ? 1 : step}
+          value={toSlider(value[1])}
           onChange={(event) =>
-            onChange([value[0], Math.max(value[0], Number(event.target.value))])
+            onChange([
+              value[0],
+              Math.max(value[0], fromSlider(Number(event.target.value))),
+            ])
           }
         />
       </div>
@@ -203,34 +280,50 @@ export function RangeField({
         <input
           type="number"
           aria-label={`${label} minimum`}
+          key={`low-${value[0]}`}
+          defaultValue={value[0]}
           min={min}
           max={value[1]}
           step={step}
-          value={value[0]}
-          onChange={(event) => {
-            const next =
-              step === 1
-                ? Math.round(Number(event.target.value))
-                : Number(event.target.value);
-            if (Number.isFinite(next))
-              onChange([Math.max(min, Math.min(value[1], next)), value[1]]);
+          onBlur={(event) => {
+            const parsed = event.currentTarget.valueAsNumber;
+            const next = Number.isFinite(parsed)
+              ? step === 1
+                ? Math.round(parsed)
+                : parsed
+              : value[0];
+            const canonical = logarithmic ? Math.round(next * 100) / 100 : next;
+            const bounded = Math.max(min, Math.min(value[1], canonical));
+            event.currentTarget.value = String(bounded);
+            onChange([bounded, value[1]]);
+          }}
+          onKeyDown={(event) => {
+            if (event.key === "Enter") event.currentTarget.blur();
           }}
         />
         <span>—</span>
         <input
           type="number"
           aria-label={`${label} maximum`}
+          key={`high-${value[1]}`}
+          defaultValue={value[1]}
           min={value[0]}
           max={max}
           step={step}
-          value={value[1]}
-          onChange={(event) => {
-            const next =
-              step === 1
-                ? Math.round(Number(event.target.value))
-                : Number(event.target.value);
-            if (Number.isFinite(next))
-              onChange([value[0], Math.min(max, Math.max(value[0], next))]);
+          onBlur={(event) => {
+            const parsed = event.currentTarget.valueAsNumber;
+            const next = Number.isFinite(parsed)
+              ? step === 1
+                ? Math.round(parsed)
+                : parsed
+              : value[1];
+            const canonical = logarithmic ? Math.round(next * 100) / 100 : next;
+            const bounded = Math.min(max, Math.max(value[0], canonical));
+            event.currentTarget.value = String(bounded);
+            onChange([value[0], bounded]);
+          }}
+          onKeyDown={(event) => {
+            if (event.key === "Enter") event.currentTarget.blur();
           }}
         />
       </div>

@@ -1,3 +1,7 @@
+import {
+  planetRenderRadius,
+  starRenderRadius,
+} from "../src/react-app/scene/model/sizes.ts";
 import assert from "node:assert/strict";
 import { readFile } from "node:fs/promises";
 import { test } from "node:test";
@@ -10,6 +14,7 @@ import { scenePresets } from "../src/react-app/data/presets.ts";
 import {
   orbitPosition,
   viewFrame,
+  orbitEllipse,
 } from "../src/react-app/scene/model/geometry.ts";
 import { rerollPlanet } from "../src/react-app/scene/model/scene.ts";
 import { getPlanetSystem } from "../src/react-app/scene/utils/planetSystems.ts";
@@ -33,7 +38,7 @@ test("every built-in is a complete portable JSON scene with independent mutable 
       scene.planets.length,
     );
     const original = structuredClone(scene);
-    scene.planets[0].radius = 12;
+    scene.planets[0].diameter = 12;
     scene.background.seed++;
     assert.deepEqual(await readScene(preset.id), original);
     for (const planet of original.planets) {
@@ -82,7 +87,7 @@ test("portfolio preset retains original artwork streams, palettes and satellite 
 
 test("portfolio preset projects onto the original desktop positions and body sizes", async () => {
   const scene = await readScene("portfolio");
-  // Captured from the portfolio's actual getSpaceLayout at this viewport, before conversion to 3D.
+  // Reference composition, with Word Wasp moved back to 18 degrees and Project X retaining its start.
   const expected = JSON.parse(
     await readFile(
       new URL("./fixtures/portfolio-preset-layout.json", import.meta.url),
@@ -115,13 +120,14 @@ test("portfolio preset projects onto the original desktop positions and body siz
     );
     assert.ok(
       Math.abs(
-        (planet.radius / frame.height) * expected.height - original.radius,
-      ) < 0.001,
+        (planetRenderRadius(scene, planet) / frame.height) * expected.height -
+          original.radius,
+      ) < 0.01,
     );
   }
 });
 
-test("solar preset includes the eight ordered planets, blue rocky Earth and illustrative satellite choices", async () => {
+test("solar preset includes the eight ordered planets, Earth-like rocky Earth and illustrative satellite choices", async () => {
   const scene = await readScene("solar-system");
   assert.deepEqual(
     scene.planets.map((p) => p.name),
@@ -138,10 +144,11 @@ test("solar preset includes the eight ordered planets, blue rocky Earth and illu
   );
   assert.deepEqual(
     scene.planets.map((p) => p.type),
-    ["rocky", "rocky", "rocky", "rocky", "gas", "gas", "icy", "icy"],
+    ["rocky", "rocky", "rocky", "rocky", "gas", "icy", "icy", "icy"],
   );
   const earth = scene.planets[2];
   assert.equal(earth.families.rocky.color, "#2478c4");
+  assert.equal(earth.earthlike.enabled, true);
   assert.equal(earth.moonCount, 1);
   assert.equal(scene.planets[3].moonCount, 2);
   assert.equal(scene.planets[4].moonCount, 4);
@@ -150,10 +157,13 @@ test("solar preset includes the eight ordered planets, blue rocky Earth and illu
   for (const [i, planet] of scene.planets.entries()) {
     assert.ok(
       planet.orbit.radius * (1 - planet.orbit.eccentricity) >
-        scene.sun.radius + planet.radius,
+        starRenderRadius(scene) + planetRenderRadius(scene, planet),
     );
     if (i) {
-      assert.ok(planet.orbit.radius > scene.planets[i - 1].orbit.radius);
+      assert.ok(
+        orbitEllipse(planet.orbit).radiusX >
+          orbitEllipse(scene.planets[i - 1].orbit).radiusX,
+      );
       assert.ok(planet.orbit.speed < scene.planets[i - 1].orbit.speed);
     }
   }

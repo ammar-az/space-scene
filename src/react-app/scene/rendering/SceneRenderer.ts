@@ -1,8 +1,18 @@
+import {
+  largestPlanetDiameter,
+  planetRenderRadius,
+  starRenderRadius,
+} from "../model/sizes.ts";
+import {
+  orbitLayoutFactors,
+  scaleOrbitPoint,
+  sceneEnvelopes,
+} from "../model/layout.ts";
 import * as THREE from "three";
 import type { Planet, SceneModel } from "../model/schema.ts";
 import { orbitPosition, viewFrame } from "../model/geometry.ts";
-import { createRingProfile } from "../utils/planetSystems.ts";
-import { seededRandom } from "../utils/seededRandom.ts";
+import { moonProfiles, moonPosition, planetRing } from "../model/systems.ts";
+import type { MoonProfile } from "../model/systems.ts";
 import { getSolarActivity } from "../utils/solarActivity.ts";
 import { solarCycleSeconds } from "../utils/solarShader.ts";
 import { getGiantStormActivity } from "../utils/giantStorms.ts";
@@ -16,15 +26,13 @@ import {
   createSunSurface,
   TextureStore,
 } from "./materials.ts";
+import { createPlanetEnvironment } from "./atmospheres.ts";
+import type { PlanetEnvironment } from "./atmospheres.ts";
 import type { PlanetSurface } from "./materials.ts";
 
-type Moon = {
+type Moon = MoonProfile & {
   mesh: THREE.Mesh;
   surface: PlanetSurface;
-  distance: number;
-  phase: number;
-  speed: number;
-  size: number;
   id: string;
 };
 type Entry = {
@@ -35,6 +43,7 @@ type Entry = {
   surface: PlanetSurface;
   moons: Moon[];
   rings: THREE.ShaderMaterial[];
+  environment?: PlanetEnvironment;
   orbit: THREE.LineLoop;
   disposables: { dispose(): void }[];
 };
@@ -60,14 +69,25 @@ export class SceneRenderer {
   private glow: THREE.Mesh;
   private selection: THREE.LineLoop;
   private model: SceneModel;
+  private layoutSource?: SceneModel;
+  private largestDiameter = 1;
+  private orbitFactors = new Map<string, number>();
+  private envelopes: ReturnType<typeof sceneEnvelopes> = [];
   private selected: string | null = null;
+  private sunSelected = false;
   private active = true;
   private frame = 0;
   private aspect = 1;
   private observer: ResizeObserver;
   private raycaster = new THREE.Raycaster();
   private pointer = new THREE.Vector2();
-  private drag: { x: number; y: number; moved: boolean } | null = null;
+  private drag: {
+    pointerId: number;
+    x: number;
+    y: number;
+    moved: boolean;
+    rotate: boolean;
+  } | null = null;
   private solarElapsed = 0;
   private previousElapsed = 0;
   private disposed = false;
@@ -78,7 +98,9 @@ export class SceneRenderer {
     clock: SceneClock,
     callbacks: {
       select(id: string | null): void;
+      selectSun(): void;
       pan(dx: number, dy: number): void;
+      rotate(dx: number, dy: number): void;
       zoom(factor: number): void;
       error(message: string): void;
     },
@@ -145,6 +167,7 @@ export class SceneRenderer {
     this.canvas.addEventListener("pointermove", this.pointerMove);
     this.canvas.addEventListener("pointerup", this.pointerUp);
     this.canvas.addEventListener("pointercancel", this.pointerCancel);
+    this.canvas.addEventListener("lostpointercapture", this.pointerCancel);
     this.canvas.addEventListener("wheel", this.wheel, { passive: false });
     this.canvas.addEventListener("contextmenu", this.contextMenu);
     this.canvas.addEventListener("webglcontextlost", this.contextLost);
@@ -156,7 +179,9 @@ export class SceneRenderer {
   private clock: SceneClock;
   private callbacks: {
     select(id: string | null): void;
+    selectSun(): void;
     pan(dx: number, dy: number): void;
+    rotate(dx: number, dy: number): void;
     zoom(factor: number): void;
     error(message: string): void;
   };
@@ -175,13 +200,26 @@ export class SceneRenderer {
   snapshotTimeline() {
     return { elapsed: this.clock.elapsed, solar: this.solarElapsed };
   }
-  setModel(model: SceneModel, selected: string | null) {
+  setModel(model: SceneModel, selected: string | null, sunSelected = false) {
     if (model.timeline !== this.model.timeline) {
       this.solarElapsed = model.timeline.solar;
       this.previousElapsed = model.timeline.elapsed;
     }
+    if (
+      !this.layoutSource ||
+      model.layout !== this.layoutSource.layout ||
+      model.sizing !== this.layoutSource.sizing ||
+      model.planets !== this.layoutSource.planets ||
+      model.sun !== this.layoutSource.sun
+    ) {
+      this.largestDiameter = largestPlanetDiameter(model);
+      this.orbitFactors = orbitLayoutFactors(model);
+      this.envelopes = sceneEnvelopes(model, this.orbitFactors);
+      this.layoutSource = model;
+    }
     this.model = model;
     this.selected = selected;
+    this.sunSelected = sunSelected;
     if (this.sunSignature(model) !== this.sunKey) {
       const next = createSunSurface(model.sun);
       this.sunSurface.dispose();
@@ -201,10 +239,16 @@ export class SceneRenderer {
     for (const planet of model.planets) {
       const signature = JSON.stringify([
         planet.type,
+        planet.earthlike,
         planet.seeds,
         planet.families[planet.type],
         planet.moonCount,
         planet.ringCount,
+        planet.rings,
+        planet.moons,
+        planet.atmosphere,
+        planet.clouds,
+        planet.orbit.ellipse?.anchor === "sun" ? model.sun.position : null,
         planet.orbit,
       ]);
       const previous = this.entries.get(planet.id);
@@ -224,6 +268,8 @@ export class SceneRenderer {
         intense: family.intense ?? planet.type !== "icy",
         color: family.color,
         accentColor: family.accent,
+        bandShadow: family.bandShadow,
+        earthlike: planet.type === "rocky" ? planet.earthlike : undefined,
         seed: planet.seeds.surface,
         cratering: planet.type === "rocky" ? family.detail : undefined,
         contrast: planet.type === "icy" ? family.detail : undefined,
@@ -237,21 +283,25 @@ export class SceneRenderer {
     body.userData.planetId = planet.id;
     axis.add(body);
     const disposables: { dispose(): void }[] = [surface];
+    const environment = createPlanetEnvironment(
+      this.sphere,
+      planet,
+      surface.material,
+    );
+    if (environment) {
+      if (environment.clouds) axis.add(environment.clouds);
+      if (environment.atmosphere) axis.add(environment.atmosphere);
+      disposables.push(environment);
+    }
     const rings: THREE.ShaderMaterial[] = [];
-    let ringEdge = 1;
-    for (let index = 0; index < planet.ringCount; index++) {
-      const seed =
-        typeof planet.seeds.rings === "number"
-          ? planet.seeds.rings + index * 47
-          : index === 0
-            ? planet.seeds.rings
-            : `${planet.seeds.rings}:belt:${index}`;
-      const profile = createRingProfile(seed, family.color);
-      const inner = index === 0 ? profile.inner : ringEdge + 0.08,
-        outer = inner + profile.outer - profile.inner;
-      ringEdge = outer;
-      const geometry = new THREE.RingGeometry(inner, outer, 180);
-      const material = createRingMaterial(family.color, seed, inner, outer);
+    const profile = planetRing(planet);
+    if (profile) {
+      const geometry = new THREE.RingGeometry(
+        profile.inner,
+        profile.outer,
+        180,
+      );
+      const material = createRingMaterial(profile);
       rings.push(material);
       const ring = new THREE.Mesh(geometry, material);
       ring.rotation.x = -Math.PI / 2;
@@ -259,49 +309,40 @@ export class SceneRenderer {
       axis.add(ring);
       disposables.push(geometry, material);
     }
-    const moons: Moon[] = [],
-      moonRandom = seededRandom(`${planet.seeds.moons}:systems`);
-    for (let index = 0; index < planet.moonCount; index++) {
+    const moons: Moon[] = moonProfiles(planet).map((profile, index) => {
       const moonSurface = createPlanetSurface(
         this.textures,
         {
           type: "terrestrial",
           intense: index % 2 === 0,
-          color: "#aaa79d",
-          accentColor: "#56534d",
-          seed: `moon-rock-${index % 3}`,
+          color: profile.color,
+          accentColor: profile.accent,
+          seed: profile.seed,
           detail: "moon",
         },
         this.callbacks.error,
       );
       const mesh = new THREE.Mesh(this.sphere, moonSurface.material);
-      const size = 0.1 + moonRandom() * 0.11;
-      const tint = 0.75 + moonRandom() * 0.4;
-      moonSurface.material.uniforms.u_tint.value.set(
-        tint,
-        tint * 0.97,
-        tint * 0.92,
-      );
-      mesh.scale.setScalar(size);
+      mesh.scale.setScalar(profile.size);
       mesh.userData.planetId = planet.id;
       axis.add(mesh);
-      moons.push({
+      disposables.push(moonSurface);
+      return {
+        ...profile,
         mesh,
         surface: moonSurface,
-        distance:
-          Math.max(1.8, ringEdge + 0.3) + index * 0.32 + moonRandom() * 0.1,
-        phase: moonRandom() * Math.PI * 2,
-        speed: (0.07 + moonRandom() * 0.08) / (1 + index * 0.2),
-        size,
         id: `${planet.id}-moon-${index}`,
-      });
-      disposables.push(moonSurface);
-    }
+      };
+    });
     const orbitPoints = Array.from(
       { length: 256 },
       (_, i) =>
         new THREE.Vector3(
-          ...orbitPosition({ ...planet.orbit, phase: (i / 256) * 360 }, 0),
+          ...orbitPosition(
+            { ...planet.orbit, phase: (i / 256) * 360 },
+            0,
+            this.model.sun.position,
+          ),
         ),
     );
     const orbit = new THREE.LineLoop(
@@ -325,6 +366,7 @@ export class SceneRenderer {
       rings,
       orbit,
       disposables,
+      environment,
     };
   }
   private releaseEntry(entry: Entry) {
@@ -341,11 +383,27 @@ export class SceneRenderer {
   };
   private updateCamera() {
     const frame = viewFrame(this.model.view, this.aspect);
+    const direction = new THREE.Vector3(...frame.position).sub(
+      new THREE.Vector3(...frame.target),
+    );
+    const reach = Math.max(
+      1,
+      ...this.envelopes.map(
+        (sphere) =>
+          Math.hypot(
+            ...sphere.center.map((value, i) => value - frame.target[i]),
+          ) + sphere.radius,
+      ),
+    );
+    const distance = Math.max(direction.length(), reach + 100);
+    this.camera.far = distance + reach + 100;
     this.camera.left = -frame.width / 2;
     this.camera.right = frame.width / 2;
     this.camera.top = frame.height / 2;
     this.camera.bottom = -frame.height / 2;
-    this.camera.position.set(...frame.position);
+    this.camera.position
+      .set(...frame.target)
+      .add(direction.normalize().multiplyScalar(distance));
     this.camera.up.set(frame.up[0], frame.up[1], frame.up[2]);
     this.camera.lookAt(...frame.target);
     this.camera.updateProjectionMatrix();
@@ -363,9 +421,10 @@ export class SceneRenderer {
     const sun = this.model.sun;
     this.sun.visible = this.glow.visible = sun.visible;
     this.sun.position.set(...sun.position);
-    this.sun.scale.setScalar(sun.radius);
+    const sunRadius = starRenderRadius(this.model);
+    this.sun.scale.setScalar(sunRadius);
     this.glow.position.copy(this.sun.position);
-    this.glow.scale.setScalar(sun.radius * 3.2);
+    this.glow.scale.setScalar(sunRadius * 3.2);
     this.glow.quaternion.copy(this.camera.quaternion);
     const solar = getSolarActivity(sun.seed, this.solarElapsed * 1000),
       solarUniforms = this.sunSurface.material.uniforms;
@@ -375,6 +434,9 @@ export class SceneRenderer {
       solarUniforms.u_sunspots.value[i].fromArray(solar.centers, i * 4);
       solarUniforms.u_sunspotFrames.value[i].fromArray(solar.frames, i * 4);
     }
+    const viewDirection = this.camera
+      .getWorldDirection(new THREE.Vector3())
+      .negate();
     const spheres: ShadowSphere[] = [];
     const frames: {
       surface: PlanetSurface;
@@ -390,10 +452,32 @@ export class SceneRenderer {
       (entry.orbit.material as THREE.LineBasicMaterial).opacity =
         this.selected === planet.id ? 0.45 : 0.16;
       if (!planet.visible) continue;
+      const factor = this.orbitFactors.get(planet.id) ?? 1;
       entry.root.position.set(
-        ...orbitPosition(planet.orbit, time - this.model.motion.orbitEpoch),
+        ...scaleOrbitPoint(
+          orbitPosition(
+            planet.orbit,
+            time - this.model.motion.orbitEpoch,
+            sun.position,
+          ),
+          sun.position,
+          factor,
+        ),
       );
-      entry.axis.scale.setScalar(planet.radius);
+      entry.orbit.scale.setScalar(factor);
+      entry.orbit.position.set(
+        ...(sun.position.map((value) => value * (1 - factor)) as [
+          number,
+          number,
+          number,
+        ]),
+      );
+      const radius = planetRenderRadius(
+        this.model,
+        planet,
+        this.largestDiameter,
+      );
+      entry.axis.scale.setScalar(radius);
       entry.axis.rotation.set(
         0,
         THREE.MathUtils.degToRad(planet.spin.orientation),
@@ -403,6 +487,7 @@ export class SceneRenderer {
       entry.body.rotation.y = THREE.MathUtils.degToRad(
         planet.spin.phase + time * planet.spin.speed,
       );
+      entry.environment?.update(time, radius, viewDirection, planet.spin);
       const uniforms = entry.surface.material.uniforms;
       const profiles = entry.surface.map?.storms;
       const activity = profiles?.length
@@ -424,22 +509,18 @@ export class SceneRenderer {
       frames.push({
         surface: entry.surface,
         center: entry.root.position.clone(),
-        radius: planet.radius,
+        radius,
         id: planet.id,
       });
       for (const moon of entry.moons) {
-        const phase = moon.phase + time * moon.speed;
-        moon.mesh.position.set(
-          Math.cos(phase) * moon.distance,
-          Math.sin(phase * 0.8) * 0.08,
-          Math.sin(phase) * moon.distance,
-        );
-        moon.mesh.rotation.y = phase;
+        moon.mesh.position.set(...moonPosition(moon, time));
+        moon.mesh.rotation.y =
+          ((moon.phase + time * moon.speed) * Math.PI) / 180;
         moon.mesh.updateMatrixWorld();
         frames.push({
           surface: moon.surface,
           center: moon.mesh.getWorldPosition(new THREE.Vector3()),
-          radius: moon.size * planet.radius,
+          radius: moon.size * radius,
           id: moon.id,
           moon: true,
         });
@@ -466,13 +547,13 @@ export class SceneRenderer {
       uniforms.u_terminatorStart.value = sun.visible
         ? -Math.max(
             0.4,
-            Math.min(0.65, sun.radius / lightPosition.distanceTo(frame.center)),
+            Math.min(0.65, sunRadius / lightPosition.distanceTo(frame.center)),
           )
         : -0.24;
       const receiver = spheres.find((sphere) => sphere.id === frame.id)!;
       const shadowSun = {
         center: lightPosition.toArray() as [number, number, number],
-        radius: sun.radius,
+        radius: sunRadius,
       };
       const casters = sun.visible
         ? getPlanetShadowCasters(receiver, spheres, shadowSun)
@@ -481,7 +562,7 @@ export class SceneRenderer {
       uniforms.u_shadowRadius.value = frame.radius;
       uniforms.u_shadowSun.value.set(
         ...lightPosition.clone().sub(frame.center).toArray(),
-        sun.radius,
+        sunRadius,
       );
       casters.forEach(({ sphere, opacity }, i) => {
         uniforms.u_shadowCasters.value[i].set(
@@ -496,32 +577,48 @@ export class SceneRenderer {
     const selected = this.model.planets.find(
       (planet) => planet.id === this.selected && planet.visible,
     );
-    this.selection.visible = !!selected;
+    this.selection.visible = !!selected || (this.sunSelected && sun.visible);
     if (selected) {
       this.selection.position.copy(
         this.entries.get(selected.id)!.root.position,
       );
       this.selection.quaternion.copy(this.camera.quaternion);
-      this.selection.scale.setScalar(selected.radius);
+      this.selection.scale.setScalar(
+        planetRenderRadius(this.model, selected, this.largestDiameter),
+      );
+    } else if (this.sunSelected && sun.visible) {
+      this.selection.position.copy(this.sun.position);
+      this.selection.quaternion.copy(this.camera.quaternion);
+      this.selection.scale.setScalar((sunRadius * 1.05) / 1.28);
     }
     this.renderer.render(this.world, this.camera);
   };
   private pointerDown = (event: PointerEvent) => {
-    this.drag = { x: event.clientX, y: event.clientY, moved: false };
+    if (this.drag || (event.button !== 0 && event.button !== 2)) return;
+    event.preventDefault();
+    this.drag = {
+      pointerId: event.pointerId,
+      x: event.clientX,
+      y: event.clientY,
+      moved: false,
+      rotate: event.button === 2,
+    };
     this.canvas.setPointerCapture(event.pointerId);
   };
   private pointerMove = (event: PointerEvent) => {
-    if (!this.drag) return;
+    if (!this.drag || event.pointerId !== this.drag.pointerId) return;
     const dx = event.clientX - this.drag.x,
       dy = event.clientY - this.drag.y;
     if (!this.drag.moved && Math.hypot(dx, dy) < 4) return;
     this.drag.moved = true;
     this.drag.x = event.clientX;
     this.drag.y = event.clientY;
-    this.callbacks.pan(dx, dy);
+    if (this.drag.rotate) this.callbacks.rotate(dx, dy);
+    else this.callbacks.pan(dx, dy);
   };
   private pointerUp = (event: PointerEvent) => {
-    if (this.drag && !this.drag.moved) {
+    if (!this.drag || event.pointerId !== this.drag.pointerId) return;
+    if (!this.drag.rotate && !this.drag.moved) {
       const bounds = this.canvas.getBoundingClientRect();
       this.pointer.set(
         ((event.clientX - bounds.left) / bounds.width) * 2 - 1,
@@ -532,14 +629,16 @@ export class SceneRenderer {
       for (const entry of this.entries.values())
         if (entry.root.visible) targets.push(entry.axis);
       const intersection = this.raycaster.intersectObjects(targets, true)[0];
-      this.callbacks.select(intersection?.object.userData.planetId ?? null);
+      if (intersection?.object === this.sun) this.callbacks.selectSun();
+      else
+        this.callbacks.select(intersection?.object.userData.planetId ?? null);
     }
     this.drag = null;
     if (this.canvas.hasPointerCapture(event.pointerId))
       this.canvas.releasePointerCapture(event.pointerId);
   };
-  private pointerCancel = () => {
-    this.drag = null;
+  private pointerCancel = (event: PointerEvent) => {
+    if (this.drag?.pointerId === event.pointerId) this.drag = null;
   };
   private wheel = (event: WheelEvent) => {
     event.preventDefault();
@@ -560,6 +659,7 @@ export class SceneRenderer {
     this.canvas.removeEventListener("pointermove", this.pointerMove);
     this.canvas.removeEventListener("pointerup", this.pointerUp);
     this.canvas.removeEventListener("pointercancel", this.pointerCancel);
+    this.canvas.removeEventListener("lostpointercapture", this.pointerCancel);
     this.canvas.removeEventListener("wheel", this.wheel);
     this.canvas.removeEventListener("contextmenu", this.contextMenu);
     this.canvas.removeEventListener("webglcontextlost", this.contextLost);

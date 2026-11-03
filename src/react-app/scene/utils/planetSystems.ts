@@ -202,7 +202,7 @@ export function moonMaterial(index: number): PlanetTextureOptions {
 }
 
 /** A one-dimensional radial opacity profile: broad belts, fine ringlets, and two real gaps. */
-export function ringPixels(profile: RingProfile) {
+export function ringPixels(profile: RingProfile, complexity = 1) {
   const pixels = new Uint8Array(512 * 4),
     b = profile.bands;
   const smooth = (a: number, z: number, v: number) => {
@@ -213,14 +213,17 @@ export function ringPixels(profile: RingProfile) {
     const t = i / 511;
     let density =
       0.63 +
-      0.12 * Math.sin(t * (10 + b[0] * 10) + b[1] * 6.28) +
-      0.05 * Math.sin(t * (40 + b[2] * 25)) +
-      0.018 * Math.sin(t * 180 + b[3] * 6.28);
+      0.12 * complexity * Math.sin(t * (10 + b[0] * 10) + b[1] * 6.28) +
+      0.05 * complexity * Math.sin(t * (40 + b[2] * 25)) +
+      0.018 * complexity * Math.sin(t * 180 + b[3] * 6.28);
     for (const [center, width] of [
       [0.57 + b[4] * 0.12, 0.025 + b[5] * 0.025],
       [0.25 + b[6] * 0.08, 0.009],
     ]) {
-      density *= smooth(width * 0.5, width, Math.abs(t - center));
+      density *=
+        1 -
+        Math.max(0, (complexity - 0.4) / 0.6) *
+          (1 - smooth(width * 0.5, width, Math.abs(t - center)));
     }
     density *= smooth(0, 0.02, t) * (1 - smooth(0.95, 1, t));
     const value = Math.round(Math.max(0, Math.min(1, density)) * 255);

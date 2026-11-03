@@ -8,10 +8,13 @@ type Props = {
   runtime: RefObject<(() => SceneModel["timeline"]) | null>;
   scene: SceneModel;
   selected: string | null;
+  sunSelected: boolean;
   clock: SceneClock;
   active: boolean;
   onSelect(id: string | null): void;
+  onSelectSun(): void;
   onPan(dx: number, dy: number): void;
+  onRotate(dx: number, dy: number): void;
   onZoom(factor: number): void;
   onError(message: string): void;
 };
@@ -32,14 +35,16 @@ export default function SceneCanvas(props: Props) {
         current.clock,
         {
           select: (id) => latest.current.onSelect(id),
+          selectSun: () => latest.current.onSelectSun(),
           pan: (dx, dy) => latest.current.onPan(dx, dy),
+          rotate: (dx, dy) => latest.current.onRotate(dx, dy),
           zoom: (factor) => latest.current.onZoom(factor),
           error: (message) => latest.current.onError(message),
         },
       );
       renderer.current = instance;
       current.runtime.current = () => instance.snapshotTimeline();
-      instance.setModel(current.scene, current.selected);
+      instance.setModel(current.scene, current.selected, current.sunSelected);
       return () => {
         current.runtime.current = null;
         renderer.current = null;
@@ -54,14 +59,14 @@ export default function SceneCanvas(props: Props) {
     }
   }, []);
   useEffect(() => {
-    renderer.current?.setModel(props.scene, props.selected);
+    renderer.current?.setModel(props.scene, props.selected, props.sunSelected);
     renderer.current?.setActive(props.active);
-  }, [props.scene, props.selected, props.active]);
+  }, [props.scene, props.selected, props.sunSelected, props.active]);
   return (
     <canvas
       ref={ref}
       className="scene-canvas"
-      aria-label="Interactive space scene. Click a planet to select; drag to pan; scroll to zoom."
+      aria-label="Interactive space scene. Click a planet or the Sun to select; left drag to pan; right drag to rotate; scroll to zoom."
       data-testid="scene-canvas"
     />
   );

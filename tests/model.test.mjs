@@ -1,3 +1,7 @@
+import {
+  planetRenderRadius,
+  starRenderRadius,
+} from "../src/react-app/scene/model/sizes.ts";
 import assert from "node:assert/strict";
 import { test } from "node:test";
 import {
@@ -8,6 +12,7 @@ import {
   instantiatePlanet,
 } from "../src/react-app/scene/model/scene.ts";
 import {
+  SCHEMA_VERSION,
   parsePreset,
   serializeScene,
   serializePlanet,
@@ -38,7 +43,7 @@ test("invalid or unsupported preset files are rejected before changing the scene
   const source = JSON.parse(serializeScene(createScene()));
   source.schemaVersion = 999;
   assert.throws(() => parsePreset(JSON.stringify(source)), /Supported schema/);
-  source.schemaVersion = 1;
+  source.schemaVersion = SCHEMA_VERSION;
   source.scene.planets[0].ranges.moons = [10, 5];
   assert.throws(() => parsePreset(JSON.stringify(source)), /Minimum/);
   source.scene.planets[0].ranges.moons = [5, 10];
@@ -65,7 +70,7 @@ test("ranged rolls stay within inclusive integer limits and preserve independent
   const planet = createScene().planets[1];
   planet.ranges.moons = [5, 10];
   planet.ranges.rings = [2, 2];
-  planet.ranges.radius = [4, 5];
+  planet.ranges.diameter = [4, 5];
   const counts = new Set();
   for (let nonce = 0; nonce < 120; nonce++) {
     const next = rerollPlanet(planet, nonce);
@@ -76,7 +81,7 @@ test("ranged rolls stay within inclusive integer limits and preserve independent
     );
     counts.add(next.moonCount);
     assert.equal(next.ringCount, 2);
-    assert.ok(next.radius >= 4 && next.radius <= 5);
+    assert.ok(next.diameter >= 4 && next.diameter <= 5);
     assert.deepEqual(
       next,
       rerollPlanet(planet, nonce),
@@ -169,38 +174,49 @@ test("all supported default planet slots produce valid portable scenes", () => {
 test("portfolio side framing matches the initial sun height and visible limb", () => {
   const scene = createScene();
   assert.equal(scene.view.preset, "offset");
-  assert.equal(scene.sun.radius, 55);
+  assert.ok(Math.abs(starRenderRadius(scene) - 55.44) < 1e-9);
   for (const aspect of [1.06, 1.6, 1.92]) {
     const frame = viewFrame(scene.view, aspect);
-    assert.ok(Math.abs((scene.sun.radius * 2) / frame.height - 1.12) < 1e-10);
+    assert.ok(
+      Math.abs((starRenderRadius(scene) * 2) / frame.height - 1.12 * (55.44 / 55)) < 1e-10,
+    );
     const centerRatio = (0.5 - frame.target[0] / frame.width) * aspect;
-    const limbRatio = centerRatio + scene.sun.radius / frame.height;
-    assert.ok(Math.abs(limbRatio - ((1.12 * 0.86) / 2 - 0.11)) < 1e-10);
+    const limbRatio = centerRatio + starRenderRadius(scene) / frame.height;
+    assert.ok(Math.abs(limbRatio - ((1.12 * 0.86) / 2 - 0.11 + (55.44 - 55) / frame.height)) < 1e-10);
   }
   for (const planet of scene.planets)
     assert.ok(
       planet.orbit.radius * (1 - planet.orbit.eccentricity) >
-        scene.sun.radius + planet.radius,
+        starRenderRadius(scene) + planetRenderRadius(scene, planet),
     );
 });
 
 test("existing JSON without a framing profile retains the earlier side camera", () => {
   const scene = createScene();
   delete scene.view.framing;
-  scene.sun.radius = 19;
+  scene.sun.diameter = 38;
   const loaded = parsePreset(serializeScene(scene)).scene;
   const frame = viewFrame(loaded.view, 1.6);
   assert.equal(frame.height, 325);
   assert.equal(frame.target[0], frame.width * 0.43);
-  assert.equal(loaded.sun.radius, 19);
+  assert.ok(Math.abs(starRenderRadius(loaded) - 19.152) < 1e-9);
 });
 
 test("sky controls survive JSON and independent rerolls without invalidating earlier presets", () => {
   const scene = createScene();
   scene.background.clusterFrequency = 0;
   scene.background.largeStarFrequency = 3.5;
-  scene.background.deepSky = { visible: true, seed: 923, density: 1.4, size: 2, brightness: 1.6 };
-  assert.deepEqual(parsePreset(serializeScene(scene)).scene.background, scene.background);
+  scene.background.deepSky = {
+    visible: true,
+    seed: 923,
+    density: 1.4,
+    size: 2,
+    brightness: 1.6,
+  };
+  assert.deepEqual(
+    parsePreset(serializeScene(scene)).scene.background,
+    scene.background,
+  );
   const rolled = rerollScene(scene, 54321).background;
   assert.notEqual(rolled.deepSky.seed, scene.background.deepSky.seed);
   assert.equal(rolled.deepSky.size, 2);
@@ -208,7 +224,10 @@ test("sky controls survive JSON and independent rerolls without invalidating ear
   delete scene.background.deepSky;
   delete scene.background.clusterFrequency;
   delete scene.background.largeStarFrequency;
-  assert.deepEqual(parsePreset(serializeScene(scene)).scene.background, scene.background);
+  assert.deepEqual(
+    parsePreset(serializeScene(scene)).scene.background,
+    scene.background,
+  );
   scene.background.clusterFrequency = 6;
   assert.throws(() => serializeScene(scene));
 });

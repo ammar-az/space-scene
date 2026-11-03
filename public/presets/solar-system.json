@@ -1,7 +1,7 @@
 {
   "kind": "space-scene",
-  "schemaVersion": 1,
-  "generatorVersion": "1",
+  "schemaVersion": 2,
+  "generatorVersion": "2",
   "scene": {
     "name": "Our solar system",
     "timeline": {
@@ -28,7 +28,6 @@
     "sun": {
       "visible": true,
       "seed": 1871,
-      "radius": 20,
       "color": "#ffb400",
       "highlight": "#fff01d",
       "shadow": "#b52d00",
@@ -37,7 +36,8 @@
         0,
         0,
         0
-      ]
+      ],
+      "diameter": 139.14
     },
     "planets": [
       {
@@ -46,9 +46,38 @@
         "visible": true,
         "type": "rocky",
         "locked": false,
-        "radius": 1.28502578,
         "moonCount": 0,
         "ringCount": 0,
+        "rings": {
+          "amount": 0,
+          "width": 1,
+          "opacity": 1,
+          "innerRadius": 1.35
+        },
+        "moons": {
+          "colors": [
+            "#aaa79d",
+            "#d1c5ae",
+            "#a3998b",
+            "#989ca1"
+          ],
+          "radius": [
+            1.35,
+            1.95
+          ],
+          "speed": [
+            3,
+            9
+          ],
+          "size": [
+            0.16,
+            0.24
+          ],
+          "inclination": [
+            -8,
+            8
+          ]
+        },
         "seeds": {
           "surface": 3000,
           "moons": 734064739,
@@ -59,7 +88,13 @@
           "rocky": {
             "color": "#a6a39b",
             "accent": "#5c5852",
-            "detail": 1.8
+            "detail": 1.8,
+            "palette": [
+              {
+                "color": "#a6a39b",
+                "accent": "#5c5852"
+              }
+            ]
           },
           "gas": {
             "color": "#528bea",
@@ -73,10 +108,6 @@
           }
         },
         "ranges": {
-          "radius": [
-            1.28502578,
-            1.28502578
-          ],
           "moons": [
             0,
             0
@@ -85,13 +116,22 @@
             0,
             0
           ],
+          "ringAmount": [
+            0,
+            0
+          ],
+          "ringProbability": 0,
           "detail": [
             1.8,
             1.8
+          ],
+          "diameter": [
+            4.88,
+            4.88
           ]
         },
         "orbit": {
-          "radius": 30,
+          "radius": 110,
           "eccentricity": 0.206,
           "inclination": 7,
           "orientation": 0,
@@ -101,14 +141,21 @@
             0,
             0,
             0
-          ]
+          ],
+          "ellipse": {
+            "radiusX": 110,
+            "radiusZ": 107.64071906,
+            "rotation": 0,
+            "anchor": "sun"
+          }
         },
         "spin": {
           "tilt": 0.034,
           "orientation": 0,
           "phase": 0,
           "speed": 0.05093777
-        }
+        },
+        "diameter": 4.88
       },
       {
         "id": "venus",
@@ -116,20 +163,71 @@
         "visible": true,
         "type": "rocky",
         "locked": false,
-        "radius": 2.31953326,
         "moonCount": 0,
+        "atmosphere": {
+          "visible": true,
+          "color": "#f6d6aa",
+          "density": 0.55,
+          "height": 0.06
+        },
+        "clouds": {
+          "visible": true,
+          "color": "#f7e8c7",
+          "coverage": 1,
+          "opacity": 1,
+          "scale": 3.2,
+          "altitude": 0.018,
+          "speed": 1.2
+        },
         "ringCount": 0,
+        "rings": {
+          "amount": 0,
+          "width": 1,
+          "opacity": 1,
+          "innerRadius": 1.35
+        },
+        "moons": {
+          "colors": [
+            "#aaa79d",
+            "#d1c5ae",
+            "#a3998b",
+            "#989ca1"
+          ],
+          "radius": [
+            1.35,
+            1.95
+          ],
+          "speed": [
+            3,
+            9
+          ],
+          "size": [
+            0.16,
+            0.24
+          ],
+          "inclination": [
+            -8,
+            8
+          ]
+        },
         "seeds": {
           "surface": 3001,
           "moons": 2828364340,
           "rings": 95029135,
-          "weather": 919419885
+          "weather": 919419885,
+          "clouds": "venus-clouds"
         },
         "families": {
           "rocky": {
             "color": "#d7b675",
             "accent": "#9e7949",
-            "detail": 0.1
+            "detail": 0.1,
+            "palette": [
+              {
+                "color": "#d7b675",
+                "accent": "#9e7949"
+              }
+            ]
           },
           "gas": {
             "color": "#528bea",
@@ -143,10 +241,6 @@
           }
         },
         "ranges": {
-          "radius": [
-            2.31953326,
-            2.31953326
-          ],
           "moons": [
             0,
             0
@@ -155,13 +249,22 @@
             0,
             0
           ],
+          "ringAmount": [
+            0,
+            0
+          ],
+          "ringProbability": 0,
           "detail": [
             0.1,
             0.1
+          ],
+          "diameter": [
+            12.1,
+            12.1
           ]
         },
         "orbit": {
-          "radius": 45,
+          "radius": 145,
           "eccentricity": 0.007,
           "inclination": 3.4,
           "orientation": 0,
@@ -171,14 +274,21 @@
             0,
             0,
             0
-          ]
+          ],
+          "ellipse": {
+            "radiusX": 145,
+            "radiusZ": 144.99644746,
+            "rotation": 0,
+            "anchor": "sun"
+          }
         },
         "spin": {
           "tilt": 177.4,
           "orientation": 0,
           "phase": 30,
           "speed": 0.01229318
-        }
+        },
+        "diameter": 12.1
       },
       {
         "id": "earth",
@@ -186,20 +296,72 @@
         "visible": true,
         "type": "rocky",
         "locked": false,
-        "radius": 2.4,
         "moonCount": 1,
+        "atmosphere": {
+          "visible": true,
+          "color": "#75b5ff",
+          "density": 0.8,
+          "height": 0.035
+        },
+        "clouds": {
+          "visible": true,
+          "color": "#f4f8ff",
+          "coverage": 0.45,
+          "opacity": 0.92,
+          "scale": 4.5,
+          "altitude": 0.012,
+          "speed": 0.15,
+          "evolution": 0.6
+        },
         "ringCount": 0,
+        "rings": {
+          "amount": 0,
+          "width": 1,
+          "opacity": 1,
+          "innerRadius": 1.35
+        },
+        "moons": {
+          "colors": [
+            "#aaa79d",
+            "#d1c5ae",
+            "#a3998b",
+            "#989ca1"
+          ],
+          "radius": [
+            1.5,
+            1.8
+          ],
+          "speed": [
+            3,
+            9
+          ],
+          "size": [
+            0.16,
+            0.24
+          ],
+          "inclination": [
+            -8,
+            8
+          ]
+        },
         "seeds": {
           "surface": 3002,
           "moons": 3796513353,
           "rings": 2237517586,
-          "weather": 3046132486
+          "weather": 3046132486,
+          "clouds": "earth-clouds"
         },
         "families": {
           "rocky": {
             "color": "#2478c4",
             "accent": "#174b88",
-            "detail": 0.1
+            "detail": 0.1,
+            "palette": [
+              {
+                "color": "#2478c4",
+                "accent": "#174b88"
+              }
+            ]
           },
           "gas": {
             "color": "#528bea",
@@ -213,10 +375,6 @@
           }
         },
         "ranges": {
-          "radius": [
-            2.4,
-            2.4
-          ],
           "moons": [
             1,
             1
@@ -225,13 +383,22 @@
             0,
             0
           ],
+          "ringAmount": [
+            0,
+            0
+          ],
+          "ringProbability": 0,
           "detail": [
             0.1,
             0.1
+          ],
+          "diameter": [
+            12.76,
+            12.76
           ]
         },
         "orbit": {
-          "radius": 60,
+          "radius": 160,
           "eccentricity": 0.017,
           "inclination": 0,
           "orientation": 0,
@@ -241,14 +408,29 @@
             0,
             0,
             0
-          ]
+          ],
+          "ellipse": {
+            "radiusX": 160,
+            "radiusZ": 159.97687833,
+            "rotation": 0,
+            "anchor": "sun"
+          }
         },
         "spin": {
           "tilt": 23.4,
           "orientation": 0,
           "phase": 60,
           "speed": 3
-        }
+        },
+        "earthlike": {
+          "enabled": true,
+          "oceanColor": "#216ca8",
+          "landColor": "#588342",
+          "desertColor": "#c6ad76",
+          "landCoverage": 0.3,
+          "continentScale": 1.8
+        },
+        "diameter": 12.76
       },
       {
         "id": "mars",
@@ -256,9 +438,38 @@
         "visible": true,
         "type": "rocky",
         "locked": false,
-        "radius": 1.59329172,
         "moonCount": 2,
         "ringCount": 0,
+        "rings": {
+          "amount": 0,
+          "width": 1,
+          "opacity": 1,
+          "innerRadius": 1.35
+        },
+        "moons": {
+          "colors": [
+            "#aaa79d",
+            "#d1c5ae",
+            "#a3998b",
+            "#989ca1"
+          ],
+          "radius": [
+            1.35,
+            1.95
+          ],
+          "speed": [
+            3,
+            9
+          ],
+          "size": [
+            0.16,
+            0.24
+          ],
+          "inclination": [
+            -8,
+            8
+          ]
+        },
         "seeds": {
           "surface": 3003,
           "moons": 3437259085,
@@ -269,7 +480,13 @@
           "rocky": {
             "color": "#b75330",
             "accent": "#743a2b",
-            "detail": 0.8
+            "detail": 0.8,
+            "palette": [
+              {
+                "color": "#b75330",
+                "accent": "#743a2b"
+              }
+            ]
           },
           "gas": {
             "color": "#528bea",
@@ -283,10 +500,6 @@
           }
         },
         "ranges": {
-          "radius": [
-            1.59329172,
-            1.59329172
-          ],
           "moons": [
             2,
             2
@@ -295,13 +508,22 @@
             0,
             0
           ],
+          "ringAmount": [
+            0,
+            0
+          ],
+          "ringProbability": 0,
           "detail": [
             0.8,
             0.8
+          ],
+          "diameter": [
+            6.79,
+            6.79
           ]
         },
         "orbit": {
-          "radius": 78,
+          "radius": 190,
           "eccentricity": 0.094,
           "inclination": 1.8,
           "orientation": 0,
@@ -311,14 +533,21 @@
             0,
             0,
             0
-          ]
+          ],
+          "ellipse": {
+            "radiusX": 190,
+            "radiusZ": 189.15871748,
+            "rotation": 0,
+            "anchor": "sun"
+          }
         },
         "spin": {
           "tilt": 25.2,
           "orientation": 0,
           "phase": 90,
           "speed": 2.91463415
-        }
+        },
+        "diameter": 6.79
       },
       {
         "id": "jupiter",
@@ -326,9 +555,38 @@
         "visible": true,
         "type": "gas",
         "locked": false,
-        "radius": 11.54605568,
         "moonCount": 4,
         "ringCount": 0,
+        "rings": {
+          "amount": 0,
+          "width": 1,
+          "opacity": 1,
+          "innerRadius": 1.35
+        },
+        "moons": {
+          "colors": [
+            "#aaa79d",
+            "#d1c5ae",
+            "#a3998b",
+            "#989ca1"
+          ],
+          "radius": [
+            1.35,
+            1.95
+          ],
+          "speed": [
+            3,
+            9
+          ],
+          "size": [
+            0.07,
+            0.12
+          ],
+          "inclination": [
+            -8,
+            8
+          ]
+        },
         "seeds": {
           "surface": 3004,
           "moons": 213833165,
@@ -342,9 +600,20 @@
             "detail": 1
           },
           "gas": {
-            "color": "#c79874",
-            "accent": "#f1dfbd",
-            "detail": 1
+            "color": "#dfc5a8",
+            "accent": "#f8f1e3",
+            "detail": 0.9,
+            "bandShadow": "#a76947",
+            "palette": [
+              {
+                "color": "#dfc5a8",
+                "accent": "#f8f1e3"
+              },
+              {
+                "color": "#d9b99a",
+                "accent": "#f5ead9"
+              }
+            ]
           },
           "icy": {
             "color": "#73b7b7",
@@ -353,10 +622,6 @@
           }
         },
         "ranges": {
-          "radius": [
-            11.54605568,
-            11.54605568
-          ],
           "moons": [
             4,
             4
@@ -365,13 +630,22 @@
             0,
             0
           ],
+          "ringAmount": [
+            0,
+            0
+          ],
+          "ringProbability": 0,
           "detail": [
-            1,
-            1
+            0.9,
+            0.9
+          ],
+          "diameter": [
+            142.98,
+            142.98
           ]
         },
         "orbit": {
-          "radius": 112,
+          "radius": 240,
           "eccentricity": 0.049,
           "inclination": 1.3,
           "orientation": 0,
@@ -381,24 +655,60 @@
             0,
             0,
             0
-          ]
+          ],
+          "ellipse": {
+            "radiusX": 240,
+            "radiusZ": 239.71170685,
+            "rotation": 0,
+            "anchor": "sun"
+          }
         },
         "spin": {
           "tilt": 3.1,
           "orientation": 0,
           "phase": 120,
           "speed": 7.24242424
-        }
+        },
+        "diameter": 142.98
       },
       {
         "id": "saturn",
         "name": "Saturn",
         "visible": true,
-        "type": "gas",
+        "type": "icy",
         "locked": false,
-        "radius": 10.3329116,
         "moonCount": 7,
         "ringCount": 1,
+        "rings": {
+          "amount": 1,
+          "width": 1,
+          "opacity": 1,
+          "innerRadius": 1.3
+        },
+        "moons": {
+          "colors": [
+            "#aaa79d",
+            "#d1c5ae",
+            "#a3998b",
+            "#989ca1"
+          ],
+          "radius": [
+            2.3,
+            2.65
+          ],
+          "speed": [
+            3,
+            9
+          ],
+          "size": [
+            0.07,
+            0.12
+          ],
+          "inclination": [
+            -8,
+            8
+          ]
+        },
         "seeds": {
           "surface": 3005,
           "moons": 2313084501,
@@ -417,16 +727,18 @@
             "detail": 0.45
           },
           "icy": {
-            "color": "#73b7b7",
-            "accent": "#d2e7e2",
-            "detail": 0.35
+            "color": "#d4c391",
+            "accent": "#f2e5bd",
+            "detail": 0.55,
+            "palette": [
+              {
+                "color": "#d4c391",
+                "accent": "#f2e5bd"
+              }
+            ]
           }
         },
         "ranges": {
-          "radius": [
-            10.3329116,
-            10.3329116
-          ],
           "moons": [
             7,
             7
@@ -435,13 +747,22 @@
             1,
             1
           ],
+          "ringAmount": [
+            1,
+            1
+          ],
+          "ringProbability": 1,
           "detail": [
-            0.45,
-            0.45
+            0.55,
+            0.55
+          ],
+          "diameter": [
+            120.54,
+            120.54
           ]
         },
         "orbit": {
-          "radius": 149,
+          "radius": 240,
           "eccentricity": 0.052,
           "inclination": 2.5,
           "orientation": 0,
@@ -451,14 +772,21 @@
             0,
             0,
             0
-          ]
+          ],
+          "ellipse": {
+            "radiusX": 295,
+            "radiusZ": 294.60089002,
+            "rotation": 0,
+            "anchor": "sun"
+          }
         },
         "spin": {
           "tilt": 26.7,
           "orientation": 0,
           "phase": 150,
           "speed": 6.70093458
-        }
+        },
+        "diameter": 120.54
       },
       {
         "id": "uranus",
@@ -466,9 +794,38 @@
         "visible": true,
         "type": "icy",
         "locked": false,
-        "radius": 5.91656738,
         "moonCount": 5,
-        "ringCount": 0,
+        "ringCount": 1,
+        "rings": {
+          "amount": 0.4,
+          "width": 0.6,
+          "opacity": 1,
+          "innerRadius": 1.55
+        },
+        "moons": {
+          "colors": [
+            "#aaa79d",
+            "#d1c5ae",
+            "#a3998b",
+            "#989ca1"
+          ],
+          "radius": [
+            1.9,
+            2.25
+          ],
+          "speed": [
+            3,
+            9
+          ],
+          "size": [
+            0.07,
+            0.12
+          ],
+          "inclination": [
+            -8,
+            8
+          ]
+        },
         "seeds": {
           "surface": 3006,
           "moons": 2513998538,
@@ -489,29 +846,40 @@
           "icy": {
             "color": "#83cbce",
             "accent": "#c7e8e6",
-            "detail": 0.3
+            "detail": 0.3,
+            "palette": [
+              {
+                "color": "#83cbce",
+                "accent": "#c7e8e6"
+              }
+            ]
           }
         },
         "ranges": {
-          "radius": [
-            5.91656738,
-            5.91656738
-          ],
           "moons": [
             5,
             5
           ],
           "rings": [
-            0,
-            0
+            1,
+            1
           ],
+          "ringAmount": [
+            0.4,
+            0.4
+          ],
+          "ringProbability": 1,
           "detail": [
             0.3,
             0.3
+          ],
+          "diameter": [
+            51.12,
+            51.12
           ]
         },
         "orbit": {
-          "radius": 186,
+          "radius": 240,
           "eccentricity": 0.047,
           "inclination": 0.8,
           "orientation": 0,
@@ -521,14 +889,21 @@
             0,
             0,
             0
-          ]
+          ],
+          "ellipse": {
+            "radiusX": 345,
+            "radiusZ": 344.61873683,
+            "rotation": 0,
+            "anchor": "sun"
+          }
         },
         "spin": {
           "tilt": 97.8,
-          "orientation": 0,
+          "orientation": 45,
           "phase": 180,
           "speed": 4.16860465
-        }
+        },
+        "diameter": 51.12
       },
       {
         "id": "neptune",
@@ -536,9 +911,38 @@
         "visible": true,
         "type": "icy",
         "locked": false,
-        "radius": 5.79628624,
         "moonCount": 1,
         "ringCount": 0,
+        "rings": {
+          "amount": 0,
+          "width": 1,
+          "opacity": 1,
+          "innerRadius": 1.35
+        },
+        "moons": {
+          "colors": [
+            "#aaa79d",
+            "#d1c5ae",
+            "#a3998b",
+            "#989ca1"
+          ],
+          "radius": [
+            1.35,
+            1.95
+          ],
+          "speed": [
+            3,
+            9
+          ],
+          "size": [
+            0.07,
+            0.12
+          ],
+          "inclination": [
+            -8,
+            8
+          ]
+        },
         "seeds": {
           "surface": 3007,
           "moons": 3629612706,
@@ -559,14 +963,16 @@
           "icy": {
             "color": "#3769ce",
             "accent": "#6b9ee5",
-            "detail": 0.7
+            "detail": 0.7,
+            "palette": [
+              {
+                "color": "#3769ce",
+                "accent": "#6b9ee5"
+              }
+            ]
           }
         },
         "ranges": {
-          "radius": [
-            5.79628624,
-            5.79628624
-          ],
           "moons": [
             1,
             1
@@ -575,13 +981,22 @@
             0,
             0
           ],
+          "ringAmount": [
+            0,
+            0
+          ],
+          "ringProbability": 0,
           "detail": [
             0.7,
             0.7
+          ],
+          "diameter": [
+            49.53,
+            49.53
           ]
         },
         "orbit": {
-          "radius": 224,
+          "radius": 240,
           "eccentricity": 0.01,
           "inclination": 1.8,
           "orientation": 0,
@@ -591,20 +1006,27 @@
             0,
             0,
             0
-          ]
+          ],
+          "ellipse": {
+            "radiusX": 380,
+            "radiusZ": 379.98099952,
+            "rotation": 0,
+            "anchor": "sun"
+          }
         },
         "spin": {
           "tilt": 28.3,
           "orientation": 0,
           "phase": 210,
           "speed": 4.45341615
-        }
+        },
+        "diameter": 49.53
       }
     ],
     "view": {
       "preset": "overhead",
       "framing": "standard",
-      "zoom": 0.6,
+      "zoom": 0.39,
       "pan": [
         0,
         0,
@@ -616,6 +1038,11 @@
       "speed": 1,
       "orbitLines": true,
       "orbitEpoch": 0
+    },
+    "sizing": {
+      "planetCompression": 0.5,
+      "planetScale": 1,
+      "starScale": 0.63
     }
   }
 }

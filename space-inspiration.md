@@ -164,3 +164,62 @@ Keep UI colors, typography, and the header close to the portfolio’s blue glass
 - Deep-sky objects retain the portfolio’s photograph cutouts, default selection, placement, and blending. Expose visibility, density, size, brightness, and a separate reroll seed in Starfield settings and scene JSON.
 - Configure cluster and large-star frequencies independently, from zero through five times the portfolio defaults. Density controls star sites; clusters contribute additional members.
 - Planet longitude wraps must remain seamless during spin; ring bands should use the portfolio’s filtered opacity texture. Preserve gentle ambient fill and soft planetary terminators with the sun visible.
+
+
+## Desktop editing refinements — November 3, 2026
+
+- Built-in Portfolio system and Our solar system presets are complete editable JSON files. Use original portfolio seeds, colors, satellite counts and projected desktop starting positions. The solar-system illustration includes a temporary blue rocky Earth, compressed sizes/spacing, selected moons and Saturn’s prominent rings.
+- Orbit shape, position and orientation are independent. Default to a fixed geometric center with separate X/Z radii and numeric controls; optionally keep the Sun at a focus. Preserve old JSON trajectories and avoid a jump when converting them for editing.
+- Ring amount runs from zero to one full system, approximately the previous single belt maximum. Vary width, opacity, inner edge and seeded structure; sparse settings produce a single simple band rather than several Saturn-like belts.
+- Each planet offers a possible moon palette and ranges for orbital radius, signed speed, relative size and inclination. Use independent seeded properties so changing colors does not shuffle orbits.
+- Clicking the Sun selects it, opens Sun settings and draws a highlight, just like planet selection.
+
+
+## Preset refinements — November 3, 2026
+
+- Start with a generated Portfolio system, with no temporary starter-scene flash. Built-ins are JSON recipes with identity palettes and allowed size/detail/moon/ring ranges; importing an exported scene remains an exact snapshot restore.
+- Move Word Wasp back to the 18° reference phase. Project X keeps its original starting point but follows a real closed orbit centered on the Sun, avoiding the previous physical solar intersection.
+- The solar-system illustration uses a larger Sun and wider orbital spacing, including clearance at the maximum Sun size of 80. Keep moon systems compact enough to read as parent groups.
+- Jupiter stays cream/tan/brown through generation and rerolls, using warm band-shadow colors. Use the icy visual family for Saturn and give Uranus a narrow ring system.
+
+
+## Clouds and atmospheric detailing — November 3, 2026
+
+- Fix the compressed solar orbit spacing: retaining Mercury's eccentricity with the previous semimajor distances caused its outer path to overlap Venus's. Check every neighboring envelope and both overhead/side projections, not only Sun clearance.
+- Keep surface, clouds and atmospheric haze separate. First examples: dense cream cloud cover on Venus and partial white clouds plus blue haze on the temporary blue Earth. A proper Earth surface can follow without replacing this layer architecture.
+- Expose rocky-planet atmosphere controls and independent cloud seed/reroll, opacity, coverage, scale, altitude and drift. Save everything in JSON and preserve exact timeline/pause behavior. Gas/icy surfaces continue using their established renderer.
+- Start with sunlit artistic shells and continuous 3D cloud fields. Later add more surface detail, cloud-cast shadows, richer scattering/weather and additional cloud layers as useful.
+
+
+## Earth-like surfaces and weather motion — November 3, 2026
+
+- Color pickers commit once selection finishes; dragging through preview colors must not rebuild terrain or solar fields.
+- Keep Earth-like as an optional mode within Rocky, preserving existing mechanics and remembered rocky/gas/icy settings. Initialize moderate clouds and blue haze once, then preserve edits.
+- Earth-like surfaces use seeded spherical continents, mostly blue ocean, green/yellow land regions and polar ice. Save their three colors, coverage and continent scale independently of the rocky family palette. Surface rerolls change continent shapes without moving cloud patterns. The solar preset now enables this for Earth.
+- Cloud patterns combine body rotation, relative drift and a gentle looping deformation. Evolution has its own speed control, can be disabled independently, and freezes with the shared scene clock.
+
+
+## Free camera — November 3, 2026
+
+- Treat the existing three views as composed snap positions rather than limits on orientation. Right drag rotates around a fixed look-at point; left drag pans in the camera's screen plane; wheel zooms.
+- Offer horizontal and vertical angle sliders plus precise values and zoom in a compact Camera panel. Cover the full azimuth and both poles/below-plane views.
+- Preserve existing JSON framing, materialize custom pose without a jump, and save custom angles/target/projection height in optional view fields. Named view/reset clears the custom pose and restores framing.
+- Keep planets/orbits untouched by camera edits, preserve mesh picking from arbitrary angles, and keep the camera controls usable in full screen.
+
+
+## Scene orbit layout — November 3, 2026
+
+- Scene-level Orbit scale multiplies whole paths about the Sun. Orbit spacing expands semimajor-axis gaps from the innermost base orbit. Compose the factors, preserve individual base orbits and all body/satellite sizes and periods, and save layout separately in JSON. Reset to 100% restores the original paths.
+- Fit scene covers complete visible orbital paths, not just their current planet positions; account for moon/ring/layer extents, retain viewing angle, and expand camera clipping/zoom-out for larger layouts.
+- User requested minimal verification for this pass: TypeScript plus native production build only. Visual testing is left to the user.
+- Proposed next sizing model (not yet implemented): retain actual configured radii, use scene-level geometric size compression toward the largest planet, and keep the Sun independent of that reference. Save display parameters without baking them into planet radii.
+
+
+## Physical diameter model — November 3, 2026
+
+- Explicitly discard schema1 compatibility: only the two built-in recipes need conversion. Use schema2/generator2 with planet diameter and ranges.diameter in ×1,000km, star diameter in ×10,000km, rounded to hundredths.
+- Add logarithmic physical-diameter sliders with linked scaled-unit/km fields. Numeric entries commit on blur/Enter and extend the slider span when needed. The diameter range for rerolls uses logarithmic slider coordinates.
+- Keep scene sizing separate: geometric planetCompression toward the largest physical planet (including hidden ones), planetScale, and independent starScale. Never bake display changes into physical diameters.
+- Show Rendered as in the same field units, with a hover/focus explanation of compression and the display multiplier. Use derived world radii consistently for geometry, moons/rings/layers, lighting/eclipses, picking, highlight, clipping and fit.
+- Solar recipe uses rounded NASA physical diameters with50% compression. Portfolio recipe retains its composition through converted fictional diameters and0% compression.
+- Minimal verification remains the user's preference: build/type check only; no test/browser suite for this pass.
