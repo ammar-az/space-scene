@@ -1,0 +1,487 @@
+{
+  "kind": "space-scene",
+  "schemaVersion": 1,
+  "generatorVersion": "1",
+  "scene": {
+    "name": "Portfolio solar system",
+    "timeline": {
+      "elapsed": 0,
+      "solar": 0
+    },
+    "background": {
+      "visible": true,
+      "seed": 1871,
+      "density": 1,
+      "size": 1,
+      "brightness": 1,
+      "twinkle": true,
+      "clusterFrequency": 1,
+      "largeStarFrequency": 1,
+      "deepSky": {
+        "visible": true,
+        "seed": 1871,
+        "density": 1,
+        "size": 1,
+        "brightness": 1
+      }
+    },
+    "sun": {
+      "visible": true,
+      "seed": 1871,
+      "radius": 55,
+      "color": "#ffb400",
+      "highlight": "#fff01d",
+      "shadow": "#b52d00",
+      "activity": true,
+      "position": [
+        0,
+        0,
+        0
+      ]
+    },
+    "planets": [
+      {
+        "id": "word-wasp",
+        "name": "Word Wasp",
+        "visible": true,
+        "type": "rocky",
+        "locked": false,
+        "radius": 3.92857143,
+        "moonCount": 1,
+        "ringCount": 0,
+        "seeds": {
+          "surface": "word-wasp",
+          "moons": "word-wasp",
+          "rings": "word-wasp",
+          "weather": "word-wasp"
+        },
+        "families": {
+          "rocky": {
+            "color": "#dfaa2b",
+            "accent": "#453215",
+            "detail": 1,
+            "intense": false
+          },
+          "gas": {
+            "color": "#528bea",
+            "accent": "#d8e7f2",
+            "detail": 1
+          },
+          "icy": {
+            "color": "#73b7b7",
+            "accent": "#d2e7e2",
+            "detail": 0.35
+          }
+        },
+        "ranges": {
+          "radius": [
+            3.92857143,
+            3.92857143
+          ],
+          "moons": [
+            1,
+            1
+          ],
+          "rings": [
+            0,
+            0
+          ],
+          "detail": [
+            1,
+            1
+          ]
+        },
+        "orbit": {
+          "radius": 83.19435026,
+          "eccentricity": 0,
+          "inclination": 3.18165067,
+          "orientation": 20.34699224,
+          "phase": 34.89695539,
+          "speed": 1.2,
+          "center": [
+            6.40357143,
+            0.46963693,
+            -0.14350017
+          ]
+        },
+        "spin": {
+          "tilt": 16.99082329,
+          "orientation": -90,
+          "phase": 101.93324002,
+          "speed": 3.82641134
+        }
+      },
+      {
+        "id": "potential",
+        "name": "Future Project",
+        "visible": true,
+        "type": "rocky",
+        "locked": false,
+        "radius": 4.8015873,
+        "moonCount": 3,
+        "ringCount": 0,
+        "seeds": {
+          "surface": "potential",
+          "moons": "potential",
+          "rings": "potential",
+          "weather": "potential"
+        },
+        "families": {
+          "rocky": {
+            "color": "#b75330",
+            "accent": "#743a2b",
+            "detail": 1,
+            "intense": false
+          },
+          "gas": {
+            "color": "#528bea",
+            "accent": "#d8e7f2",
+            "detail": 1
+          },
+          "icy": {
+            "color": "#73b7b7",
+            "accent": "#d2e7e2",
+            "detail": 0.35
+          }
+        },
+        "ranges": {
+          "radius": [
+            4.8015873,
+            4.8015873
+          ],
+          "moons": [
+            3,
+            3
+          ],
+          "rings": [
+            0,
+            0
+          ],
+          "detail": [
+            1,
+            1
+          ]
+        },
+        "orbit": {
+          "radius": 102.26661413,
+          "eccentricity": 0,
+          "inclination": 1.55140743,
+          "orientation": 58.2645258,
+          "phase": 252.04200663,
+          "speed": 0.82,
+          "center": [
+            6.40357143,
+            -0.93927386,
+            0.28700035
+          ]
+        },
+        "spin": {
+          "tilt": 16.99082329,
+          "orientation": -90,
+          "phase": 304.45672193,
+          "speed": -3.0895032
+        }
+      },
+      {
+        "id": "tasked",
+        "name": "Tasked",
+        "visible": true,
+        "type": "gas",
+        "locked": false,
+        "radius": 8.51190476,
+        "moonCount": 3,
+        "ringCount": 1,
+        "seeds": {
+          "surface": "tasked",
+          "moons": "tasked",
+          "rings": "tasked",
+          "weather": "tasked"
+        },
+        "families": {
+          "rocky": {
+            "color": "#b75330",
+            "accent": "#743a2b",
+            "detail": 1
+          },
+          "gas": {
+            "color": "#528bea",
+            "accent": "#d8e7f2",
+            "detail": 1,
+            "intense": true
+          },
+          "icy": {
+            "color": "#73b7b7",
+            "accent": "#d2e7e2",
+            "detail": 0.35
+          }
+        },
+        "ranges": {
+          "radius": [
+            8.51190476,
+            8.51190476
+          ],
+          "moons": [
+            3,
+            3
+          ],
+          "rings": [
+            1,
+            1
+          ],
+          "detail": [
+            1,
+            1
+          ]
+        },
+        "orbit": {
+          "radius": 121.3435164,
+          "eccentricity": 0,
+          "inclination": 1.73066195,
+          "orientation": 117.71999574,
+          "phase": 287.64957306,
+          "speed": 0.56,
+          "center": [
+            6.40357143,
+            -2.11336619,
+            0.64575078
+          ]
+        },
+        "spin": {
+          "tilt": 5.47904144,
+          "orientation": 109.97150669,
+          "phase": 217.99038709,
+          "speed": -7.14648189
+        }
+      },
+      {
+        "id": "ltg",
+        "name": "LoL Theme Guess",
+        "visible": true,
+        "type": "gas",
+        "locked": false,
+        "radius": 7.63888889,
+        "moonCount": 10,
+        "ringCount": 1,
+        "seeds": {
+          "surface": "ltg",
+          "moons": "ltg",
+          "rings": "ltg",
+          "weather": "ltg"
+        },
+        "families": {
+          "rocky": {
+            "color": "#b75330",
+            "accent": "#743a2b",
+            "detail": 1
+          },
+          "gas": {
+            "color": "#a787d9",
+            "accent": "#e2c7e7",
+            "detail": 1,
+            "intense": true
+          },
+          "icy": {
+            "color": "#73b7b7",
+            "accent": "#d2e7e2",
+            "detail": 0.35
+          }
+        },
+        "ranges": {
+          "radius": [
+            7.63888889,
+            7.63888889
+          ],
+          "moons": [
+            10,
+            10
+          ],
+          "rings": [
+            1,
+            1
+          ],
+          "detail": [
+            1,
+            1
+          ]
+        },
+        "orbit": {
+          "radius": 140.42677961,
+          "eccentricity": 0,
+          "inclination": 1.78404619,
+          "orientation": 79.9448957,
+          "phase": 240.46807147,
+          "speed": 0.38,
+          "center": [
+            6.40357143,
+            0,
+            0
+          ]
+        },
+        "spin": {
+          "tilt": 7.03945193,
+          "orientation": 143.73327808,
+          "phase": 194.41822933,
+          "speed": 10.52242247
+        }
+      },
+      {
+        "id": "potential-cpp",
+        "name": "Future Project (C++)",
+        "visible": true,
+        "type": "icy",
+        "locked": false,
+        "radius": 6.11111111,
+        "moonCount": 4,
+        "ringCount": 0,
+        "seeds": {
+          "surface": "potential-cpp",
+          "moons": "potential-cpp",
+          "rings": "potential-cpp",
+          "weather": "potential-cpp"
+        },
+        "families": {
+          "rocky": {
+            "color": "#b75330",
+            "accent": "#743a2b",
+            "detail": 1
+          },
+          "gas": {
+            "color": "#528bea",
+            "accent": "#d8e7f2",
+            "detail": 1
+          },
+          "icy": {
+            "color": "#73b7b7",
+            "accent": "#d2e7e2",
+            "detail": 1,
+            "intense": false
+          }
+        },
+        "ranges": {
+          "radius": [
+            6.11111111,
+            6.11111111
+          ],
+          "moons": [
+            4,
+            4
+          ],
+          "rings": [
+            0,
+            0
+          ],
+          "detail": [
+            1,
+            1
+          ]
+        },
+        "orbit": {
+          "radius": 159.51707646,
+          "eccentricity": 0,
+          "inclination": 2.66931066,
+          "orientation": 48.02802207,
+          "phase": 342.42253397,
+          "speed": 0.27,
+          "center": [
+            6.40357143,
+            0,
+            0
+          ]
+        },
+        "spin": {
+          "tilt": 17.20846629,
+          "orientation": -80.60079247,
+          "phase": 32.51548664,
+          "speed": -4.22201176
+        }
+      },
+      {
+        "id": "project-x",
+        "name": "Project X",
+        "visible": true,
+        "type": "icy",
+        "locked": false,
+        "radius": 3.60119048,
+        "moonCount": 5,
+        "ringCount": 1,
+        "seeds": {
+          "surface": "planet-x",
+          "moons": "planet-x",
+          "rings": "planet-x",
+          "weather": "planet-x"
+        },
+        "families": {
+          "rocky": {
+            "color": "#b75330",
+            "accent": "#743a2b",
+            "detail": 1
+          },
+          "gas": {
+            "color": "#528bea",
+            "accent": "#d8e7f2",
+            "detail": 1
+          },
+          "icy": {
+            "color": "#65b97b",
+            "accent": "#d2edcb",
+            "detail": 1,
+            "intense": false
+          }
+        },
+        "ranges": {
+          "radius": [
+            3.60119048,
+            3.60119048
+          ],
+          "moons": [
+            5,
+            5
+          ],
+          "rings": [
+            1,
+            1
+          ],
+          "detail": [
+            1,
+            1
+          ]
+        },
+        "orbit": {
+          "radius": 88.701687,
+          "eccentricity": 0,
+          "inclination": 21.56847115,
+          "orientation": -87.82277893,
+          "phase": 87.659025,
+          "speed": -0.22,
+          "center": [
+            83.325,
+            -4.10525297,
+            1.25438285
+          ]
+        },
+        "spin": {
+          "tilt": 2.31585854,
+          "orientation": 44.06664759,
+          "phase": 6.88854686,
+          "speed": -4.63578609
+        }
+      }
+    ],
+    "view": {
+      "preset": "offset",
+      "framing": "portfolio",
+      "zoom": 1,
+      "pan": [
+        0,
+        0,
+        0
+      ]
+    },
+    "motion": {
+      "playing": true,
+      "speed": 1,
+      "orbitLines": true,
+      "orbitEpoch": 0
+    }
+  }
+}

@@ -1,11 +1,17 @@
 import js from "@eslint/js";
+import { defineConfig } from "eslint/config";
 import globals from "globals";
 import reactHooks from "eslint-plugin-react-hooks";
 import reactRefresh from "eslint-plugin-react-refresh";
 import tseslint from "typescript-eslint";
 
-export default tseslint.config(
-	{ ignores: ["dist"] },
+export default defineConfig(
+	{ ignores: ["dist", ".work", "worker-configuration.d.ts"] },
+	{
+		files: ["tests/**/*.mjs"],
+		extends: [js.configs.recommended],
+		languageOptions: { globals: globals.node },
+	},
 	{
 		extends: [js.configs.recommended, ...tseslint.configs.recommended],
 		files: ["**/*.{ts,tsx}"],

@@ -1,0 +1,21 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="1 4 262 262" width="262" height="262" fill="none">
+  <defs>
+    <linearGradient id="az-shaded-face" gradientUnits="userSpaceOnUse" x1="30" y1="20" x2="240" y2="260">
+      <stop stop-color="#36C5F8"/>
+      <stop offset="0.52" stop-color="#16B9F4"/>
+      <stop offset="1" stop-color="#119DDB"/>
+    </linearGradient>
+    <linearGradient id="az-shaded-contact" gradientUnits="userSpaceOnUse" x1="150.009553" y1="167.30029" x2="151.67815" y2="169">
+      <stop stop-color="#0878B0" stop-opacity="0"/>
+      <stop offset="1" stop-color="#0878B0" stop-opacity="0.55"/>
+    </linearGradient>
+    <linearGradient id="az-shaded-crossbar" gradientUnits="userSpaceOnUse" x1="0" y1="134" x2="0" y2="137.4">
+      <stop stop-color="#0878B0" stop-opacity="0.55"/>
+      <stop offset="1" stop-color="#0878B0" stop-opacity="0"/>
+    </linearGradient>
+  </defs>
+  <path fill="url(#az-shaded-face)" d="M20 208 101 12 161.956245 159.499061 142.521094 178.578455 101 62 49 208Z"/>
+  <path fill="url(#az-shaded-contact)" d="M160.801801 156.705592 141.484836 175.668963 142.521094 178.578455 161.956245 159.499061Z"/>
+  <path fill="url(#az-shaded-crossbar)" d="M126.643836 134H151.418367L152.823469 137.4H127.854795Z"/>
+  <path fill="url(#az-shaded-face)" d="M59.673469 112H244L116.669236 237H244v22H60l127.330764-125H50.581633Z"/>
+</svg>

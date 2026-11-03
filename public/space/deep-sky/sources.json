@@ -1,0 +1,1697 @@
+[
+  {
+    "id": "ngc5307",
+    "title": "NGC 5307 | ESA/Hubble",
+    "page": "https://esahubble.org/images/opo0733e/",
+    "image": "https://cdn.esahubble.org/archives/images/screen/opo0733e.jpg",
+    "credit": "NASA, ESA, and The Hubble Heritage Team (STScI/AURA)",
+    "file": "/space/deep-sky/ngc5307.jpg",
+    "previewFile": "/space/deep-sky/thumbs/ngc5307.webp",
+    "name": "NGC 5307",
+    "crop": [
+      0.12,
+      0.12,
+      0.76,
+      0.76
+    ]
+  },
+  {
+    "id": "ngc2818",
+    "title": "Hubble snaps images of a nebula within a cluster | ESA/Hubble",
+    "page": "https://esahubble.org/images/ann0901a/",
+    "image": "https://cdn.esahubble.org/archives/images/screen/ann0901a.jpg",
+    "credit": "NASA, ESA and the Hubble Heritage Team (STScI/AURA)",
+    "file": "/space/deep-sky/ngc2818.jpg",
+    "previewFile": "/space/deep-sky/thumbs/ngc2818.webp",
+    "name": "NGC 2818",
+    "crop": [
+      0,
+      0,
+      1,
+      1
+    ]
+  },
+  {
+    "id": "ngc1512",
+    "title": "NGC 1512 and NGC 1510 | ESA/Hubble",
+    "page": "https://esahubble.org/images/heic1712a/",
+    "image": "https://cdn.esahubble.org/archives/images/screen/heic1712a.jpg",
+    "credit": "ESA/Hubble, NASA",
+    "file": "/space/deep-sky/ngc1512.jpg",
+    "previewFile": "/space/deep-sky/thumbs/ngc1512.webp",
+    "name": "NGC 1512",
+    "crop": [
+      0,
+      0,
+      0.49,
+      1
+    ]
+  },
+  {
+    "id": "ic4593",
+    "title": "IC 4593 | ESA/Hubble",
+    "page": "https://esahubble.org/images/opo0733d/",
+    "image": "https://cdn.esahubble.org/archives/images/screen/opo0733d.jpg",
+    "credit": "NASA, ESA, and The Hubble Heritage Team (STScI/AURA)",
+    "file": "/space/deep-sky/ic4593.jpg",
+    "previewFile": "/space/deep-sky/thumbs/ic4593.webp",
+    "name": "IC 4593",
+    "crop": [
+      0.12,
+      0.12,
+      0.76,
+      0.76
+    ]
+  },
+  {
+    "id": "ngc5315",
+    "title": "NGC 5315 | ESA/Hubble",
+    "page": "https://esahubble.org/images/opo0733c/",
+    "image": "https://cdn.esahubble.org/archives/images/screen/opo0733c.jpg",
+    "credit": "NASA, ESA, and The Hubble Heritage Team (STScI/AURA)",
+    "file": "/space/deep-sky/ngc5315.jpg",
+    "previewFile": "/space/deep-sky/thumbs/ngc5315.webp",
+    "name": "NGC 5315",
+    "crop": [
+      0.12,
+      0.12,
+      0.76,
+      0.76
+    ]
+  },
+  {
+    "id": "ngc2525",
+    "name": "NGC 2525",
+    "title": "Galaxy NGC 2525",
+    "page": "https://esahubble.org/images/heic2018b/",
+    "image": "https://cdn.esahubble.org/archives/images/screen/heic2018b.jpg",
+    "credit": "ESA/Hubble & NASA, A. Riess and the SH0ES team Acknowledgment: Mahdi Zamani",
+    "previewFile": "/space/deep-sky/thumbs/ngc2525.webp",
+    "crop": [
+      0,
+      0,
+      1,
+      1
+    ],
+    "kind": "galaxy",
+    "sourceId": "heic2018b"
+  },
+  {
+    "id": "ic4633",
+    "name": "IC 4633",
+    "title": "Hidden in a dark cloud",
+    "page": "https://esahubble.org/images/potw2415a/",
+    "image": "https://cdn.esahubble.org/archives/images/screen/potw2415a.jpg",
+    "credit": "ESA/Hubble & NASA, J. Dalcanton, Dark Energy Survey/DOE/FNAL/DECam/CTIO/NOIRLab/NSF/AURA Acknowledgement: L. Shatz",
+    "previewFile": "/space/deep-sky/thumbs/ic4633.webp",
+    "crop": [
+      0,
+      0,
+      1,
+      1
+    ],
+    "kind": "galaxy",
+    "sourceId": "potw2415a"
+  },
+  {
+    "id": "ngc1275",
+    "name": "NGC 1275",
+    "title": "Magnetic monster NGC 1275",
+    "page": "https://esahubble.org/images/heic0817a/",
+    "image": "https://cdn.esahubble.org/archives/images/screen/heic0817a.jpg",
+    "credit": "NASA , ESA and Andy Fabian (University of Cambridge, UK)",
+    "previewFile": "/space/deep-sky/thumbs/ngc1275.webp",
+    "crop": [
+      0,
+      0,
+      1,
+      1
+    ],
+    "kind": "galaxy",
+    "sourceId": "heic0817a"
+  },
+  {
+    "id": "ngc1792",
+    "name": "NGC 1792",
+    "title": "The Stellar Forge",
+    "page": "https://esahubble.org/images/potw2049a/",
+    "image": "https://cdn.esahubble.org/archives/images/screen/potw2049a.jpg",
+    "credit": "ESA/Hubble & NASA, J. Lee Acknowledgement: Leo Shatz",
+    "previewFile": "/space/deep-sky/thumbs/ngc1792.webp",
+    "crop": [
+      0,
+      0,
+      1,
+      1
+    ],
+    "kind": "galaxy",
+    "sourceId": "potw2049a"
+  },
+  {
+    "id": "ngc1015",
+    "name": "NGC 1015",
+    "title": "Spirals and supernovae",
+    "page": "https://esahubble.org/images/potw1811a/",
+    "image": "https://cdn.esahubble.org/archives/images/screen/potw1811a.jpg",
+    "credit": "ESA/Hubble & NASA, A. Riess (STScl/JHU)",
+    "previewFile": "/space/deep-sky/thumbs/ngc1015.webp",
+    "crop": [
+      0,
+      0,
+      1,
+      1
+    ],
+    "kind": "galaxy",
+    "sourceId": "potw1811a"
+  },
+  {
+    "id": "ngc1316",
+    "name": "NGC 1316",
+    "title": "Hubble spies cosmic dust bunnies",
+    "page": "https://esahubble.org/images/opo0511a/",
+    "image": "https://cdn.esahubble.org/archives/images/screen/opo0511a.jpg",
+    "credit": "NASA , ESA , and The Hubble Heritage Team ( STScI / AURA )",
+    "previewFile": "/space/deep-sky/thumbs/ngc1316.webp",
+    "crop": [
+      0,
+      0,
+      1,
+      1
+    ],
+    "kind": "galaxy",
+    "sourceId": "opo0511a"
+  },
+  {
+    "id": "ngc1300",
+    "name": "NGC 1300",
+    "title": "A poster-size image of the beautiful barred spiral galaxy NGC 1300",
+    "page": "https://esahubble.org/images/opo0501a/",
+    "image": "https://cdn.esahubble.org/archives/images/screen/opo0501a.jpg",
+    "credit": "NASA , ESA , and The Hubble Heritage Team ( STScI / AURA )",
+    "previewFile": "/space/deep-sky/thumbs/ngc1300.webp",
+    "crop": [
+      0,
+      0,
+      1,
+      1
+    ],
+    "kind": "galaxy",
+    "sourceId": "opo0501a"
+  },
+  {
+    "id": "ngc4676",
+    "name": "NGC 4676",
+    "title": "Hubble&#39;s newest camera takes a deep look at two merging galaxies",
+    "page": "https://esahubble.org/images/heic0206b/",
+    "image": "https://cdn.esahubble.org/archives/images/screen/heic0206b.jpg",
+    "credit": "NASA , Holland Ford (JHU), the ACS Science Team and ESA",
+    "previewFile": "/space/deep-sky/thumbs/ngc4676.webp",
+    "crop": [
+      0,
+      0,
+      1,
+      1
+    ],
+    "kind": "galaxy",
+    "sourceId": "heic0206b"
+  },
+  {
+    "id": "eso40210",
+    "name": "ESO 402-10",
+    "title": "All lined up",
+    "page": "https://esahubble.org/images/potw2350a/",
+    "image": "https://cdn.esahubble.org/archives/images/screen/potw2350a.jpg",
+    "credit": "ESA/Hubble & NASA, J. Dalcanton, Dark Energy Survey/DOE/FNAL/NOIRLab/NSF/AURA Acknowledgement: L. Shatz",
+    "previewFile": "/space/deep-sky/thumbs/eso40210.webp",
+    "crop": [
+      0,
+      0,
+      1,
+      1
+    ],
+    "kind": "galaxy",
+    "sourceId": "potw2350a"
+  },
+  {
+    "id": "ngc2841",
+    "name": "NGC 2841",
+    "title": "Flocculent spiral NGC 2841",
+    "page": "https://esahubble.org/images/heic1104a/",
+    "image": "https://cdn.esahubble.org/archives/images/screen/heic1104a.jpg",
+    "credit": "NASA, ESA and the Hubble Heritage (STScI/AURA)-ESA/Hubble Collaboration Acknowledgment: M. Crockett and S. Kaviraj (Oxford University, UK), R. O'Connell (University of Virginia), B. Whitmore (STScI) and the WFC3 Scientific Oversight Committee.",
+    "previewFile": "/space/deep-sky/thumbs/ngc2841.webp",
+    "crop": [
+      0,
+      0,
+      1,
+      1
+    ],
+    "kind": "galaxy",
+    "sourceId": "heic1104a"
+  },
+  {
+    "id": "ngc6217",
+    "name": "NGC 6217",
+    "title": "Barred spiral galaxy NGC 6217",
+    "page": "https://esahubble.org/images/heic0910s/",
+    "image": "https://cdn.esahubble.org/archives/images/screen/heic0910s.jpg",
+    "credit": "NASA, ESA and the Hubble SM4 ERO Team",
+    "previewFile": "/space/deep-sky/thumbs/ngc6217.webp",
+    "crop": [
+      0,
+      0,
+      1,
+      1
+    ],
+    "kind": "galaxy",
+    "sourceId": "heic0910s"
+  },
+  {
+    "id": "ngc7049",
+    "name": "NGC 7049",
+    "title": "Dramatically backlit dust lanes in NGC 7049",
+    "page": "https://esahubble.org/images/heic0905a/",
+    "image": "https://cdn.esahubble.org/archives/images/screen/heic0905a.jpg",
+    "credit": "NASA, ESA and W. Harris (McMaster University, Ontario, Canada)",
+    "previewFile": "/space/deep-sky/thumbs/ngc7049.webp",
+    "crop": [
+      0,
+      0,
+      1,
+      1
+    ],
+    "kind": "galaxy",
+    "sourceId": "heic0905a"
+  },
+  {
+    "id": "ngc1672",
+    "name": "NGC 1672",
+    "title": "Stellar nursery in the arms of NGC 1672",
+    "page": "https://esahubble.org/images/heic0706a/",
+    "image": "https://cdn.esahubble.org/archives/images/screen/heic0706a.jpg",
+    "credit": "NASA , ESA",
+    "previewFile": "/space/deep-sky/thumbs/ngc1672.webp",
+    "crop": [
+      0,
+      0,
+      1,
+      1
+    ],
+    "kind": "galaxy",
+    "sourceId": "heic0706a"
+  },
+  {
+    "id": "ngc5866",
+    "name": "NGC 5866",
+    "title": "ACS image of NGC 5866",
+    "page": "https://esahubble.org/images/opo0624a/",
+    "image": "https://cdn.esahubble.org/archives/images/screen/opo0624a.jpg",
+    "credit": "NASA , ESA , and The Hubble Heritage Team ( STScI / AURA )",
+    "previewFile": "/space/deep-sky/thumbs/ngc5866.webp",
+    "crop": [
+      0,
+      0,
+      1,
+      1
+    ],
+    "kind": "galaxy",
+    "sourceId": "opo0624a"
+  },
+  {
+    "id": "ic2163",
+    "name": "IC 2163",
+    "title": "A grazing encounter between two spiral galaxies",
+    "page": "https://esahubble.org/images/opo9941a/",
+    "image": "https://cdn.esahubble.org/archives/images/screen/opo9941a.jpg",
+    "credit": "NASA / ESA and The Hubble Heritage Team ( STScI )",
+    "previewFile": "/space/deep-sky/thumbs/ic2163.webp",
+    "crop": [
+      0,
+      0,
+      1,
+      1
+    ],
+    "kind": "galaxy",
+    "sourceId": "opo9941a"
+  },
+  {
+    "id": "ngc4826",
+    "name": "NGC 4826",
+    "title": "Eye in the Sky",
+    "page": "https://esahubble.org/images/potw2108a/",
+    "image": "https://cdn.esahubble.org/archives/images/screen/potw2108a.jpg",
+    "credit": "ESA/Hubble & NASA, J. Lee and the PHANGS-HST Team Acknowledgement: Judy Schmidt",
+    "previewFile": "/space/deep-sky/thumbs/ngc4826.webp",
+    "crop": [
+      0,
+      0,
+      1,
+      1
+    ],
+    "kind": "galaxy",
+    "sourceId": "potw2108a"
+  },
+  {
+    "id": "eso510",
+    "name": "ESO 510",
+    "title": "Galaxy playing twister",
+    "page": "https://esahubble.org/images/opo0123a/",
+    "image": "https://cdn.esahubble.org/archives/images/screen/opo0123a.jpg",
+    "credit": "NASA / ESA and The Hubble Heritage Team ( STScI / AURA )",
+    "previewFile": "/space/deep-sky/thumbs/eso510.webp",
+    "crop": [
+      0,
+      0,
+      1,
+      1
+    ],
+    "kind": "galaxy",
+    "sourceId": "opo0123a"
+  },
+  {
+    "id": "ngc7331",
+    "name": "NGC 7331",
+    "title": "Twins with differences",
+    "page": "https://esahubble.org/images/potw1805a/",
+    "image": "https://cdn.esahubble.org/archives/images/screen/potw1805a.jpg",
+    "credit": "ESA/Hubble & NASA/D. Milisavljevic (Purdue University)",
+    "previewFile": "/space/deep-sky/thumbs/ngc7331.webp",
+    "crop": [
+      0,
+      0,
+      1,
+      1
+    ],
+    "kind": "galaxy",
+    "sourceId": "potw1805a"
+  },
+  {
+    "id": "ngc6984",
+    "name": "NGC 6984",
+    "title": "Cosmic Fireworks",
+    "page": "https://esahubble.org/images/potw2144a/",
+    "image": "https://cdn.esahubble.org/archives/images/screen/potw2144a.jpg",
+    "credit": "ESA/Hubble & NASA, D. Milisavljevic",
+    "previewFile": "/space/deep-sky/thumbs/ngc6984.webp",
+    "crop": [
+      0,
+      0,
+      1,
+      1
+    ],
+    "kind": "galaxy",
+    "sourceId": "potw2144a"
+  },
+  {
+    "id": "ngc4621",
+    "name": "NGC 4621",
+    "title": "Bucking the trend",
+    "page": "https://esahubble.org/images/potw1921a/",
+    "image": "https://cdn.esahubble.org/archives/images/screen/potw1921a.jpg",
+    "credit": "ESA/Hubble & NASA, P. Cote",
+    "previewFile": "/space/deep-sky/thumbs/ngc4621.webp",
+    "crop": [
+      0,
+      0,
+      1,
+      1
+    ],
+    "kind": "galaxy",
+    "sourceId": "potw1921a"
+  },
+  {
+    "id": "ngc3256",
+    "name": "NGC 3256",
+    "title": "Peculiar galaxy NGC 3256",
+    "page": "https://esahubble.org/images/heic1811a/",
+    "image": "https://cdn.esahubble.org/archives/images/screen/heic1811a.jpg",
+    "credit": "ESA/Hubble, NASA",
+    "previewFile": "/space/deep-sky/thumbs/ngc3256.webp",
+    "crop": [
+      0,
+      0,
+      1,
+      1
+    ],
+    "kind": "galaxy",
+    "sourceId": "heic1811a"
+  },
+  {
+    "id": "arp284",
+    "name": "Arp 284",
+    "title": "Hubble image of NGC 7714",
+    "page": "https://esahubble.org/images/heic1503a/",
+    "image": "https://cdn.esahubble.org/archives/images/screen/heic1503a.jpg",
+    "credit": "ESA, NASA Acknowledgement: A. Gal-Yam (Weizmann Institute of Science)",
+    "previewFile": "/space/deep-sky/thumbs/arp284.webp",
+    "crop": [
+      0,
+      0,
+      1,
+      1
+    ],
+    "kind": "galaxy",
+    "sourceId": "heic1503a"
+  },
+  {
+    "id": "ngc2008",
+    "name": "NGC 2008",
+    "title": "Open Arms",
+    "page": "https://esahubble.org/images/potw2006a/",
+    "image": "https://cdn.esahubble.org/archives/images/screen/potw2006a.jpg",
+    "credit": "ESA/Hubble & NASA, A. Bellini",
+    "previewFile": "/space/deep-sky/thumbs/ngc2008.webp",
+    "crop": [
+      0,
+      0,
+      1,
+      1
+    ],
+    "kind": "galaxy",
+    "sourceId": "potw2006a"
+  },
+  {
+    "id": "ngc3717",
+    "name": "NGC 3717",
+    "title": "A Spiral in Profile",
+    "page": "https://esahubble.org/images/potw1940a/",
+    "image": "https://cdn.esahubble.org/archives/images/screen/potw1940a.jpg",
+    "credit": "ESA/Hubble & NASA, D. Rosario",
+    "previewFile": "/space/deep-sky/thumbs/ngc3717.webp",
+    "crop": [
+      0,
+      0,
+      1,
+      1
+    ],
+    "kind": "galaxy",
+    "sourceId": "potw1940a"
+  },
+  {
+    "id": "ngc4490",
+    "name": "NGC 4490",
+    "title": "Result of a galactic crash",
+    "page": "https://esahubble.org/images/heic1716a/",
+    "image": "https://cdn.esahubble.org/archives/images/screen/heic1716a.jpg",
+    "credit": "ESA/Hubble & NASA Acknowledgements: D. Calzetti (UMass) and the LEGUS Team, J. Maund (University of Sheffield), and R. Chandar (University of Toledo)",
+    "previewFile": "/space/deep-sky/thumbs/ngc4490.webp",
+    "crop": [
+      0,
+      0,
+      1,
+      1
+    ],
+    "kind": "galaxy",
+    "sourceId": "heic1716a"
+  },
+  {
+    "id": "ic335",
+    "name": "IC 335",
+    "title": "The beautiful side of IC 335",
+    "page": "https://esahubble.org/images/potw1451a/",
+    "image": "https://cdn.esahubble.org/archives/images/screen/potw1451a.jpg",
+    "credit": "ESA/Hubble & NASA",
+    "previewFile": "/space/deep-sky/thumbs/ic335.webp",
+    "crop": [
+      0,
+      0,
+      1,
+      1
+    ],
+    "kind": "galaxy",
+    "sourceId": "potw1451a"
+  },
+  {
+    "id": "ngc4526",
+    "name": "NGC 4526",
+    "title": "The whirling disc of NGC 4526",
+    "page": "https://esahubble.org/images/potw1442a/",
+    "image": "https://cdn.esahubble.org/archives/images/screen/potw1442a.jpg",
+    "credit": "ESA/Hubble & NASA Acknowledgement: Judy Schmidt",
+    "previewFile": "/space/deep-sky/thumbs/ngc4526.webp",
+    "crop": [
+      0,
+      0,
+      1,
+      1
+    ],
+    "kind": "galaxy",
+    "sourceId": "potw1442a"
+  },
+  {
+    "id": "ngc4522",
+    "name": "NGC 4522",
+    "title": "Hubble views NGC 4522",
+    "page": "https://esahubble.org/images/heic0911b/",
+    "image": "https://cdn.esahubble.org/archives/images/screen/heic0911b.jpg",
+    "credit": "NASA & ESA",
+    "previewFile": "/space/deep-sky/thumbs/ngc4522.webp",
+    "crop": [
+      0,
+      0,
+      1,
+      1
+    ],
+    "kind": "galaxy",
+    "sourceId": "heic0911b"
+  },
+  {
+    "id": "ugc8091",
+    "name": "UGC 8091",
+    "title": "Dwarf irregular galaxy UGC 8091",
+    "page": "https://esahubble.org/images/heic2313a/",
+    "image": "https://cdn.esahubble.org/archives/images/screen/heic2313a.jpg",
+    "credit": "ESA/Hubble, NASA Y. Choi (NOIRLab), K. Gilbert (Space Telescope Science Institute), J. Dalcanton (Flatiron Institute and University of Washington)",
+    "previewFile": "/space/deep-sky/thumbs/ugc8091.webp",
+    "crop": [
+      0,
+      0,
+      1,
+      1
+    ],
+    "kind": "galaxy",
+    "sourceId": "heic2313a"
+  },
+  {
+    "id": "ngc2775",
+    "name": "NGC 2775",
+    "title": "Birds of a Feather",
+    "page": "https://esahubble.org/images/potw2026a/",
+    "image": "https://cdn.esahubble.org/archives/images/screen/potw2026a.jpg",
+    "credit": "ESA/Hubble & NASA, J. Lee and the PHANGS-HST Team Acknowledgement: Judy Schmidt (Geckzilla)",
+    "previewFile": "/space/deep-sky/thumbs/ngc2775.webp",
+    "crop": [
+      0,
+      0,
+      1,
+      1
+    ],
+    "kind": "galaxy",
+    "sourceId": "potw2026a"
+  },
+  {
+    "id": "ngc972",
+    "name": "NGC 972",
+    "title": "In Bloom",
+    "page": "https://esahubble.org/images/potw1926a/",
+    "image": "https://cdn.esahubble.org/archives/images/screen/potw1926a.jpg",
+    "credit": "ESA/Hubble, NASA, L. Ho",
+    "previewFile": "/space/deep-sky/thumbs/ngc972.webp",
+    "crop": [
+      0,
+      0,
+      1,
+      1
+    ],
+    "kind": "galaxy",
+    "sourceId": "potw1926a"
+  },
+  {
+    "id": "ngc4762",
+    "name": "NGC 4762",
+    "title": "A galaxy on the edge",
+    "page": "https://esahubble.org/images/potw1443a/",
+    "image": "https://cdn.esahubble.org/archives/images/screen/potw1443a.jpg",
+    "credit": "ESA/Hubble & NASA",
+    "previewFile": "/space/deep-sky/thumbs/ngc4762.webp",
+    "crop": [
+      0,
+      0,
+      1,
+      1
+    ],
+    "kind": "galaxy",
+    "sourceId": "potw1443a"
+  },
+  {
+    "id": "ugc2885",
+    "name": "UGC 2885",
+    "title": "UGC 2885",
+    "page": "https://esahubble.org/images/heic2002a/",
+    "image": "https://cdn.esahubble.org/archives/images/screen/heic2002a.jpg",
+    "credit": "NASA, ESA, and B. Holwerda (University of Louisville).",
+    "previewFile": "/space/deep-sky/thumbs/ugc2885.webp",
+    "crop": [
+      0,
+      0,
+      1,
+      1
+    ],
+    "kind": "galaxy",
+    "sourceId": "heic2002a"
+  },
+  {
+    "id": "ngc2985",
+    "name": "NGC 2985",
+    "title": "A Beautiful Whorl",
+    "page": "https://esahubble.org/images/potw1928a/",
+    "image": "https://cdn.esahubble.org/archives/images/screen/potw1928a.jpg",
+    "credit": "ESA/Hubble & NASA, L. Ho",
+    "previewFile": "/space/deep-sky/thumbs/ngc2985.webp",
+    "crop": [
+      0,
+      0,
+      1,
+      1
+    ],
+    "kind": "galaxy",
+    "sourceId": "potw1928a"
+  },
+  {
+    "id": "ngc1277",
+    "name": "NGC 1277",
+    "title": "A red, metal-rich relic",
+    "page": "https://esahubble.org/images/potw1812a/",
+    "image": "https://cdn.esahubble.org/archives/images/screen/potw1812a.jpg",
+    "credit": "NASA, ESA, and M. Beasley (Instituto de Astrofísica de Canarias)",
+    "previewFile": "/space/deep-sky/thumbs/ngc1277.webp",
+    "crop": [
+      0,
+      0,
+      1,
+      1
+    ],
+    "kind": "galaxy",
+    "sourceId": "potw1812a"
+  },
+  {
+    "id": "ngc4656",
+    "name": "NGC 4656",
+    "title": "The Hockey Stick Galaxy",
+    "page": "https://esahubble.org/images/potw1731a/",
+    "image": "https://cdn.esahubble.org/archives/images/screen/potw1731a.jpg",
+    "credit": "ESA/Hubble & NASA",
+    "previewFile": "/space/deep-sky/thumbs/ngc4656.webp",
+    "crop": [
+      0,
+      0,
+      1,
+      1
+    ],
+    "kind": "galaxy",
+    "sourceId": "potw1731a"
+  },
+  {
+    "id": "ngc4298",
+    "name": "NGC 4298",
+    "title": "A close galactic pair",
+    "page": "https://esahubble.org/images/heic1709a/",
+    "image": "https://cdn.esahubble.org/archives/images/screen/heic1709a.jpg",
+    "credit": "NASA, ESA, and M. Mutchler (STScI)",
+    "previewFile": "/space/deep-sky/thumbs/ngc4298.webp",
+    "crop": [
+      0,
+      0,
+      1,
+      1
+    ],
+    "kind": "galaxy",
+    "sourceId": "heic1709a"
+  },
+  {
+    "id": "ngc3521",
+    "name": "NGC 3521",
+    "title": "Hubble shears a &quot;woolly&quot; galaxy",
+    "page": "https://esahubble.org/images/potw1538a/",
+    "image": "https://cdn.esahubble.org/archives/images/screen/potw1538a.jpg",
+    "credit": "ESA/Hubble & NASA and S. Smartt (Queen's University Belfast) Acknowledgement: Robert Gendler",
+    "previewFile": "/space/deep-sky/thumbs/ngc3521.webp",
+    "crop": [
+      0,
+      0,
+      1,
+      1
+    ],
+    "kind": "galaxy",
+    "sourceId": "potw1538a"
+  },
+  {
+    "id": "ngc6861",
+    "name": "NGC 6861",
+    "title": "The third way of galaxies",
+    "page": "https://esahubble.org/images/potw1502a/",
+    "image": "https://cdn.esahubble.org/archives/images/screen/potw1502a.jpg",
+    "credit": "ESA/Hubble & NASA Acknowledgement: J. Barrington",
+    "previewFile": "/space/deep-sky/thumbs/ngc6861.webp",
+    "crop": [
+      0,
+      0,
+      1,
+      1
+    ],
+    "kind": "galaxy",
+    "sourceId": "potw1502a"
+  },
+  {
+    "id": "ngc524",
+    "name": "NGC 524",
+    "title": "A mysterious old spiral",
+    "page": "https://esahubble.org/images/potw1329a/",
+    "image": "https://cdn.esahubble.org/archives/images/screen/potw1329a.jpg",
+    "credit": "ESA/Hubble & NASA Acknowledgement: Judy Schmidt",
+    "previewFile": "/space/deep-sky/thumbs/ngc524.webp",
+    "crop": [
+      0,
+      0,
+      1,
+      1
+    ],
+    "kind": "galaxy",
+    "sourceId": "potw1329a"
+  },
+  {
+    "id": "arp148",
+    "name": "Arp 148",
+    "title": "Arp 148",
+    "page": "https://esahubble.org/images/heic0810ae/",
+    "image": "https://cdn.esahubble.org/archives/images/screen/heic0810ae.jpg",
+    "credit": "NASA, ESA, the Hubble Heritage Team (STScI/AURA)-ESA/Hubble Collaboration and A. Evans (University of Virginia, Charlottesville/NRAO/Stony Brook University), K. Noll (STScI), and J. Westphal (Caltech)",
+    "previewFile": "/space/deep-sky/thumbs/arp148.webp",
+    "crop": [
+      0,
+      0,
+      1,
+      1
+    ],
+    "kind": "galaxy",
+    "sourceId": "heic0810ae"
+  },
+  {
+    "id": "ngc4449",
+    "name": "NGC 4449",
+    "title": "Stellar fireworks are ablaze in galaxy NGC 4449",
+    "page": "https://esahubble.org/images/heic0711a/",
+    "image": "https://cdn.esahubble.org/archives/images/screen/heic0711a.jpg",
+    "credit": "NASA , ESA , A. Aloisi (STScI/ESA), and The Hubble Heritage (STScI/AURA)-ESA/Hubble Collaboration",
+    "previewFile": "/space/deep-sky/thumbs/ngc4449.webp",
+    "crop": [
+      0,
+      0,
+      1,
+      1
+    ],
+    "kind": "galaxy",
+    "sourceId": "heic0711a"
+  },
+  {
+    "id": "ngc3059",
+    "name": "NGC 3059",
+    "title": "A broad and narrow galactic view",
+    "page": "https://esahubble.org/images/potw2423a/",
+    "image": "https://cdn.esahubble.org/archives/images/screen/potw2423a.jpg",
+    "credit": "ESA/Hubble & NASA, D. Thilker",
+    "previewFile": "/space/deep-sky/thumbs/ngc3059.webp",
+    "crop": [
+      0,
+      0,
+      1,
+      1
+    ],
+    "kind": "galaxy",
+    "sourceId": "potw2423a"
+  },
+  {
+    "id": "ugc5189a",
+    "name": "UGC 5189A",
+    "title": "Gone but not forgotten",
+    "page": "https://esahubble.org/images/potw2403a/",
+    "image": "https://cdn.esahubble.org/archives/images/screen/potw2403a.jpg",
+    "credit": "ESA/Hubble & NASA, A. Filippenko",
+    "previewFile": "/space/deep-sky/thumbs/ugc5189a.webp",
+    "crop": [
+      0,
+      0,
+      1,
+      1
+    ],
+    "kind": "galaxy",
+    "sourceId": "potw2403a"
+  },
+  {
+    "id": "ngc691",
+    "name": "NGC 691",
+    "title": "Centuries Before Hubble",
+    "page": "https://esahubble.org/images/potw2008a/",
+    "image": "https://cdn.esahubble.org/archives/images/screen/potw2008a.jpg",
+    "credit": "ESA/Hubble & NASA, A. Riess et al.",
+    "previewFile": "/space/deep-sky/thumbs/ngc691.webp",
+    "crop": [
+      0,
+      0,
+      1,
+      1
+    ],
+    "kind": "galaxy",
+    "sourceId": "potw2008a"
+  },
+  {
+    "id": "ngc3169",
+    "name": "NGC 3169",
+    "title": "Up and Over",
+    "page": "https://esahubble.org/images/potw1929a/",
+    "image": "https://cdn.esahubble.org/archives/images/screen/potw1929a.jpg",
+    "credit": "ESA/Hubble & NASA, L. Ho",
+    "previewFile": "/space/deep-sky/thumbs/ngc3169.webp",
+    "crop": [
+      0,
+      0,
+      1,
+      1
+    ],
+    "kind": "galaxy",
+    "sourceId": "potw1929a"
+  },
+  {
+    "id": "ngc660",
+    "name": "NGC 660",
+    "title": "A bizarre cosmic rarity: NGC 660",
+    "page": "https://esahubble.org/images/potw1348a/",
+    "image": "https://cdn.esahubble.org/archives/images/screen/potw1348a.jpg",
+    "credit": "ESA/Hubble & NASA",
+    "previewFile": "/space/deep-sky/thumbs/ngc660.webp",
+    "crop": [
+      0,
+      0,
+      1,
+      1
+    ],
+    "kind": "galaxy",
+    "sourceId": "potw1348a"
+  },
+  {
+    "id": "ngc922",
+    "name": "NGC 922",
+    "title": "Hubble view of NGC 922",
+    "page": "https://esahubble.org/images/heic1218a/",
+    "image": "https://cdn.esahubble.org/archives/images/screen/heic1218a.jpg",
+    "credit": "NASA, ESA",
+    "previewFile": "/space/deep-sky/thumbs/ngc922.webp",
+    "crop": [
+      0,
+      0,
+      1,
+      1
+    ],
+    "kind": "galaxy",
+    "sourceId": "heic1218a"
+  },
+  {
+    "id": "ngc4402",
+    "name": "NGC 4402",
+    "title": "Hubble views NGC 4402",
+    "page": "https://esahubble.org/images/heic0911c/",
+    "image": "https://cdn.esahubble.org/archives/images/screen/heic0911c.jpg",
+    "credit": "NASA & ESA",
+    "previewFile": "/space/deep-sky/thumbs/ngc4402.webp",
+    "crop": [
+      0,
+      0,
+      1,
+      1
+    ],
+    "kind": "galaxy",
+    "sourceId": "heic0911c"
+  },
+  {
+    "id": "ngc1132",
+    "name": "NGC 1132",
+    "title": "The gargantuan galaxy NGC 1132",
+    "page": "https://esahubble.org/images/heic0804a/",
+    "image": "https://cdn.esahubble.org/archives/images/screen/heic0804a.jpg",
+    "credit": "NASA , ESA and the Hubble Heritage (STScI/AURA)-ESA/Hubble Collaboration. Acknowledgment: M. West (ESO, Chile)",
+    "previewFile": "/space/deep-sky/thumbs/ngc1132.webp",
+    "crop": [
+      0,
+      0,
+      1,
+      1
+    ],
+    "kind": "galaxy",
+    "sourceId": "heic0804a"
+  },
+  {
+    "id": "ngc4698",
+    "name": "NGC 4698",
+    "title": "A galaxy spinning out of sync",
+    "page": "https://esahubble.org/images/potm2609a/",
+    "image": "https://cdn.esahubble.org/archives/images/screen/potm2609a.jpg",
+    "credit": "ESA/Hubble & NASA, D. Thilker, the MAUVE-HST Team",
+    "previewFile": "/space/deep-sky/thumbs/ngc4698.webp",
+    "crop": [
+      0,
+      0,
+      1,
+      1
+    ],
+    "kind": "galaxy",
+    "sourceId": "potm2609a"
+  },
+  {
+    "id": "ngc4654",
+    "name": "NGC 4654",
+    "title": "One-sided spiral",
+    "page": "https://esahubble.org/images/potm2607a/",
+    "image": "https://cdn.esahubble.org/archives/images/screen/potm2607a.jpg",
+    "credit": "ESA/Hubble & NASA, D. Thilker, J. Lee and the PHANGS-HST Team",
+    "previewFile": "/space/deep-sky/thumbs/ngc4654.webp",
+    "crop": [
+      0,
+      0,
+      1,
+      1
+    ],
+    "kind": "galaxy",
+    "sourceId": "potm2607a"
+  },
+  {
+    "id": "ngc3137",
+    "name": "NGC 3137",
+    "title": "Starry spiral in a familiar neighbourhood",
+    "page": "https://esahubble.org/images/potm2604a/",
+    "image": "https://cdn.esahubble.org/archives/images/screen/potm2604a.jpg",
+    "credit": "ESA/Hubble & NASA, D. Thilker and the PHANGS-HST Team",
+    "previewFile": "/space/deep-sky/thumbs/ngc3137.webp",
+    "crop": [
+      0,
+      0,
+      1,
+      1
+    ],
+    "kind": "galaxy",
+    "sourceId": "potm2604a"
+  },
+  {
+    "id": "ngc7722",
+    "name": "NGC 7722",
+    "title": "Dark rings and new light",
+    "page": "https://esahubble.org/images/potm2601a/",
+    "image": "https://cdn.esahubble.org/archives/images/screen/potm2601a.jpg",
+    "credit": "ESA/Hubble & NASA, R. J. Foley (UC Santa Cruz), Dark Energy Survey/DOE/FNAL/DECam/CTIO/NOIRLab/NSF/AURA Acknowledgement: Mehmet Yüksek",
+    "previewFile": "/space/deep-sky/thumbs/ngc7722.webp",
+    "crop": [
+      0,
+      0,
+      1,
+      1
+    ],
+    "kind": "galaxy",
+    "sourceId": "potm2601a"
+  },
+  {
+    "id": "arp4",
+    "name": "Arp 4",
+    "title": "Long-distance relationship",
+    "page": "https://esahubble.org/images/potw2551a/",
+    "image": "https://cdn.esahubble.org/archives/images/screen/potw2551a.jpg",
+    "credit": "ESA/Hubble & NASA, J. Dalcanton, Dark Energy Survey/DOE/FNAL/DECam/CTIO/NOIRLab/NSF/AURA",
+    "previewFile": "/space/deep-sky/thumbs/arp4.webp",
+    "crop": [
+      0,
+      0,
+      1,
+      1
+    ],
+    "kind": "galaxy",
+    "sourceId": "potw2551a"
+  },
+  {
+    "id": "ngc4388",
+    "name": "NGC 4388",
+    "title": "Galactic gas makes a getaway",
+    "page": "https://esahubble.org/images/potw2550a/",
+    "image": "https://cdn.esahubble.org/archives/images/screen/potw2550a.jpg",
+    "credit": "ESA/Hubble & NASA, S. Veilleux, J. Wang, J. Greene",
+    "previewFile": "/space/deep-sky/thumbs/ngc4388.webp",
+    "crop": [
+      0,
+      0,
+      1,
+      1
+    ],
+    "kind": "galaxy",
+    "sourceId": "potw2550a"
+  },
+  {
+    "id": "ngc4535",
+    "name": "NGC 4535",
+    "title": "Finding star clusters in the Lost Galaxy",
+    "page": "https://esahubble.org/images/potw2546a/",
+    "image": "https://cdn.esahubble.org/archives/images/screen/potw2546a.jpg",
+    "credit": "ESA/Hubble & NASA, F. Belfiore, J. Lee and the PHANGS-HST Team",
+    "previewFile": "/space/deep-sky/thumbs/ngc4535.webp",
+    "crop": [
+      0,
+      0,
+      1,
+      1
+    ],
+    "kind": "galaxy",
+    "sourceId": "potw2546a"
+  },
+  {
+    "id": "ngc1511",
+    "name": "NGC 1511",
+    "title": "A disruptive neighbour",
+    "page": "https://esahubble.org/images/potw2545a/",
+    "image": "https://cdn.esahubble.org/archives/images/screen/potw2545a.jpg",
+    "credit": "ESA/Hubble & NASA, D. Thilker",
+    "previewFile": "/space/deep-sky/thumbs/ngc1511.webp",
+    "crop": [
+      0,
+      0,
+      1,
+      1
+    ],
+    "kind": "galaxy",
+    "sourceId": "potw2545a"
+  },
+  {
+    "id": "ngc4102",
+    "name": "NGC 4102",
+    "title": "Revisiting an unusual spiral",
+    "page": "https://esahubble.org/images/potw2544a/",
+    "image": "https://cdn.esahubble.org/archives/images/screen/potw2544a.jpg",
+    "credit": "ESA/Hubble & NASA, G. Fabbiano",
+    "previewFile": "/space/deep-sky/thumbs/ngc4102.webp",
+    "crop": [
+      0,
+      0,
+      1,
+      1
+    ],
+    "kind": "galaxy",
+    "sourceId": "potw2544a"
+  },
+  {
+    "id": "ngc4571",
+    "name": "NGC 4571",
+    "title": "Spiralling star factory",
+    "page": "https://esahubble.org/images/potw2543a/",
+    "image": "https://cdn.esahubble.org/archives/images/screen/potw2543a.jpg",
+    "credit": "ESA/Hubble & NASA, F. Belfiore, J. Lee and the PHANGS-HST Team",
+    "previewFile": "/space/deep-sky/thumbs/ngc4571.webp",
+    "crop": [
+      0,
+      0,
+      1,
+      1
+    ],
+    "kind": "galaxy",
+    "sourceId": "potw2543a"
+  },
+  {
+    "id": "ngc3370",
+    "name": "NGC 3370",
+    "title": "Focusing on NGC 3370",
+    "page": "https://esahubble.org/images/potw2542a/",
+    "image": "https://cdn.esahubble.org/archives/images/screen/potw2542a.jpg",
+    "credit": "ESA/Hubble & NASA, A. Riess, K. Noll",
+    "previewFile": "/space/deep-sky/thumbs/ngc3370.webp",
+    "crop": [
+      0,
+      0,
+      1,
+      1
+    ],
+    "kind": "galaxy",
+    "sourceId": "potw2542a"
+  },
+  {
+    "id": "ngc7496",
+    "name": "NGC 7496",
+    "title": "A well-studied spiral",
+    "page": "https://esahubble.org/images/potw2541a/",
+    "image": "https://cdn.esahubble.org/archives/images/screen/potw2541a.jpg",
+    "credit": "ESA/Hubble & NASA, R. Chandar, J. Lee and the PHANGS-HST team",
+    "previewFile": "/space/deep-sky/thumbs/ngc7496.webp",
+    "crop": [
+      0,
+      0,
+      1,
+      1
+    ],
+    "kind": "galaxy",
+    "sourceId": "potw2541a"
+  },
+  {
+    "id": "ngc6951",
+    "name": "NGC 6951",
+    "title": "Starbursting centre",
+    "page": "https://esahubble.org/images/potw2540a/",
+    "image": "https://cdn.esahubble.org/archives/images/screen/potw2540a.jpg",
+    "credit": "ESA/Hubble & NASA, L. C. Ho, G. Brammer, A. Filippenko, C. Kilpatrick",
+    "previewFile": "/space/deep-sky/thumbs/ngc6951.webp",
+    "crop": [
+      0,
+      0,
+      1,
+      1
+    ],
+    "kind": "galaxy",
+    "sourceId": "potw2540a"
+  },
+  {
+    "id": "ngc7456",
+    "name": "NGC 7456",
+    "title": "A galaxy with lots to see",
+    "page": "https://esahubble.org/images/potw2535a/",
+    "image": "https://cdn.esahubble.org/archives/images/screen/potw2535a.jpg",
+    "credit": "ESA/Hubble & NASA, D. Thilker",
+    "previewFile": "/space/deep-sky/thumbs/ngc7456.webp",
+    "crop": [
+      0,
+      0,
+      1,
+      1
+    ],
+    "kind": "galaxy",
+    "sourceId": "potw2535a"
+  },
+  {
+    "id": "ngc2835",
+    "name": "NGC 2835",
+    "title": "Noteworthy nearby spiral",
+    "page": "https://esahubble.org/images/potw2533a/",
+    "image": "https://cdn.esahubble.org/archives/images/screen/potw2533a.jpg",
+    "credit": "ESA/Hubble & NASA, R. Chandar, J. Lee and the PHANGS-HST team",
+    "previewFile": "/space/deep-sky/thumbs/ngc2835.webp",
+    "crop": [
+      0,
+      0,
+      1,
+      1
+    ],
+    "kind": "galaxy",
+    "sourceId": "potw2533a"
+  },
+  {
+    "id": "ngc1309",
+    "name": "NGC 1309",
+    "title": "A supernova-rich spiral",
+    "page": "https://esahubble.org/images/potw2530a/",
+    "image": "https://cdn.esahubble.org/archives/images/screen/potw2530a.jpg",
+    "credit": "ESA/Hubble & NASA, L. Galbany, S. Jha, K. Noll, A. Riess",
+    "previewFile": "/space/deep-sky/thumbs/ngc1309.webp",
+    "crop": [
+      0,
+      0,
+      1,
+      1
+    ],
+    "kind": "galaxy",
+    "sourceId": "potw2530a"
+  },
+  {
+    "id": "ngc3285b",
+    "name": "NGC 3285B",
+    "title": "Swirling spiral in Hydra",
+    "page": "https://esahubble.org/images/potw2529a/",
+    "image": "https://cdn.esahubble.org/archives/images/screen/potw2529a.jpg",
+    "credit": "ESA/Hubble & NASA, R. J. Foley (UC Santa Cruz)",
+    "previewFile": "/space/deep-sky/thumbs/ngc3285b.webp",
+    "crop": [
+      0,
+      0,
+      1,
+      1
+    ],
+    "kind": "galaxy",
+    "sourceId": "potw2529a"
+  },
+  {
+    "id": "ugc11397",
+    "name": "UGC 11397",
+    "title": "Centre of activity",
+    "page": "https://esahubble.org/images/potw2525a/",
+    "image": "https://cdn.esahubble.org/archives/images/screen/potw2525a.jpg",
+    "credit": "ESA/Hubble & NASA, M. J. Koss, A. J. Barth",
+    "previewFile": "/space/deep-sky/thumbs/ugc11397.webp",
+    "crop": [
+      0,
+      0,
+      1,
+      1
+    ],
+    "kind": "galaxy",
+    "sourceId": "potw2525a"
+  },
+  {
+    "id": "ic758",
+    "name": "IC 758",
+    "title": "Stirring the interstellar soup",
+    "page": "https://esahubble.org/images/potw2523a/",
+    "image": "https://cdn.esahubble.org/archives/images/screen/potw2523a.jpg",
+    "credit": "ESA/Hubble & NASA, C. Kilpatrick",
+    "previewFile": "/space/deep-sky/thumbs/ic758.webp",
+    "crop": [
+      0,
+      0,
+      1,
+      1
+    ],
+    "kind": "galaxy",
+    "sourceId": "potw2523a"
+  },
+  {
+    "id": "ngc685",
+    "name": "NGC 685",
+    "title": "Starry spectacle",
+    "page": "https://esahubble.org/images/potw2522a/",
+    "image": "https://cdn.esahubble.org/archives/images/screen/potw2522a.jpg",
+    "credit": "ESA/Hubble & NASA, J. Lee, F. Belfiore",
+    "previewFile": "/space/deep-sky/thumbs/ngc685.webp",
+    "crop": [
+      0,
+      0,
+      1,
+      1
+    ],
+    "kind": "galaxy",
+    "sourceId": "potw2522a"
+  },
+  {
+    "id": "ngc3507",
+    "name": "NGC 3507",
+    "title": "Paired pinwheel seen solo",
+    "page": "https://esahubble.org/images/potw2521a/",
+    "image": "https://cdn.esahubble.org/archives/images/screen/potw2521a.jpg",
+    "credit": "ESA/Hubble & NASA, D. Thilker",
+    "previewFile": "/space/deep-sky/thumbs/ngc3507.webp",
+    "crop": [
+      0,
+      0,
+      1,
+      1
+    ],
+    "kind": "galaxy",
+    "sourceId": "potw2521a"
+  },
+  {
+    "id": "ngc3511",
+    "name": "NGC 3511",
+    "title": "A spiral so inclined",
+    "page": "https://esahubble.org/images/potw2520a/",
+    "image": "https://cdn.esahubble.org/archives/images/screen/potw2520a.jpg",
+    "credit": "ESA/Hubble & NASA, D. Thilker",
+    "previewFile": "/space/deep-sky/thumbs/ngc3511.webp",
+    "crop": [
+      0,
+      0,
+      1,
+      1
+    ],
+    "kind": "galaxy",
+    "sourceId": "potw2520a"
+  },
+  {
+    "id": "ngc3596",
+    "name": "NGC 3596",
+    "title": "Face to face with a spiral’s arms",
+    "page": "https://esahubble.org/images/potw2518a/",
+    "image": "https://cdn.esahubble.org/archives/images/screen/potw2518a.jpg",
+    "credit": "ESA/Hubble & NASA, D. Thilker",
+    "previewFile": "/space/deep-sky/thumbs/ngc3596.webp",
+    "crop": [
+      0,
+      0,
+      1,
+      1
+    ],
+    "kind": "galaxy",
+    "sourceId": "potw2518a"
+  },
+  {
+    "id": "ngc1961",
+    "name": "NGC 1961",
+    "title": "Snapshot of a peculiar spiral",
+    "page": "https://esahubble.org/images/potw2517a/",
+    "image": "https://cdn.esahubble.org/archives/images/screen/potw2517a.jpg",
+    "credit": "ESA/Hubble & NASA, J. Dalcanton, R. J. Foley (UC Santa Cruz), C. Kilpatrick",
+    "previewFile": "/space/deep-sky/thumbs/ngc1961.webp",
+    "crop": [
+      0,
+      0,
+      1,
+      1
+    ],
+    "kind": "galaxy",
+    "sourceId": "potw2517a"
+  },
+  {
+    "id": "ngc4941",
+    "name": "NGC 4941",
+    "title": "A galaxy that gives great feedback",
+    "page": "https://esahubble.org/images/potw2513a/",
+    "image": "https://cdn.esahubble.org/archives/images/screen/potw2513a.jpg",
+    "credit": "ESA/Hubble & NASA, D. Thilker",
+    "previewFile": "/space/deep-sky/thumbs/ngc4941.webp",
+    "crop": [
+      0,
+      0,
+      1,
+      1
+    ],
+    "kind": "galaxy",
+    "sourceId": "potw2513a"
+  },
+  {
+    "id": "ngc2014",
+    "name": "NGC 2014",
+    "title": "Tapestry of Blazing Starbirth",
+    "page": "https://esahubble.org/images/heic2007a/",
+    "image": "https://cdn.esahubble.org/archives/images/screen/heic2007a.jpg",
+    "credit": "NASA, ESA, and STScI",
+    "previewFile": "/space/deep-sky/thumbs/ngc2014.webp",
+    "crop": [
+      0,
+      0,
+      1,
+      1
+    ],
+    "kind": "nebula",
+    "sourceId": "heic2007a"
+  },
+  {
+    "id": "ngc3603",
+    "name": "NGC 3603",
+    "title": "Extreme star cluster bursts into life in new Hubble image",
+    "page": "https://esahubble.org/images/heic0715a/",
+    "image": "https://cdn.esahubble.org/archives/images/screen/heic0715a.jpg",
+    "credit": "NASA, ESA and the Hubble Heritage (STScI/AURA)-ESA/Hubble Collaboration",
+    "previewFile": "/space/deep-sky/thumbs/ngc3603.webp",
+    "crop": [
+      0,
+      0,
+      1,
+      1
+    ],
+    "kind": "nebula",
+    "sourceId": "heic0715a"
+  },
+  {
+    "id": "ngc602",
+    "name": "NGC 602",
+    "title": "New stars shed light on the past",
+    "page": "https://esahubble.org/images/heic0702a/",
+    "image": "https://cdn.esahubble.org/archives/images/screen/heic0702a.jpg",
+    "credit": "NASA , ESA and the Hubble Heritage Team ( STScI / AURA )- ESA / Hubble Collaboration",
+    "previewFile": "/space/deep-sky/thumbs/ngc602.webp",
+    "crop": [
+      0,
+      0,
+      1,
+      1
+    ],
+    "kind": "nebula",
+    "sourceId": "heic0702a"
+  },
+  {
+    "id": "ngc6537",
+    "name": "NGC 6537",
+    "title": "The Red Spider Nebula: surfing in Sagittarius - not for the faint-hearted!",
+    "page": "https://esahubble.org/images/heic0109a/",
+    "image": "https://cdn.esahubble.org/archives/images/screen/heic0109a.jpg",
+    "credit": "ESA & Garrelt Mellema (Leiden University, the Netherlands)",
+    "previewFile": "/space/deep-sky/thumbs/ngc6537.webp",
+    "crop": [
+      0,
+      0,
+      1,
+      1
+    ],
+    "kind": "nebula",
+    "sourceId": "heic0109a"
+  },
+  {
+    "id": "ic418",
+    "name": "IC 418",
+    "title": "The Spirograph Nebula",
+    "page": "https://esahubble.org/images/opo0028a/",
+    "image": "https://cdn.esahubble.org/archives/images/screen/opo0028a.jpg",
+    "credit": "NASA / ESA and The Hubble Heritage Team ( STScI / AURA )",
+    "previewFile": "/space/deep-sky/thumbs/ic418.webp",
+    "crop": [
+      0,
+      0,
+      1,
+      1
+    ],
+    "kind": "nebula",
+    "sourceId": "opo0028a"
+  },
+  {
+    "id": "ngc1999",
+    "name": "NGC 1999",
+    "title": "A reflection nebula in Orion",
+    "page": "https://esahubble.org/images/opo0010a/",
+    "image": "https://cdn.esahubble.org/archives/images/screen/opo0010a.jpg",
+    "credit": "NASA / ESA and the Hubble Heritage Team ( STScI )",
+    "previewFile": "/space/deep-sky/thumbs/ngc1999.webp",
+    "crop": [
+      0,
+      0,
+      1,
+      1
+    ],
+    "kind": "nebula",
+    "sourceId": "opo0010a"
+  },
+  {
+    "id": "ngc2371",
+    "name": "NGC 2371",
+    "title": "The Death of a Star",
+    "page": "https://esahubble.org/images/potw1933a/",
+    "image": "https://cdn.esahubble.org/archives/images/screen/potw1933a.jpg",
+    "credit": "ESA/Hubble & NASA, R. Wade et al.",
+    "previewFile": "/space/deep-sky/thumbs/ngc2371.webp",
+    "crop": [
+      0,
+      0,
+      1,
+      1
+    ],
+    "kind": "nebula",
+    "sourceId": "potw1933a"
+  },
+  {
+    "id": "ngc2022",
+    "name": "NGC 2022",
+    "title": "The Inky Abyss",
+    "page": "https://esahubble.org/images/potw1932a/",
+    "image": "https://cdn.esahubble.org/archives/images/screen/potw1932a.jpg",
+    "credit": "ESA/Hubble & NASA, R. Wade",
+    "previewFile": "/space/deep-sky/thumbs/ngc2022.webp",
+    "crop": [
+      0,
+      0,
+      1,
+      1
+    ],
+    "kind": "nebula",
+    "sourceId": "potw1932a"
+  },
+  {
+    "id": "ic63",
+    "name": "IC 63",
+    "title": "The Ghost Nebula",
+    "page": "https://esahubble.org/images/heic1818a/",
+    "image": "https://cdn.esahubble.org/archives/images/screen/heic1818a.jpg",
+    "credit": "ESA/Hubble, NASA",
+    "previewFile": "/space/deep-sky/thumbs/ic63.webp",
+    "crop": [
+      0,
+      0,
+      1,
+      1
+    ],
+    "kind": "nebula",
+    "sourceId": "heic1818a"
+  },
+  {
+    "id": "ic2944",
+    "name": "IC 2944",
+    "title": "Thackeray&#39;s globules in IC 2944",
+    "page": "https://esahubble.org/images/opo0201a/",
+    "image": "https://cdn.esahubble.org/archives/images/screen/opo0201a.jpg",
+    "credit": "NASA / ESA and The Hubble Heritage Team ( STScI / AURA )",
+    "previewFile": "/space/deep-sky/thumbs/ic2944.webp",
+    "crop": [
+      0,
+      0,
+      1,
+      1
+    ],
+    "kind": "nebula",
+    "sourceId": "opo0201a"
+  },
+  {
+    "id": "ngc2313",
+    "name": "NGC 2313",
+    "title": "Cosmic Silver Lining",
+    "page": "https://esahubble.org/images/potw2119a/",
+    "image": "https://cdn.esahubble.org/archives/images/screen/potw2119a.jpg",
+    "credit": "ESA/Hubble, R. Sahai",
+    "previewFile": "/space/deep-sky/thumbs/ngc2313.webp",
+    "crop": [
+      0,
+      0,
+      1,
+      1
+    ],
+    "kind": "nebula",
+    "sourceId": "potw2119a"
+  },
+  {
+    "id": "ngc7027",
+    "name": "NGC 7027",
+    "title": "NGC 7027",
+    "page": "https://esahubble.org/images/heic2011c/",
+    "image": "https://cdn.esahubble.org/archives/images/screen/heic2011c.jpg",
+    "credit": "NASA, ESA, and J. Kastner (RIT)",
+    "previewFile": "/space/deep-sky/thumbs/ngc7027.webp",
+    "crop": [
+      0,
+      0,
+      1,
+      1
+    ],
+    "kind": "nebula",
+    "sourceId": "heic2011c"
+  },
+  {
+    "id": "ngc248",
+    "name": "NGC 248",
+    "title": "Festive nebulae",
+    "page": "https://esahubble.org/images/heic1623a/",
+    "image": "https://cdn.esahubble.org/archives/images/screen/heic1623a.jpg",
+    "credit": "NASA, ESA, STScI, K. Sandstrom (University of California, San Diego), and the SMIDGE team.",
+    "previewFile": "/space/deep-sky/thumbs/ngc248.webp",
+    "crop": [
+      0,
+      0,
+      1,
+      1
+    ],
+    "kind": "nebula",
+    "sourceId": "heic1623a"
+  },
+  {
+    "id": "ngc5189",
+    "name": "NGC 5189",
+    "title": "Hubble snaps NGC 5189",
+    "page": "https://esahubble.org/images/heic1220a/",
+    "image": "https://cdn.esahubble.org/archives/images/screen/heic1220a.jpg",
+    "credit": "NASA, ESA and the Hubble Heritage Team (STScI/AURA)",
+    "previewFile": "/space/deep-sky/thumbs/ngc5189.webp",
+    "crop": [
+      0,
+      0,
+      1,
+      1
+    ],
+    "kind": "nebula",
+    "sourceId": "heic1220a"
+  },
+  {
+    "id": "ic4406",
+    "name": "IC 4406",
+    "title": "IC beauty",
+    "page": "https://esahubble.org/images/opo0214a/",
+    "image": "https://cdn.esahubble.org/archives/images/screen/opo0214a.jpg",
+    "credit": "NASA / ESA and The Hubble Heritage Team STScI / AURA",
+    "previewFile": "/space/deep-sky/thumbs/ic4406.webp",
+    "crop": [
+      0,
+      0,
+      1,
+      1
+    ],
+    "kind": "nebula",
+    "sourceId": "opo0214a"
+  },
+  {
+    "id": "ngc2346",
+    "name": "NGC 2346",
+    "title": "NGC 2346",
+    "page": "https://esahubble.org/images/opo9935d/",
+    "image": "https://cdn.esahubble.org/archives/images/screen/opo9935d.jpg",
+    "credit": "NASA / ESA and The Hubble Heritage Team ( AURA / STScI ).",
+    "previewFile": "/space/deep-sky/thumbs/ngc2346.webp",
+    "crop": [
+      0,
+      0,
+      1,
+      1
+    ],
+    "kind": "nebula",
+    "sourceId": "opo9935d"
+  },
+  {
+    "id": "ngc2440",
+    "name": "NGC 2440",
+    "title": "NGC 2440",
+    "page": "https://esahubble.org/images/opo9935e/",
+    "image": "https://cdn.esahubble.org/archives/images/screen/opo9935e.jpg",
+    "credit": "NASA / ESA and The Hubble Heritage Team ( AURA / STScI ).",
+    "previewFile": "/space/deep-sky/thumbs/ngc2440.webp",
+    "crop": [
+      0,
+      0,
+      1,
+      1
+    ],
+    "kind": "nebula",
+    "sourceId": "opo9935e"
+  },
+  {
+    "id": "ngc2261",
+    "name": "NGC 2261",
+    "title": "Hubble&#39;s variable nebula (NGC 2261)",
+    "page": "https://esahubble.org/images/opo9935c/",
+    "image": "https://cdn.esahubble.org/archives/images/screen/opo9935c.jpg",
+    "credit": "NASA / ESA and The Hubble Heritage Team ( AURA / STScI ).",
+    "previewFile": "/space/deep-sky/thumbs/ngc2261.webp",
+    "crop": [
+      0,
+      0,
+      1,
+      1
+    ],
+    "kind": "nebula",
+    "sourceId": "opo9935c"
+  },
+  {
+    "id": "ngc1501",
+    "name": "NGC 1501",
+    "title": "A hazy nebula",
+    "page": "https://esahubble.org/images/potw1444a/",
+    "image": "https://cdn.esahubble.org/archives/images/screen/potw1444a.jpg",
+    "credit": "ESA/Hubble & NASA Acknowledgement: Marc Canale",
+    "previewFile": "/space/deep-sky/thumbs/ngc1501.webp",
+    "crop": [
+      0,
+      0,
+      1,
+      1
+    ],
+    "kind": "nebula",
+    "sourceId": "potw1444a"
+  },
+  {
+    "id": "ngc7354",
+    "name": "NGC 7354",
+    "title": "Smoky shells",
+    "page": "https://esahubble.org/images/potw1250a/",
+    "image": "https://cdn.esahubble.org/archives/images/screen/potw1250a.jpg",
+    "credit": "ESA/Hubble & NASA",
+    "previewFile": "/space/deep-sky/thumbs/ngc7354.webp",
+    "crop": [
+      0,
+      0,
+      1,
+      1
+    ],
+    "kind": "nebula",
+    "sourceId": "potw1250a"
+  }
+]

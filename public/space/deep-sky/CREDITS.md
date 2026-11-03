@@ -1,0 +1,108 @@
+# Deep-sky photograph credits
+
+Collection expanded October 26, 2026. All 100 objects in the catalogue are eligible for the live scene. New additions are 75 galaxies/interacting systems and 20 nebulae.
+
+Local scene assets in `thumbs/` are transparent WebP derivatives at most 160px on their longest side. Modifications: cropping where recorded, black subtraction, content-based transparency, edge feathering, resizing and WebP compression. Scene rendering also dims and rotates selected cutouts. No new full-size photographs are shipped; larger images are linked on their publisher sites. The five remaining earlier JPEG samples are unchanged.
+
+[CC BY 4.0](https://creativecommons.org/licenses/by/4.0/). [ESA/Hubble terms](https://esahubble.org/copyright/). Exact credits and source URLs are also recorded in `sources.json` and displayed with thumbnails in the scene credits and collection gallery.
+
+- [NGC 5307](https://esahubble.org/images/opo0733e/): NASA, ESA, and The Hubble Heritage Team (STScI/AURA). [Publisher image](https://cdn.esahubble.org/archives/images/screen/opo0733e.jpg).
+- [NGC 2818](https://esahubble.org/images/ann0901a/): NASA, ESA and the Hubble Heritage Team (STScI/AURA). [Publisher image](https://cdn.esahubble.org/archives/images/screen/ann0901a.jpg).
+- [NGC 1512](https://esahubble.org/images/heic1712a/): ESA/Hubble, NASA. [Publisher image](https://cdn.esahubble.org/archives/images/screen/heic1712a.jpg).
+- [IC 4593](https://esahubble.org/images/opo0733d/): NASA, ESA, and The Hubble Heritage Team (STScI/AURA). [Publisher image](https://cdn.esahubble.org/archives/images/screen/opo0733d.jpg).
+- [NGC 5315](https://esahubble.org/images/opo0733c/): NASA, ESA, and The Hubble Heritage Team (STScI/AURA). [Publisher image](https://cdn.esahubble.org/archives/images/screen/opo0733c.jpg).
+- [NGC 2525](https://esahubble.org/images/heic2018b/): ESA/Hubble & NASA, A. Riess and the SH0ES team Acknowledgment: Mahdi Zamani. [Publisher image](https://cdn.esahubble.org/archives/images/screen/heic2018b.jpg).
+- [IC 4633](https://esahubble.org/images/potw2415a/): ESA/Hubble & NASA, J. Dalcanton, Dark Energy Survey/DOE/FNAL/DECam/CTIO/NOIRLab/NSF/AURA Acknowledgement: L. Shatz. [Publisher image](https://cdn.esahubble.org/archives/images/screen/potw2415a.jpg).
+- [NGC 1275](https://esahubble.org/images/heic0817a/): NASA , ESA and Andy Fabian (University of Cambridge, UK). [Publisher image](https://cdn.esahubble.org/archives/images/screen/heic0817a.jpg).
+- [NGC 1792](https://esahubble.org/images/potw2049a/): ESA/Hubble & NASA, J. Lee Acknowledgement: Leo Shatz. [Publisher image](https://cdn.esahubble.org/archives/images/screen/potw2049a.jpg).
+- [NGC 1015](https://esahubble.org/images/potw1811a/): ESA/Hubble & NASA, A. Riess (STScl/JHU). [Publisher image](https://cdn.esahubble.org/archives/images/screen/potw1811a.jpg).
+- [NGC 1316](https://esahubble.org/images/opo0511a/): NASA , ESA , and The Hubble Heritage Team ( STScI / AURA ). [Publisher image](https://cdn.esahubble.org/archives/images/screen/opo0511a.jpg).
+- [NGC 1300](https://esahubble.org/images/opo0501a/): NASA , ESA , and The Hubble Heritage Team ( STScI / AURA ). [Publisher image](https://cdn.esahubble.org/archives/images/screen/opo0501a.jpg).
+- [NGC 4676](https://esahubble.org/images/heic0206b/): NASA , Holland Ford (JHU), the ACS Science Team and ESA. [Publisher image](https://cdn.esahubble.org/archives/images/screen/heic0206b.jpg).
+- [ESO 402-10](https://esahubble.org/images/potw2350a/): ESA/Hubble & NASA, J. Dalcanton, Dark Energy Survey/DOE/FNAL/NOIRLab/NSF/AURA Acknowledgement: L. Shatz. [Publisher image](https://cdn.esahubble.org/archives/images/screen/potw2350a.jpg).
+- [NGC 2841](https://esahubble.org/images/heic1104a/): NASA, ESA and the Hubble Heritage (STScI/AURA)-ESA/Hubble Collaboration Acknowledgment: M. Crockett and S. Kaviraj (Oxford University, UK), R. O'Connell (University of Virginia), B. Whitmore (STScI) and the WFC3 Scientific Oversight Committee.. [Publisher image](https://cdn.esahubble.org/archives/images/screen/heic1104a.jpg).
+- [NGC 6217](https://esahubble.org/images/heic0910s/): NASA, ESA and the Hubble SM4 ERO Team. [Publisher image](https://cdn.esahubble.org/archives/images/screen/heic0910s.jpg).
+- [NGC 7049](https://esahubble.org/images/heic0905a/): NASA, ESA and W. Harris (McMaster University, Ontario, Canada). [Publisher image](https://cdn.esahubble.org/archives/images/screen/heic0905a.jpg).
+- [NGC 1672](https://esahubble.org/images/heic0706a/): NASA , ESA. [Publisher image](https://cdn.esahubble.org/archives/images/screen/heic0706a.jpg).
+- [NGC 5866](https://esahubble.org/images/opo0624a/): NASA , ESA , and The Hubble Heritage Team ( STScI / AURA ). [Publisher image](https://cdn.esahubble.org/archives/images/screen/opo0624a.jpg).
+- [IC 2163](https://esahubble.org/images/opo9941a/): NASA / ESA and The Hubble Heritage Team ( STScI ). [Publisher image](https://cdn.esahubble.org/archives/images/screen/opo9941a.jpg).
+- [NGC 4826](https://esahubble.org/images/potw2108a/): ESA/Hubble & NASA, J. Lee and the PHANGS-HST Team Acknowledgement: Judy Schmidt. [Publisher image](https://cdn.esahubble.org/archives/images/screen/potw2108a.jpg).
+- [ESO 510](https://esahubble.org/images/opo0123a/): NASA / ESA and The Hubble Heritage Team ( STScI / AURA ). [Publisher image](https://cdn.esahubble.org/archives/images/screen/opo0123a.jpg).
+- [NGC 7331](https://esahubble.org/images/potw1805a/): ESA/Hubble & NASA/D. Milisavljevic (Purdue University). [Publisher image](https://cdn.esahubble.org/archives/images/screen/potw1805a.jpg).
+- [NGC 6984](https://esahubble.org/images/potw2144a/): ESA/Hubble & NASA, D. Milisavljevic. [Publisher image](https://cdn.esahubble.org/archives/images/screen/potw2144a.jpg).
+- [NGC 4621](https://esahubble.org/images/potw1921a/): ESA/Hubble & NASA, P. Cote. [Publisher image](https://cdn.esahubble.org/archives/images/screen/potw1921a.jpg).
+- [NGC 3256](https://esahubble.org/images/heic1811a/): ESA/Hubble, NASA. [Publisher image](https://cdn.esahubble.org/archives/images/screen/heic1811a.jpg).
+- [Arp 284](https://esahubble.org/images/heic1503a/): ESA, NASA Acknowledgement: A. Gal-Yam (Weizmann Institute of Science). [Publisher image](https://cdn.esahubble.org/archives/images/screen/heic1503a.jpg).
+- [NGC 2008](https://esahubble.org/images/potw2006a/): ESA/Hubble & NASA, A. Bellini. [Publisher image](https://cdn.esahubble.org/archives/images/screen/potw2006a.jpg).
+- [NGC 3717](https://esahubble.org/images/potw1940a/): ESA/Hubble & NASA, D. Rosario. [Publisher image](https://cdn.esahubble.org/archives/images/screen/potw1940a.jpg).
+- [NGC 4490](https://esahubble.org/images/heic1716a/): ESA/Hubble & NASA Acknowledgements: D. Calzetti (UMass) and the LEGUS Team, J. Maund (University of Sheffield), and R. Chandar (University of Toledo). [Publisher image](https://cdn.esahubble.org/archives/images/screen/heic1716a.jpg).
+- [IC 335](https://esahubble.org/images/potw1451a/): ESA/Hubble & NASA. [Publisher image](https://cdn.esahubble.org/archives/images/screen/potw1451a.jpg).
+- [NGC 4526](https://esahubble.org/images/potw1442a/): ESA/Hubble & NASA Acknowledgement: Judy Schmidt. [Publisher image](https://cdn.esahubble.org/archives/images/screen/potw1442a.jpg).
+- [NGC 4522](https://esahubble.org/images/heic0911b/): NASA & ESA. [Publisher image](https://cdn.esahubble.org/archives/images/screen/heic0911b.jpg).
+- [UGC 8091](https://esahubble.org/images/heic2313a/): ESA/Hubble, NASA Y. Choi (NOIRLab), K. Gilbert (Space Telescope Science Institute), J. Dalcanton (Flatiron Institute and University of Washington). [Publisher image](https://cdn.esahubble.org/archives/images/screen/heic2313a.jpg).
+- [NGC 2775](https://esahubble.org/images/potw2026a/): ESA/Hubble & NASA, J. Lee and the PHANGS-HST Team Acknowledgement: Judy Schmidt (Geckzilla). [Publisher image](https://cdn.esahubble.org/archives/images/screen/potw2026a.jpg).
+- [NGC 972](https://esahubble.org/images/potw1926a/): ESA/Hubble, NASA, L. Ho. [Publisher image](https://cdn.esahubble.org/archives/images/screen/potw1926a.jpg).
+- [NGC 4762](https://esahubble.org/images/potw1443a/): ESA/Hubble & NASA. [Publisher image](https://cdn.esahubble.org/archives/images/screen/potw1443a.jpg).
+- [UGC 2885](https://esahubble.org/images/heic2002a/): NASA, ESA, and B. Holwerda (University of Louisville).. [Publisher image](https://cdn.esahubble.org/archives/images/screen/heic2002a.jpg).
+- [NGC 2985](https://esahubble.org/images/potw1928a/): ESA/Hubble & NASA, L. Ho. [Publisher image](https://cdn.esahubble.org/archives/images/screen/potw1928a.jpg).
+- [NGC 1277](https://esahubble.org/images/potw1812a/): NASA, ESA, and M. Beasley (Instituto de Astrofísica de Canarias). [Publisher image](https://cdn.esahubble.org/archives/images/screen/potw1812a.jpg).
+- [NGC 4656](https://esahubble.org/images/potw1731a/): ESA/Hubble & NASA. [Publisher image](https://cdn.esahubble.org/archives/images/screen/potw1731a.jpg).
+- [NGC 4298](https://esahubble.org/images/heic1709a/): NASA, ESA, and M. Mutchler (STScI). [Publisher image](https://cdn.esahubble.org/archives/images/screen/heic1709a.jpg).
+- [NGC 3521](https://esahubble.org/images/potw1538a/): ESA/Hubble & NASA and S. Smartt (Queen's University Belfast) Acknowledgement: Robert Gendler. [Publisher image](https://cdn.esahubble.org/archives/images/screen/potw1538a.jpg).
+- [NGC 6861](https://esahubble.org/images/potw1502a/): ESA/Hubble & NASA Acknowledgement: J. Barrington. [Publisher image](https://cdn.esahubble.org/archives/images/screen/potw1502a.jpg).
+- [NGC 524](https://esahubble.org/images/potw1329a/): ESA/Hubble & NASA Acknowledgement: Judy Schmidt. [Publisher image](https://cdn.esahubble.org/archives/images/screen/potw1329a.jpg).
+- [Arp 148](https://esahubble.org/images/heic0810ae/): NASA, ESA, the Hubble Heritage Team (STScI/AURA)-ESA/Hubble Collaboration and A. Evans (University of Virginia, Charlottesville/NRAO/Stony Brook University), K. Noll (STScI), and J. Westphal (Caltech). [Publisher image](https://cdn.esahubble.org/archives/images/screen/heic0810ae.jpg).
+- [NGC 4449](https://esahubble.org/images/heic0711a/): NASA , ESA , A. Aloisi (STScI/ESA), and The Hubble Heritage (STScI/AURA)-ESA/Hubble Collaboration. [Publisher image](https://cdn.esahubble.org/archives/images/screen/heic0711a.jpg).
+- [NGC 3059](https://esahubble.org/images/potw2423a/): ESA/Hubble & NASA, D. Thilker. [Publisher image](https://cdn.esahubble.org/archives/images/screen/potw2423a.jpg).
+- [UGC 5189A](https://esahubble.org/images/potw2403a/): ESA/Hubble & NASA, A. Filippenko. [Publisher image](https://cdn.esahubble.org/archives/images/screen/potw2403a.jpg).
+- [NGC 691](https://esahubble.org/images/potw2008a/): ESA/Hubble & NASA, A. Riess et al.. [Publisher image](https://cdn.esahubble.org/archives/images/screen/potw2008a.jpg).
+- [NGC 3169](https://esahubble.org/images/potw1929a/): ESA/Hubble & NASA, L. Ho. [Publisher image](https://cdn.esahubble.org/archives/images/screen/potw1929a.jpg).
+- [NGC 660](https://esahubble.org/images/potw1348a/): ESA/Hubble & NASA. [Publisher image](https://cdn.esahubble.org/archives/images/screen/potw1348a.jpg).
+- [NGC 922](https://esahubble.org/images/heic1218a/): NASA, ESA. [Publisher image](https://cdn.esahubble.org/archives/images/screen/heic1218a.jpg).
+- [NGC 4402](https://esahubble.org/images/heic0911c/): NASA & ESA. [Publisher image](https://cdn.esahubble.org/archives/images/screen/heic0911c.jpg).
+- [NGC 1132](https://esahubble.org/images/heic0804a/): NASA , ESA and the Hubble Heritage (STScI/AURA)-ESA/Hubble Collaboration. Acknowledgment: M. West (ESO, Chile). [Publisher image](https://cdn.esahubble.org/archives/images/screen/heic0804a.jpg).
+- [NGC 4698](https://esahubble.org/images/potm2609a/): ESA/Hubble & NASA, D. Thilker, the MAUVE-HST Team. [Publisher image](https://cdn.esahubble.org/archives/images/screen/potm2609a.jpg).
+- [NGC 4654](https://esahubble.org/images/potm2607a/): ESA/Hubble & NASA, D. Thilker, J. Lee and the PHANGS-HST Team. [Publisher image](https://cdn.esahubble.org/archives/images/screen/potm2607a.jpg).
+- [NGC 3137](https://esahubble.org/images/potm2604a/): ESA/Hubble & NASA, D. Thilker and the PHANGS-HST Team. [Publisher image](https://cdn.esahubble.org/archives/images/screen/potm2604a.jpg).
+- [NGC 7722](https://esahubble.org/images/potm2601a/): ESA/Hubble & NASA, R. J. Foley (UC Santa Cruz), Dark Energy Survey/DOE/FNAL/DECam/CTIO/NOIRLab/NSF/AURA Acknowledgement: Mehmet Yüksek. [Publisher image](https://cdn.esahubble.org/archives/images/screen/potm2601a.jpg).
+- [Arp 4](https://esahubble.org/images/potw2551a/): ESA/Hubble & NASA, J. Dalcanton, Dark Energy Survey/DOE/FNAL/DECam/CTIO/NOIRLab/NSF/AURA. [Publisher image](https://cdn.esahubble.org/archives/images/screen/potw2551a.jpg).
+- [NGC 4388](https://esahubble.org/images/potw2550a/): ESA/Hubble & NASA, S. Veilleux, J. Wang, J. Greene. [Publisher image](https://cdn.esahubble.org/archives/images/screen/potw2550a.jpg).
+- [NGC 4535](https://esahubble.org/images/potw2546a/): ESA/Hubble & NASA, F. Belfiore, J. Lee and the PHANGS-HST Team. [Publisher image](https://cdn.esahubble.org/archives/images/screen/potw2546a.jpg).
+- [NGC 1511](https://esahubble.org/images/potw2545a/): ESA/Hubble & NASA, D. Thilker. [Publisher image](https://cdn.esahubble.org/archives/images/screen/potw2545a.jpg).
+- [NGC 4102](https://esahubble.org/images/potw2544a/): ESA/Hubble & NASA, G. Fabbiano. [Publisher image](https://cdn.esahubble.org/archives/images/screen/potw2544a.jpg).
+- [NGC 4571](https://esahubble.org/images/potw2543a/): ESA/Hubble & NASA, F. Belfiore, J. Lee and the PHANGS-HST Team. [Publisher image](https://cdn.esahubble.org/archives/images/screen/potw2543a.jpg).
+- [NGC 3370](https://esahubble.org/images/potw2542a/): ESA/Hubble & NASA, A. Riess, K. Noll. [Publisher image](https://cdn.esahubble.org/archives/images/screen/potw2542a.jpg).
+- [NGC 7496](https://esahubble.org/images/potw2541a/): ESA/Hubble & NASA, R. Chandar, J. Lee and the PHANGS-HST team. [Publisher image](https://cdn.esahubble.org/archives/images/screen/potw2541a.jpg).
+- [NGC 6951](https://esahubble.org/images/potw2540a/): ESA/Hubble & NASA, L. C. Ho, G. Brammer, A. Filippenko, C. Kilpatrick. [Publisher image](https://cdn.esahubble.org/archives/images/screen/potw2540a.jpg).
+- [NGC 7456](https://esahubble.org/images/potw2535a/): ESA/Hubble & NASA, D. Thilker. [Publisher image](https://cdn.esahubble.org/archives/images/screen/potw2535a.jpg).
+- [NGC 2835](https://esahubble.org/images/potw2533a/): ESA/Hubble & NASA, R. Chandar, J. Lee and the PHANGS-HST team. [Publisher image](https://cdn.esahubble.org/archives/images/screen/potw2533a.jpg).
+- [NGC 1309](https://esahubble.org/images/potw2530a/): ESA/Hubble & NASA, L. Galbany, S. Jha, K. Noll, A. Riess. [Publisher image](https://cdn.esahubble.org/archives/images/screen/potw2530a.jpg).
+- [NGC 3285B](https://esahubble.org/images/potw2529a/): ESA/Hubble & NASA, R. J. Foley (UC Santa Cruz). [Publisher image](https://cdn.esahubble.org/archives/images/screen/potw2529a.jpg).
+- [UGC 11397](https://esahubble.org/images/potw2525a/): ESA/Hubble & NASA, M. J. Koss, A. J. Barth. [Publisher image](https://cdn.esahubble.org/archives/images/screen/potw2525a.jpg).
+- [IC 758](https://esahubble.org/images/potw2523a/): ESA/Hubble & NASA, C. Kilpatrick. [Publisher image](https://cdn.esahubble.org/archives/images/screen/potw2523a.jpg).
+- [NGC 685](https://esahubble.org/images/potw2522a/): ESA/Hubble & NASA, J. Lee, F. Belfiore. [Publisher image](https://cdn.esahubble.org/archives/images/screen/potw2522a.jpg).
+- [NGC 3507](https://esahubble.org/images/potw2521a/): ESA/Hubble & NASA, D. Thilker. [Publisher image](https://cdn.esahubble.org/archives/images/screen/potw2521a.jpg).
+- [NGC 3511](https://esahubble.org/images/potw2520a/): ESA/Hubble & NASA, D. Thilker. [Publisher image](https://cdn.esahubble.org/archives/images/screen/potw2520a.jpg).
+- [NGC 3596](https://esahubble.org/images/potw2518a/): ESA/Hubble & NASA, D. Thilker. [Publisher image](https://cdn.esahubble.org/archives/images/screen/potw2518a.jpg).
+- [NGC 1961](https://esahubble.org/images/potw2517a/): ESA/Hubble & NASA, J. Dalcanton, R. J. Foley (UC Santa Cruz), C. Kilpatrick. [Publisher image](https://cdn.esahubble.org/archives/images/screen/potw2517a.jpg).
+- [NGC 4941](https://esahubble.org/images/potw2513a/): ESA/Hubble & NASA, D. Thilker. [Publisher image](https://cdn.esahubble.org/archives/images/screen/potw2513a.jpg).
+- [NGC 2014](https://esahubble.org/images/heic2007a/): NASA, ESA, and STScI. [Publisher image](https://cdn.esahubble.org/archives/images/screen/heic2007a.jpg).
+- [NGC 3603](https://esahubble.org/images/heic0715a/): NASA, ESA and the Hubble Heritage (STScI/AURA)-ESA/Hubble Collaboration. [Publisher image](https://cdn.esahubble.org/archives/images/screen/heic0715a.jpg).
+- [NGC 602](https://esahubble.org/images/heic0702a/): NASA , ESA and the Hubble Heritage Team ( STScI / AURA )- ESA / Hubble Collaboration. [Publisher image](https://cdn.esahubble.org/archives/images/screen/heic0702a.jpg).
+- [NGC 6537](https://esahubble.org/images/heic0109a/): ESA & Garrelt Mellema (Leiden University, the Netherlands). [Publisher image](https://cdn.esahubble.org/archives/images/screen/heic0109a.jpg).
+- [IC 418](https://esahubble.org/images/opo0028a/): NASA / ESA and The Hubble Heritage Team ( STScI / AURA ). [Publisher image](https://cdn.esahubble.org/archives/images/screen/opo0028a.jpg).
+- [NGC 1999](https://esahubble.org/images/opo0010a/): NASA / ESA and the Hubble Heritage Team ( STScI ). [Publisher image](https://cdn.esahubble.org/archives/images/screen/opo0010a.jpg).
+- [NGC 2371](https://esahubble.org/images/potw1933a/): ESA/Hubble & NASA, R. Wade et al.. [Publisher image](https://cdn.esahubble.org/archives/images/screen/potw1933a.jpg).
+- [NGC 2022](https://esahubble.org/images/potw1932a/): ESA/Hubble & NASA, R. Wade. [Publisher image](https://cdn.esahubble.org/archives/images/screen/potw1932a.jpg).
+- [IC 63](https://esahubble.org/images/heic1818a/): ESA/Hubble, NASA. [Publisher image](https://cdn.esahubble.org/archives/images/screen/heic1818a.jpg).
+- [IC 2944](https://esahubble.org/images/opo0201a/): NASA / ESA and The Hubble Heritage Team ( STScI / AURA ). [Publisher image](https://cdn.esahubble.org/archives/images/screen/opo0201a.jpg).
+- [NGC 2313](https://esahubble.org/images/potw2119a/): ESA/Hubble, R. Sahai. [Publisher image](https://cdn.esahubble.org/archives/images/screen/potw2119a.jpg).
+- [NGC 7027](https://esahubble.org/images/heic2011c/): NASA, ESA, and J. Kastner (RIT). [Publisher image](https://cdn.esahubble.org/archives/images/screen/heic2011c.jpg).
+- [NGC 248](https://esahubble.org/images/heic1623a/): NASA, ESA, STScI, K. Sandstrom (University of California, San Diego), and the SMIDGE team.. [Publisher image](https://cdn.esahubble.org/archives/images/screen/heic1623a.jpg).
+- [NGC 5189](https://esahubble.org/images/heic1220a/): NASA, ESA and the Hubble Heritage Team (STScI/AURA). [Publisher image](https://cdn.esahubble.org/archives/images/screen/heic1220a.jpg).
+- [IC 4406](https://esahubble.org/images/opo0214a/): NASA / ESA and The Hubble Heritage Team STScI / AURA. [Publisher image](https://cdn.esahubble.org/archives/images/screen/opo0214a.jpg).
+- [NGC 2346](https://esahubble.org/images/opo9935d/): NASA / ESA and The Hubble Heritage Team ( AURA / STScI ).. [Publisher image](https://cdn.esahubble.org/archives/images/screen/opo9935d.jpg).
+- [NGC 2440](https://esahubble.org/images/opo9935e/): NASA / ESA and The Hubble Heritage Team ( AURA / STScI ).. [Publisher image](https://cdn.esahubble.org/archives/images/screen/opo9935e.jpg).
+- [NGC 2261](https://esahubble.org/images/opo9935c/): NASA / ESA and The Hubble Heritage Team ( AURA / STScI ).. [Publisher image](https://cdn.esahubble.org/archives/images/screen/opo9935c.jpg).
+- [NGC 1501](https://esahubble.org/images/potw1444a/): ESA/Hubble & NASA Acknowledgement: Marc Canale. [Publisher image](https://cdn.esahubble.org/archives/images/screen/potw1444a.jpg).
+- [NGC 7354](https://esahubble.org/images/potw1250a/): ESA/Hubble & NASA. [Publisher image](https://cdn.esahubble.org/archives/images/screen/potw1250a.jpg).
