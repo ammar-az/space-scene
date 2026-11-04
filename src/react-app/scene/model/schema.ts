@@ -81,6 +81,25 @@ export const notableMoonSchema = z
   );
 export type NotableMoon = z.infer<typeof notableMoonSchema>;
 
+export const asteroidBeltSchema = z.strictObject({
+  visible: z.boolean(),
+  seed,
+  count: number(0, 3000).int(),
+  distance: range(0.000001, 1e9), // million km; contains complete orbits
+  diameter: range(0.000001, 1000000), // thousands of km
+  inclination: range(-180, 180),
+  eccentricity: range(0, 0.6),
+  periodDays: range(0.000001, 1e9),
+  spinHours: range(0.000001, 1e12),
+  colors: z.array(color).min(1).max(8),
+  sizeScale: number(1, 300),
+  playing: z.boolean(),
+  reverse: z.boolean(),
+  epochDays: number(0, 1e18),
+  offsetDays: number(-1e18, 1e18),
+});
+export type AsteroidBelt = z.infer<typeof asteroidBeltSchema>;
+
 export const planetSchema = z.strictObject({
   id: z.string().regex(/^[a-zA-Z0-9_-]{1,100}$/),
   name,
@@ -236,6 +255,7 @@ export const sceneSchema = z
       position: physicalVector,
     }),
     planets: z.array(planetSchema).max(64),
+    asteroidBelt: asteroidBeltSchema.optional(),
     sizing: z.strictObject({
       planetCompression: number(0, 1),
       planetScale: number(1, 5).transform(roundDiameter),

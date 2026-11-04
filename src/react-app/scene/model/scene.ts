@@ -1,4 +1,5 @@
 import { defaultMoonSystem } from "./notableMoons.ts";
+import { defaultAsteroidBelt } from "./asteroidBelt.ts";
 import { defaultSizing, roundDiameter } from "./sizes.ts";
 import { seededRandom } from "../utils/seededRandom.ts";
 import type { Planet, SceneModel } from "./schema.ts";
@@ -152,6 +153,7 @@ export function createScene(): SceneModel {
       position: [0, 0, 0],
     },
     planets: [rocky, gas, icy],
+    asteroidBelt: structuredClone(defaultAsteroidBelt),
     sizing: { ...defaultSizing },
     layout: { distanceCompression: 0.7, orbitScale: 1, orbitSpacing: 1 },
     view: { preset: "offset", framing: "portfolio", zoom: 1, pan: [0, 0, 0] },
@@ -255,6 +257,14 @@ export function rerollScene(scene: SceneModel, nonce: number): SceneModel {
         : {}),
     },
     sun: { ...scene.sun, seed: streamSeed(nonce, "sun") },
+    ...(scene.asteroidBelt
+      ? {
+          asteroidBelt: {
+            ...scene.asteroidBelt,
+            seed: streamSeed(nonce, "asteroid-belt"),
+          },
+        }
+      : {}),
     planets: scene.planets.map((planet) => rerollPlanet(planet, nonce)),
   };
 }

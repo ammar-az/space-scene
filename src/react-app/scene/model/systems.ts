@@ -53,6 +53,21 @@ export type MoonProfile = {
   orientation: number;
   phase: number;
 };
+/** Shared by procedural satellites and asteroid surface variants. */
+export function smallBodyAppearance(seed: string, colors: string[]) {
+  const color =
+    colors[Math.floor(seededRandom(`${seed}:color`)() * colors.length)];
+  const accent =
+    "#" +
+    [1, 3, 5]
+      .map((i) =>
+        Math.round(parseInt(color.slice(i, i + 2), 16) * 0.45)
+          .toString(16)
+          .padStart(2, "0"),
+      )
+      .join("");
+  return { color, accent };
+}
 export function moonProfiles(planet: Planet): MoonProfile[] {
   if (!planet.proceduralMoons) return [];
   const settings = planet.moons ?? defaultMoons,
@@ -61,17 +76,7 @@ export function moonProfiles(planet: Planet): MoonProfile[] {
     const seed = `${planet.seeds.moons}:moon:${index}`;
     const sample = (part: string, [low, high]: [number, number]) =>
       low + seededRandom(`${seed}:${part}`)() * (high - low);
-    const color =
-      settings.colors[Math.floor(sample("color", [0, settings.colors.length]))];
-    const accent =
-      "#" +
-      [1, 3, 5]
-        .map((i) =>
-          Math.round(parseInt(color.slice(i, i + 2), 16) * 0.45)
-            .toString(16)
-            .padStart(2, "0"),
-        )
-        .join("");
+    const { color, accent } = smallBodyAppearance(seed, settings.colors);
     const size = sample("size", settings.size);
     return {
       seed,
@@ -91,7 +96,7 @@ export function moonPosition(
   time: number,
 ): [number, number, number] {
   const radians = Math.PI / 180,
-    phase = (moon.phase + time * moon.speed) * radians;
+    phase = (moon.phase - time * moon.speed) * radians;
   const angle = moon.orientation * radians,
     tilt = moon.inclination * radians;
   const x = moon.distance * Math.cos(phase),

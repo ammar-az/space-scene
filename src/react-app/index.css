@@ -1693,6 +1693,19 @@ button:disabled:hover {
   text-overflow: ellipsis;
   white-space: nowrap;
 }
+.belt-colors {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+}
+.belt-details {
+  margin: 20px 0;
+}
+.belt-details summary {
+  cursor: pointer;
+  color: #a0adbd;
+  font-size: 11px;
+  margin-bottom: 20px;
+}
 
 .size-control {
   margin: 20px 0 26px;

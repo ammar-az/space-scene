@@ -82,10 +82,20 @@ varying vec3 v_worldNormal;
 varying vec3 v_worldPosition;
 varying vec3 v_tangent;
 void main() {
+    vec4 objectPosition = vec4(position, 1.0);
+    vec3 objectNormal = normal;
+    vec3 objectTangent = vec3(normal.z + 0.00001, 0.0, -normal.x);
+    #ifdef USE_INSTANCING
+        objectPosition = instanceMatrix * objectPosition;
+        mat3 basis = mat3(instanceMatrix);
+        vec3 scaleSquared = vec3(dot(basis[0], basis[0]), dot(basis[1], basis[1]), dot(basis[2], basis[2]));
+        objectNormal = basis * (normal / scaleSquared);
+        objectTangent = basis * objectTangent;
+    #endif
     v_localNormal = normalize(normal);
-    v_worldNormal = normalize(mat3(modelMatrix) * normal);
-    v_tangent = normalize(mat3(modelMatrix) * vec3(normal.z + 0.00001, 0.0, -normal.x));
-    vec4 world = modelMatrix * vec4(position, 1.0);
+    v_worldNormal = normalize(mat3(modelMatrix) * objectNormal);
+    v_tangent = normalize(mat3(modelMatrix) * objectTangent);
+    vec4 world = modelMatrix * objectPosition;
     v_worldPosition = world.xyz;
     gl_Position = projectionMatrix * viewMatrix * world;
 }`;

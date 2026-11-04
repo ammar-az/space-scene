@@ -40,6 +40,7 @@ import {
 import { createPlanetEnvironment } from "./atmospheres.ts";
 import type { PlanetEnvironment } from "./atmospheres.ts";
 import type { PlanetSurface } from "./materials.ts";
+import { AsteroidBeltRenderer } from "./AsteroidBeltRenderer.ts";
 
 type Moon = MoonProfile & {
   mesh: THREE.Mesh;
@@ -85,6 +86,7 @@ export class SceneRenderer {
   private sphere = new THREE.SphereGeometry(1, 80, 48);
   private entries = new Map<string, Entry>();
   private textures = new TextureStore();
+  private asteroidBelt: AsteroidBeltRenderer;
   private sun: THREE.Mesh;
   private sunSurface: ReturnType<typeof createSunSurface>;
   private sunKey = "";
@@ -161,6 +163,11 @@ export class SceneRenderer {
         "A scene shader could not compile. See the browser console for details.",
       );
     };
+    this.asteroidBelt = new AsteroidBeltRenderer(
+      this.textures,
+      callbacks.error,
+    );
+    this.world.add(this.asteroidBelt.root);
     this.sunSurface = createSunSurface(model.sun);
     this.sun = new THREE.Mesh(this.sphere, this.sunSurface.material);
     this.sunKey = this.sunSignature(model);
@@ -255,6 +262,7 @@ export class SceneRenderer {
       model.layout !== this.layoutSource.layout ||
       model.sizing !== this.layoutSource.sizing ||
       model.planets !== this.layoutSource.planets ||
+      model.asteroidBelt !== this.layoutSource.asteroidBelt ||
       model.sun !== this.layoutSource.sun
     ) {
       this.largestDiameter = largestPlanetDiameter(model);
@@ -263,6 +271,7 @@ export class SceneRenderer {
       this.layoutSource = model;
     }
     this.model = model;
+    this.asteroidBelt.setModel(model, this.orbitFactors);
     this.selected = selected;
     this.sunSelected = sunSelected;
     this.selectedMoon = selectedMoon;
@@ -718,6 +727,12 @@ export class SceneRenderer {
     const lightPosition = sun.visible
       ? this.sun.position
       : new THREE.Vector3(-120, 80, 60);
+    this.asteroidBelt.update(
+      this.orbitDays,
+      this.rotationHours,
+      lightPosition,
+      sun.visible,
+    );
     for (const entry of this.entries.values())
       for (const ring of entry.rings)
         ring.uniforms.u_sun.value.copy(lightPosition);
@@ -872,6 +887,7 @@ export class SceneRenderer {
     this.canvas.removeEventListener("webglcontextlost", this.contextLost);
     for (const entry of this.entries.values()) this.releaseEntry(entry);
     this.entries.clear();
+    this.asteroidBelt.dispose();
     this.sunSurface.dispose();
     this.sphere.dispose();
     this.glow.geometry.dispose();

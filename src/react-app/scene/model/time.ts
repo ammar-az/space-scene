@@ -18,7 +18,7 @@ export function orbitPhase(
   days: number,
 ): number {
   return wrapDegrees(
-    orbit.phase +
+    orbit.phase -
       (orbit.playing
         ? ((days % orbit.periodDays) / orbit.periodDays) *
           360 *

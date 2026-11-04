@@ -13,6 +13,11 @@ export function generateScenePreset(
     ...rerollScene(source, seed),
     background: source.background,
     sun: source.sun,
+    ...(source.asteroidBelt
+      ? {
+          asteroidBelt: { ...source.asteroidBelt, epochDays: 0, offsetDays: 0 },
+        }
+      : {}),
     timeline: {
       elapsed: 0,
       solar: 0,

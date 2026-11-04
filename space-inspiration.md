@@ -249,3 +249,12 @@ Keep UI colors, typography, and the header close to the portfolio’s blue glass
 - Replace the shared4×zoom ceiling with a common minimum visible height of1scene unit. Derive a view's zoom limit from its base height so offset, centered, overhead and fitted views can all reach the same close-up scale. Use logarithmic slider coordinates with an exact zoom input.
 - Planet and named-moon orbital multipliers use whole numbers1–100. Keep fractional free-body rotation multipliers.
 - Explicit Follow planet mode tracks rendered orbital position every frame, with a stored relative camera offset for panning and the existing rotation/zoom controls. Selection is independent. Stop, hide or delete freezes the current world framing; snap/reset/fit releases follow. Persist camera.followPlanetId in scene JSON.
+
+
+## Prograde motion and procedural asteroid belt — November 4, 2026
+
+- Match positive orbital motion to the right-hand positive-Y body spin. Keep stored starting phases/geometry unchanged; negative time phase fixes planets, named moons and procedural satellites consistently. Preserve intentional retrograde inclinations, especially Triton. Tidal facing continues to derive from actual position.
+- Optional asteroidBelt settings hold seeded population count, million-km radial envelope, physical diameters in thousands of km, inclination/eccentricity, orbital days, spin hours, palette, independent display boost and local motion/epoch offsets. Solar enables1,200 members at329.12–478.71million km; portfolio/default leaves it off.
+- Reuse procedural moon palette/crater surface generation on displaced icosahedra, batching a small pool with instance transforms. Bodies have their own orbital/rotation variations. Avoid allocating belt surfaces until shown. No per-asteroid editor yet.
+- Interpolate the planet radial display mapping for compressed belt positions without feeding the population back into planet spacing. Include complete belt bounds in clipping/fit. Preserve local pause/reverse phase, reset with planetary orbital positions, and save configuration/clock offsets in JSON.
+- Controls under Scene presets → Asteroid belt; ranges regenerate deterministically for the current seed, reroll explicitly changes it. Shared scene/planet-orbit time controls apply.

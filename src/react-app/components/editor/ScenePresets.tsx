@@ -4,6 +4,8 @@ import type { ScenePreset } from "../../data/presets.ts";
 import { Icon, Slider } from "./controls.tsx";
 import type { SceneModel } from "../../scene/model/schema.ts";
 import { defaultLayout } from "../../scene/model/layout.ts";
+import AsteroidBeltControls from "./AsteroidBeltControls.tsx";
+import type { AsteroidBelt } from "../../scene/model/schema.ts";
 export default function ScenePresets({
   loadingPreset,
   onLoad,
@@ -15,6 +17,9 @@ export default function ScenePresets({
   onSizing,
   motion,
   onMotion,
+  asteroidBelt,
+  onAsteroidBelt,
+  onRerollAsteroids,
 }: {
   loadingPreset: string | null;
   onLoad(preset: ScenePreset): void;
@@ -26,6 +31,9 @@ export default function ScenePresets({
   onSizing(patch: Partial<SceneModel["sizing"]>): void;
   motion: SceneModel["motion"];
   onMotion(patch: Partial<SceneModel["motion"]>): void;
+  asteroidBelt?: AsteroidBelt;
+  onAsteroidBelt(patch: Partial<AsteroidBelt>): void;
+  onRerollAsteroids(): void;
 }) {
   const settings = layout ?? defaultLayout;
   return (
@@ -124,6 +132,12 @@ export default function ScenePresets({
       />
       <div className="section-separator" />
       <TimeControls motion={motion} onChange={onMotion} />
+      <div className="section-separator" />
+      <AsteroidBeltControls
+        belt={asteroidBelt}
+        onChange={onAsteroidBelt}
+        onReroll={onRerollAsteroids}
+      />
       <div className="section-separator" />
       <div className="field-heading">SCENE PRESETS</div>
       <div

@@ -83,6 +83,11 @@ import {
   generateScenePreset,
 } from "./scene/model/presetRecipes.ts";
 import { SceneClock } from "./scene/rendering/clock.ts";
+import {
+  asteroidBeltDays,
+  defaultAsteroidBelt,
+} from "./scene/model/asteroidBelt.ts";
+import type { AsteroidBelt } from "./scene/model/schema.ts";
 
 function download(source: string, name: string) {
   const url = URL.createObjectURL(
@@ -536,6 +541,25 @@ export default function App() {
       layout: { ...(previous.layout ?? defaultLayout), ...patch },
     }));
   }
+  function changeAsteroidBelt(patch: Partial<AsteroidBelt>) {
+    const days = (runtime.current?.() ?? scene.timeline).orbitDays;
+    setScene((previous) => {
+      const belt = previous.asteroidBelt ?? defaultAsteroidBelt;
+      return {
+        ...previous,
+        asteroidBelt: {
+          ...belt,
+          ...patch,
+          ...(patch.playing !== undefined || patch.reverse !== undefined
+            ? {
+                epochDays: days,
+                offsetDays: asteroidBeltDays(belt, days),
+              }
+            : {}),
+        },
+      };
+    });
+  }
   function zoom(factor: number) {
     setScene((previous) => ({
       ...previous,
@@ -987,6 +1011,14 @@ export default function App() {
               onClick={() =>
                 setScene({
                   ...scene,
+                  asteroidBelt: scene.asteroidBelt
+                    ? {
+                        ...scene.asteroidBelt,
+                        epochDays: (runtime.current?.() ?? scene.timeline)
+                          .orbitDays,
+                        offsetDays: 0,
+                      }
+                    : undefined,
                   motion: {
                     ...scene.motion,
                     orbitEpochDays: (runtime.current?.() ?? scene.timeline)
@@ -2161,6 +2193,11 @@ export default function App() {
             </div>
           ) : (
             <ScenePresets
+              asteroidBelt={scene.asteroidBelt}
+              onAsteroidBelt={changeAsteroidBelt}
+              onRerollAsteroids={() =>
+                changeAsteroidBelt({ seed: freshSeed() })
+              }
               layout={scene.layout}
               sizing={scene.sizing}
               motion={scene.motion}

@@ -1,4 +1,5 @@
 import { notableSystemExtent } from "./notableMoons.ts";
+import { asteroidBeltBounds } from "./asteroidBelt.ts";
 import {
   planetRenderRadius,
   starRenderRadius,
@@ -141,6 +142,12 @@ export function sceneEnvelopes(
         planetSystemRadius(scene, planet),
     });
   }
+  const belt = asteroidBeltBounds(scene, factors);
+  if (belt)
+    spheres.push({
+      center: starRenderPosition(scene),
+      radius: belt.radius + belt.body,
+    });
   return spheres;
 }
 /** Samples the complete paths so the fitted system stays in frame as it orbits. */
@@ -162,6 +169,21 @@ export function sceneFitSamples(scene: SceneModel) {
         ),
         radius,
       });
+  }
+  const belt = asteroidBeltBounds(scene, factors);
+  if (belt) {
+    const center = starRenderPosition(scene);
+    for (let i = 0; i < 64; i++) {
+      const phase = (i / 64) * Math.PI * 2;
+      samples.push({
+        center: [
+          center[0] + Math.cos(phase) * belt.radius,
+          center[1],
+          center[2] + Math.sin(phase) * belt.radius,
+        ],
+        radius: belt.height + belt.body,
+      });
+    }
   }
   return samples;
 }
