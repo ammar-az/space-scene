@@ -42,6 +42,8 @@ import type { PlanetEnvironment } from "./atmospheres.ts";
 import type { PlanetSurface } from "./materials.ts";
 import { AsteroidBeltRenderer } from "./AsteroidBeltRenderer.ts";
 import { sceneLighting, stellarGlowRadius } from "../model/lighting.ts";
+import { rockyTerrain, defaultRockyTerrain } from "../model/rockySurfaces.ts";
+import { defaultGasSurface } from "../model/gas.ts";
 
 type Moon = MoonProfile & {
   mesh: THREE.Mesh;
@@ -297,6 +299,8 @@ export class SceneRenderer {
         planet.type,
         planet.diameter,
         planet.earthlike,
+        planet.terrain,
+        planet.type === "gas" ? planet.gas : undefined,
         planet.seeds,
         planet.families[planet.type],
         planet.moonCount,
@@ -305,7 +309,12 @@ export class SceneRenderer {
           moon.id,
           moon.seed,
           moon.diameter,
-          moon.surface,
+          [
+            moon.surface.color,
+            moon.surface.accent,
+            moon.surface.detail,
+            moon.surface.terrain,
+          ],
           moon.orbit.radiusX,
           moon.orbit.radiusZ,
           moon.orbit.rotation,
@@ -347,7 +356,14 @@ export class SceneRenderer {
         earthlike: planet.type === "rocky" ? planet.earthlike : undefined,
         seed: planet.seeds.surface,
         cratering: planet.type === "rocky" ? family.detail : undefined,
+        terrain:
+          planet.type === "rocky" && !planet.earthlike?.enabled
+            ? rockyTerrain(planet.terrain, family.detail)
+            : undefined,
+        resolution: planet.type === "rocky" ? 1024 : undefined,
         contrast: planet.type === "icy" ? family.detail : undefined,
+        gas:
+          planet.type === "gas" ? (planet.gas ?? defaultGasSurface) : undefined,
       },
       this.callbacks.error,
     );
@@ -394,6 +410,8 @@ export class SceneRenderer {
           accentColor: profile.accent,
           seed: profile.seed,
           detail: "moon",
+          terrain: defaultRockyTerrain,
+          resolution: 128,
         },
         this.callbacks.error,
       );
@@ -420,6 +438,8 @@ export class SceneRenderer {
           color: moon.surface.color,
           accentColor: moon.surface.accent,
           cratering: moon.surface.detail,
+          terrain: rockyTerrain(moon.surface.terrain, moon.surface.detail),
+          resolution: 512,
           seed: moon.seed,
           detail: "moon",
         },

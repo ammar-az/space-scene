@@ -1,5 +1,6 @@
 import type { Earthlike } from "../../scene/model/earthlike.ts";
-import { ColorInput, Slider } from "./controls.tsx";
+import { ColorInput } from "./controls.tsx";
+import { SurfaceSlider } from "./RockySurfaceControls.tsx";
 export default function EarthlikeControls({
   settings,
   onChange,
@@ -30,24 +31,49 @@ export default function EarthlikeControls({
           </label>
         ))}
       </div>
-      <Slider
+      <SurfaceSlider
         label="Land coverage"
         value={settings.landCoverage * 100}
         min={5}
         max={85}
         unit="%"
-        onChange={(landCoverage) =>
+        step={1}
+        onCommit={(landCoverage) =>
           onChange({ landCoverage: landCoverage / 100 })
         }
       />
-      <Slider
+      <SurfaceSlider
         label="Continent scale"
         value={settings.continentScale}
         min={1}
         max={5}
         step={0.1}
-        precise
-        onChange={(continentScale) => onChange({ continentScale })}
+        onCommit={(continentScale) => onChange({ continentScale })}
+      />
+      <SurfaceSlider
+        label="Mountain height"
+        value={settings.mountainHeight ?? 1}
+        min={0}
+        max={2}
+        onCommit={(mountainHeight) => onChange({ mountainHeight })}
+      />
+      <SurfaceSlider
+        label="Polar ice coverage"
+        value={(settings.iceCoverage ?? 0.08) * 100}
+        min={0}
+        max={50}
+        step={1}
+        unit="%"
+        onCommit={(percent) => onChange({ iceCoverage: percent / 100 })}
+      />
+      <SurfaceSlider
+        label="Ocean reflectivity"
+        value={(settings.oceanReflectivity ?? 0.5) * 100}
+        min={0}
+        max={100}
+        step={1}
+        unit="%"
+        onCommit={(percent) => onChange({ oceanReflectivity: percent / 100 })}
       />
       <p className="field-note">
         Surface rerolls generate new continents while keeping your ocean, land

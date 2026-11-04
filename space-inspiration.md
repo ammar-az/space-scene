@@ -1,289 +1,152 @@
-# Space — an interactive scene builder
+# Space
 
-An idea for a standalone project at **space.ammarz.com**, inspired by the portfolio's Space Mode. Reuse the procedural surfaces, starfield and animation work to let visitors build their own space scenes.
+A desktop space-scene editor at [space.ammarz.com](https://space.ammarz.com), built with React, TypeScript, Three.js, Vite, and Cloudflare Workers. Its typography, blue glass surfaces, translucent header identity, and starter palettes follow [the portfolio](https://ammarz.com).
 
-This is a creative playground: visitors choose what exists, how it looks and how it moves. Start with a black canvas and a control panel, then let the scene grow from there. Planet and whole-scene presets use validated, versioned JSON files from the first editor milestone.
+The app opens a starter system with a larger sun and portfolio-style side framing. The sun is cropped at the left edge; custom orbits can naturally extend outside the frame. Select a planet in the scene or object list to edit it. The broader direction is captured in [space-inspiration.md](space-inspiration.md).
 
-Implementation is underway in this standalone repository. Desktop is the current priority; mobile work follows desktop completion. The portfolio remains a separate project. Local progress and temporary verification assets are tracked in the Git-ignored `.work/todo.md` and `.work/verification/`.
+## Development
 
-## The experience
+Use Node.js **26.13.0 LTS**, pinned in `.node-version` for local development and Cloudflare Workers Builds.
 
-1. Open an empty black scene with a control panel.
-2. Add a starfield, sun or planet.
-3. Adjust its colors, procedural appearance and motion with sliders, color pickers and appropriate discrete controls.
-4. Add more objects and adjust their placement, orbits and viewing angle.
-5. Pause, reroll individual objects or start again.
-6. Eventually save a configuration and return to it later.
+```bash
+npm ci
+npm run dev
+```
 
-The scene can show an entire sun at the center, with planets around it, instead of inheriting the portfolio's cropped side composition. A centered system should be an easy starting arrangement, not a restriction on positioning objects.
+```bash
+npm run check
+```
 
-Objects do **not** represent projects. They need no scene labels, logos or project details. Clicking a planet selects it for editing; the control panel also provides an object list so obscured bodies remain accessible. Overlap and occlusion are part of the composition; the editor does not need the portfolio's collision avoidance, individual hover holds, off-screen focus recovery or accelerated hidden orbital travel.
+The full check runs TypeScript, ESLint, regression/model tests, the production build, and a Cloudflare deployment dry run. `npm test`, `npm run build`, and `npm run preview` are also available. Pushing to `main` triggers the existing Cloudflare build/deployment integration.
 
-## Adding and managing objects
+`.work/` is intentionally ignored by Git. Keep progress in `.work/todo.md`, rendering decisions in `.work/notes/`, temporary presets/assets in `.work/assets/`, and verification images/results in `.work/verification/`. The local browser tooling and comparison copies of the old renderer also live there.
 
-The original add-menu idea is: **Add starfield, Add sun, Add rocky planet, Add gas giant, Add terrestrial planet**.
+The minimal Worker returns 404 for requests not handled by Cloudflare's static asset layer. There is no application API. Regenerate runtime types with `npm run cf-typegen` after changing Worker bindings or compatibility settings.
 
-Rocky and terrestrial currently describe the same underlying family in the portfolio. Preserve this as a naming/design decision: if both entries are wanted, they should eventually mean distinct presets or appearances. An icy giant preset would also reuse an existing surface style. A practical initial menu could offer Rocky/terrestrial, Gas giant and Icy giant, with more presets later.
+## Current editor
 
-The panel should provide an object list, selection, visibility, deletion and per-object reset/reroll. Duplication would be useful for making related worlds. Panel names such as “Planet 1” identify editor objects without adding labels to the scene.
+- **Physical diameters** replace rendered radius fields. Planet `diameter` and `ranges.diameter` use **×1,000 km**; `sun.diameter` uses **×10,000 km**. Values round to hundredths (10 km planet precision, 100 km star precision). Logarithmic diameter sliders have linked scaled-unit and kilometre inputs; manual values beyond the initial slider span extend it. Numeric inputs commit on blur/Enter.
+- **Scene presets → Body display sizes** controls geometric planet-size compression, an overall planet display multiplier, and an independent star multiplier (also in Sun settings). Compression 0% preserves physical planet ratios; 100% makes all planets match the largest planet. Hidden planets remain in that reference. The star is excluded. Physical diameters are never rewritten by display controls. Each diameter field shows **Rendered as** in the same physical units; hover/focus it for the compression and display-multiplier breakdown.
+- Planets have a **Moons** tab for named satellites and their own compact display settings. Select a moon from that tab, the selected parent's object-list children, or its mesh. The moon inspector provides name/visibility, physical diameter, colors/cratering, terrain reroll/lock/duplicate/delete, independent elliptical orbital axes/period/inclination/orientation/phase/direction, and rotation controls. Named-moon diameter and orbital radii use **×1,000 km**, with six-decimal physical precision available for small satellites and linked km inputs.
+- **Tidally locked** moons store `spin.periodHours = orbit.periodDays * 24`. Free rotation-period, tilt/direction/animation controls are disabled while locked. The renderer points a fixed lunar longitude toward the parent using the actual rendered position, including eccentric, inclined and reverse orbits. Locked rotation follows the moon orbital clock regardless of the free-body rotation rate. `Facing longitude` chooses which surface faces the parent.
+- **Scene presets → Render time → Named moon orbits** supplies an independent day/minute or day/second rate (whole-number 1–100×), default **day/minute ×3**. `timeline.moonDays` and `motion.moonEpochDays` preserve moon motion in snapshots and orbital resets. Free moon rotation uses the body rotation clock; period edits and local motion toggles preserve phase.
+- Named moon systems inherit the parent's equatorial plane and follow its rendered position/size. Per-moon inclination/orientation override that plane. Per-parent `moonSystem` settings compress distance ratios and moon-to-parent size ratios, with independent scale factors. Surface/ring clearance and small gaps between originally separated moon paths keep the display compact; co-orbital and intentionally crossing paths remain possible. Solar-orbit scale/compression does not enter this local transform. Fit, clipping, picking/highlights and eclipse lighting account for the named moons.
+- The existing procedural population is separate (`proceduralMoons`, `moonCount`, palette/ranges) and **starts off for every planet in both presets**. Planet/scene rerolls preserve all named moons; explicit surface rerolls affect an unlocked named moon. Planet JSON includes its named satellites and local display settings.
+- Add, select, duplicate, hide, and delete planets. Click the Sun to open its settings and display its selection highlight.
+- Rocky, gas, and icy families retain separate colors and surface settings when switching between them. Rocky planets have an **Atmosphere** tab for optional sunlit haze and a separate cloud layer. Configure haze color/density/height and cloud color/coverage/opacity/scale/altitude/drift/evolution; reroll cloud patterns independently. Gas/icy families keep their existing atmospheric surfaces.
+- All color pickers keep intermediate previews local and commit on the native change event when selection finishes, avoiding repeated terrain/solar rebuilds during dragging.
+- Enable **Earth-like surface** within Rocky for seeded continents, mostly blue ocean, green vegetation, yellow deserts and polar ice. Configure ocean/land/desert colors, land coverage, continent scale, mountain height, polar ice coverage and ocean reflectivity. First activation adds moderate clouds and blue haze; toggling it or switching families preserves later edits. Surface rerolls change continents while retaining these surface settings and independent cloud patterns.
+- Adjust size, cratering, storm activity, icy band variation, moon count, bounded ring amount/width/opacity/inner edge, and actual spin-axis tilt.
+- Set physical orbit X/Z radii and centers in **millions of kilometres**, with linked km inputs for axes, plus ellipse rotation, inclination, plane orientation and phase. Ellipses are explicit; Fixed center and Sun at focus modes remain available. Store orbital period in **days** and rotation period in **hours**, independently of geometry. Logarithmic sliders and exact fields support short/long periods; readouts show their rendered durations. Reverse and individual animation toggles preserve the current angle when changed. Rotation direction is measured around the configured axis; an axial tilt past 90° already produces apparent retrograde rotation.
+- Configure minimum/maximum ranges for the next reroll, with independent surface, moon, and ring seeds. Ring amount rolls continuously between 0 and 1; Ring chance controls whether a system is generated at all. Procedural moon recipes define possible colors and ranges for orbit radius, speed, size and inclination; independent property streams keep recoloring from shuffling orbits. Distances/sizes are in parent radii; speeds are degrees per second. Short moon orbits expand to clear the planet and its rings.
+- Lock a planet's appearance to exclude it from individual and scene rerolls. Locks protect randomization; deliberate manual edits still work.
+- **Scene presets → Scene layout** applies **Orbit distance compression** first, then **Orbit spacing** and **Orbit scale** (50–500%). Compression 0% retains physical distance ratios; 100% brings paths toward the inner baseline, with small gaps for originally separate, centered paths. The inner baseline leaves room around the displayed star and innermost satellite system. Scale resizes the whole compressed layout; spacing stretches gaps beyond the baseline. These presentation controls preserve physical axes/centers, body sizes and periods. Hidden planets remain in the layout reference. Reset layout uses 70% distance compression and 100% scale/spacing.
+- **Scene presets → Render time** has rotation units **hour/hour**, **hour/minute**, **hour/second** and a 0.1–10× multiplier; orbit units **day/minute**, **day/second** and a whole-number 1–100× multiplier. Default rotation is 1 hour/second, so a 24-hour period takes 24 seconds. Accumulated rotation-hours and orbit-days keep global rate changes continuous and restore exact snapshots. Changing a planet period/direction/pause rebases its phase to preserve its current pose. Shared pause/master speed affects both. Clouds follow the physical surface rotation; their independent drift/weather and procedural moons still use scene seconds.
+- **Fit scene**, available in Scene layout and Camera, frames complete visible orbital paths and their satellites/rings/atmospheres while preserving the current angle. Zoom can go down to 0.01; every composed or fitted view can zoom in to the same one-scene-unit vertical span. The logarithmic zoom slider covers this full range with an exact-value input. Camera clipping adapts to the expanded scene.
+- Use bird's-eye, centered side, and offset-sun side views as snap positions. Left drag pans in the current screen plane; right drag rotates around the current look-at point; scroll zooms. **Camera** opens horizontal/vertical angle sliders with precise number inputs and a zoom slider. Full 360° horizontal rotation and −90° to +90° vertical angles include below-plane and exact pole views. Named views and Reset view restore angle, target and zoom. The camera panel stays accessible while open in full screen.
+- **Follow planet**, in the view toolbar or planet inspector, centers a selected planet and tracks its rendered orbit continuously. Pan changes a relative framing offset; rotate and zoom remain available. Selection changes do not retarget it. Stop following, hide, or delete the followed planet to release at the current camera position. Named views, Reset view and Fit scene release follow. Scene JSON saves the followed planet ID and relative camera target.
+- **Scene presets → Asteroid belt** adds a seeded population around the Sun. The solar recipe enables 1,200 members between 329.12–478.71 million km (about 2.2–3.2 AU); portfolio/default leaves it off. Configure count, physical distance/diameter ranges, independent size boost, colors, inclination/eccentricity, orbital/rotation-period ranges, local pause/reverse, and reroll seed. Bodies reuse the procedural moon crater surfaces on irregular instanced rocks; there is no per-asteroid inspector. Complete orbits stay inside the physical radial range. Displayed positions interpolate the planets' compressed radial layout, so compression/scale/spacing move the belt consistently. Belt settings and motion offsets save in scene JSON; fit/clipping include the population.
+- Forward orbital motion follows positive body rotation about the local north axis, including procedural moons. Inclination beyond 90° naturally produces a retrograde orbit; Triton retains its retrograde plane. Starting phases/compositions stay unchanged.
+- **Star → Star preset** offers White dwarf, G-type Sun-like, Red giant, and O/B/A/F/K/M main-sequence palettes (nine presets total). Each recipe sets physical diameter and Primary/Highlight/Shadow colors once; all custom controls remain editable. A color or diameter edit that differs from every recipe shows **Custom star**. Seed, surface activity, position, visibility and display scale stay under their existing controls. **Frame star** centers and fits the displayed stellar surface at the current camera angle, useful for compact dwarfs and large giants; this releases planet follow. Scene JSON stores explicit star values, with no preset ID or dependency.
+- **Star → Sunspot frequency / Sunspot size** replace the stellar Reroll surface button. Frequency ranges from 0–4× (0 disables spots), and size from 25–300%. The 1×/100% defaults retain the original seeded appearance. Frequency varies independent event populations without accelerating spot lifetimes, drift or convection; size scales their angular footprint. Controls update existing shader uniforms without regenerating solar maps. Solar activity pauses the shared surface/spot clock, while these settings remain editable. Optional `sun.sunspots` stores `{ frequency, size }`; omitted settings use the defaults. Both scene recipes declare defaults, and star appearance presets preserve them.
+- **Scene presets → Scene lighting** offers **Realistic lighting** (default) and **Fully lit**. Fully lit restores the gentler original star-visible shading, keeping directional depth and eclipses while lifting dark night sides. Realistic uses darker ambient fill and directional light from the configured star position. Both modes retain eclipses. Hiding the star hides its sphere/glow without moving or disabling the light. Modes apply to planet/moon surfaces, clouds, atmosphere rims, rings and asteroids. Optional scene `lighting` saves the choice in JSON; scenes without an explicit mode use Realistic lighting.
+- **Star → Star glow** controls a compact halo from 0–100%; zero removes it. The additive shader smoothly reaches exact zero by 1.5 stellar radii, replacing the previous broad 3.2-radius glow. Optional `sun.glow` defaults to 1, is independent of lighting, and is preserved by star presets. Frame star and Fit scene include the visible halo.
+- **Rocky planet Appearance → Crater density / Crater size / Terrain roughness** replaces the single cratering slider. Density spans 0–3×, size 0.25–2.5× and roughness 0–2×. Slider drags update their numeric preview and commit the texture change on release; number fields commit on blur/Enter. Crater centers remain stable when changing density/size. Rocky planets use 1024×512 maps; named moons use 512×256 maps with matching controls and their own **Surface reroll ranges**. Procedural small-body pools use 128×64 maps.
+- Rocky surfaces now combine spherical geological fields with impacts of several scales, irregular/worn rims, central peaks on larger impacts, overlapping basins and ejecta variation. Tangent normal maps are generated from unquantized heights using spherical gradients, providing finer lighting detail than the legacy 8-bit height channel. Color and normal maps wrap across longitude. Earth-like and gas surfaces have separate refinement paths; icy-family surfaces, including Saturn, preserve their existing texture source.
+- Rocky **Reroll ranges** and named-moon surface ranges independently bound density, size and roughness. Range edits affect the next surface roll; manual controls edit the current surface. Rerolls preserve orbits/spin and honor appearance locks. Optional planet `terrain`, `ranges.terrain`, and moon `surface.terrain` / `surface.ranges` hold the explicit values; old density-only fields remain fallbacks when those are absent.
+- **Rocky Appearance → Smooth plains** adds broad, contrasting low-relief regions with fewer old impacts. Configure coverage, scale and color, plus optional plains coverage/scale ranges under surface reroll settings. The same controls appear on named moons. Zero coverage retains the prior rocky output. The solar recipe enables dark lunar maria, darker Martian plains and bright Pluto plains; shapes remain seeded procedural illustrations. Plains colors are preserved through surface rerolls.
+- **Earth-like surfaces** now use 1024×512 maps with finer coasts/islands, shelf/deep-water variation, climate-driven green/desert transitions, mountain chains, alpine snow and adjustable polar ice. Normal maps supply terrain relief and an ocean mask. Ocean reflectivity controls a water-only, view-dependent glint attenuated by source direction and eclipses. Geography, colors and relief remain separately editable.
+- **Gas giants** add Band turbulence, Band softness and Fine cloud detail controls. A gas-only spherical sampling pass adds wisps and softens band edges while retaining the base palette and existing animated storms. All-zero gas controls preserve the original base map. The icy visual family, including Saturn, bypasses this processing. Surface sliders commit on release.
+- Plains use a few joined, distorted basin groups to favor broad regions over scattered small patches. Lower Plains scale favors fewer, larger regions. Crisp material borders and a separate gradual terrain blend retain shallow geological relief, mottling and smaller fresh impacts without imposing a uniformly depressed floor. Impact ejecta keep their parent surface hue. The solar recipe uses a more muted Mars palette and lower-contrast lunar plains; regenerate the solar recipe to apply its updated explicit colors/scales.
+- Pause the shared clock or reset orbital positions independently of starfield, spin, and solar activity.
+- Use the visible **Orbits** toggle to show/hide orbit lines. **Full screen** (or `F`) expands the scene and reveals controls at the edges. Selecting an object keeps its inspector open. Escape returns to the editor. Revealed panels fill the full viewport height while their content stays below the header. A windowed focus mode is used if native fullscreen is unavailable.
+- Edit star density, cluster frequency, large-star frequency, size, brightness, twinkling, and seed. Deep-sky photographs have independent visibility, density, size, brightness, and rerolling. The 1× defaults preserve the portfolio sky. Edit star size, colors, glow, sunspots, visibility and independent surface activity.
+- Export/import planet and whole-scene JSON presets. Import validates the entire file before applying it; imported planets receive fresh object IDs.
+- **About** opens Ammar’s personal page, titled **My Space**, with one central reading column and room for his own astrophotography on either side. It retains the same starfield canvas. Photo metadata belongs in `src/react-app/data/about.ts`; no stock substitutes or invented personal photographs are included.
 
-The first version can use one sun and one configurable starfield. Multiple suns or independently layered backgrounds can remain later possibilities rather than requirements.
+The **Portfolio system is the default scene**, generated immediately from its bundled JSON recipe. **Scene presets** offers [Portfolio system](public/presets/portfolio.json) and [Our solar system](public/presets/solar-system.json); **Generate scene** samples their declared ranges. Portfolio identities, colors and orbit layout stay recognizable while sizes, surfaces, moon counts and rings vary within the allowed bounds. Rocky worlds have no rings, gas giants have a 50% ring chance, and icy worlds have a 25% chance. Word Wasp starts earlier at the equivalent of the original 18° layout phase. Project X keeps its starting location on a closed, Sun-centered orbit with clearance throughout the period.
 
-## Controls to expose
+The solar recipe contains Mercury through Neptune plus Pluto and Earth-like oceans/continents with white clouds and a blue atmospheric rim, plus dense cream-colored cloud cover on rocky Venus, with a separately scaled Sun, ordered neighboring orbits that clear the default rendered bodies/layers, named, configurable moon systems, cream/tan/brown Jupiter, icy-style Saturn, and a narrow Uranus ring. Saturn uses the icy **visual** family by design. Composed axis orientation makes Uranus’s ring readable in the side view without changing its axial tilt. Faint Jupiter/Neptune rings remain omitted. Physical orbital axes, periods, inclinations and axial tilts use the [NASA metric fact sheet](https://nssdc.gsfc.nasa.gov/planetary/factsheet/); physical diameters are rounded to hundredths in their scaled units, while displayed sizes and orbit distances are illustrative, and phases are composed rather than current ephemerides. Color/ring references: [Cassini’s Jupiter portrait](https://science.nasa.gov/photojournal/cassini-jupiter-portrait/) and [Uranus rings](https://www.jpl.nasa.gov/images/pia01977-uranus-rings/).
 
-The goal is broad control over the existing procedural parameters. Use sliders for continuous values, color pickers for colors, and toggles/selectors for discrete choices. Useful ranges and defaults matter more than putting every implementation constant on screen at once; advanced groups can keep the panel manageable.
+Generation replaces the current scene; export edits first. Importing exported JSON restores the exact sampled values and timeline rather than generating again. Recipe files live under `scene/presets/` and have identical public JSON download copies; tests enforce parity. The default is bundled so the generic three-planet starter never flashes before it.
 
-### Starfield
+The current editor state is in memory. Export JSON to keep a preset before refreshing or closing the page. Mobile work is intentionally deferred until the desktop experience is complete.
 
-| Group | Controls |
-| --- | --- |
-| Population | Density; average star size and brightness; size/brightness variation |
-| Standouts | Proportion; size and brightness ranges; exclusion from clusters |
-| Colors | Editable colors and distribution weights for blue, white, yellow, orange, red, green, purple, brown, pink and cyan |
-| Clusters | Frequency; minimum/maximum population; brightness-to-population relationship; maximum extent; irregularity; member spacing |
-| Globular clusters | Eligible population threshold; proportion of eligible clusters; central concentration |
-| Twinkling | Participating fraction; period range; strength range; positional shimmer; brightness variation; stronger-twinkle bias for standouts |
-| Glow | Static stellar halo size/intensity; optional animated twinkle halo size/intensity |
-| Generation | Seed; reroll; reset to a useful preset, including the portfolio's current look |
+## Scene model and presets
 
-Keep the portfolio's current halo-free twinkling available as a preset, while allowing visitors to experiment with the earlier glow-based style. Motion strength and halo strength should be independent.
+`src/react-app/scene/model/schema.ts` defines strict, versioned JSON documents with a `kind` of `space-scene` or `space-planet`, `schemaVersion`, and `generatorVersion`. Schema **4** / generator **4** replace the old radius-based template; older schema files are intentionally unsupported. Unsupported versions, invalid values/ranges, duplicate scene IDs, and oversized files are rejected.
 
-Color weights should always form a valid distribution. Show percentages and provide normalization or linked adjustment rather than silently accepting totals that do not make sense. Increasing cluster membership should not unexpectedly inflate overall density: define whether the density control targets total stars or generation sites, preferably total stars.
+A planet records its explicit appearance, family settings, randomization ranges, seeds, lock, orbit, and spin separately. Ranges describe the next roll; changing them does not modify the current value. A scene contains complete object configurations, background, sun, camera, motion settings, and a snapshot of shared/solar time, with no external preset dependencies or GPU resources.
 
-Cluster limits should be expressed in scene units or a meaningful screen-relative measure. The portfolio's “half Word Wasp” limit is a useful reference preset, not a dependency for this app.
+Required `orbit.ellipse` stores physical X/Z radii in million km, in-plane rotation and anchor mode. `orbit.center` and `sun.position` use the same physical distance units; camera coordinates remain render-space values. `orbit.periodDays` and `spin.periodHours` are positive durations; each has `reverse` and `playing` flags. Redundant legacy orbit radius/eccentricity and angular-speed fields have been removed. Optional `rings` stores continuous amount, width, opacity and inner edge, overriding legacy `ringCount`; even legacy stacked belts now render as at most one full system. Optional `moons` stores palette and orbit/size ranges; individual moon profiles remain deterministic from the moon seed. Planet seeds accept bounded strings as well as numbers to preserve the portfolio artwork exactly; sun/starfield seeds remain numeric. Family `intense` is optional and preserves the portfolio’s original rocky crater recipe. Optional family `palette` constrains reroll colors; `bandShadow` gives giant belts and storms a coherent dark color (used for Jupiter’s warm bands). Optional `ranges.ringProbability` controls ring presence before the continuous amount is sampled. These constraints survive exports and rerolls. Optional `atmosphere` and `clouds` hold independent layer settings; `seeds.clouds` controls weather appearance independently of terrain, moon and ring streams. Omitted layers are disabled. Missing cloud seeds have a stable default that does not depend on other randomized parts or object identity. Optional `earthlike` settings select an ocean/continent surface within the rocky family; absence retains the original rocky appearance. Heights/altitudes use planet radii and cloud drift adds degrees per second to the current surface spin. Optional `clouds.evolution` controls bounded looping deformation independently of rotation (default 0.6; 0 holds its shape); all motion uses the shared clock. The two built-in presets use the physical-size/distance/period schema; no migration path is provided for discarded formats.
 
-### Sun
+`model/sizes.ts` is the size authority. Required scene `sizing` stores `planetCompression` (0–1), `planetScale` and `starScale`. If `D` is a planet's physical diameter and `M` is the largest physical planet diameter, its compressed diameter is `M * (D / M) ** (1 - planetCompression)`. Multiply by `planetScale` for the Rendered as value. Star diameter only uses `starScale`. Both convert to scene radii at 0.16 world units per 1,000 km of diameter, with the star's 10× unit conversion applied explicitly. The renderer, satellite/layer geometry, shadows, picking/highlights, clipping and Fit scene all use these derived radii. The solar recipe uses rounded equatorial diameters from the [NASA planetary fact sheet](https://nssdc.gsfc.nasa.gov/planetary/factsheet/) and Sun diameter from twice the mean radius in the [NASA Sun fact sheet](https://nssdc.gsfc.nasa.gov/planetary/factsheet/sunfact.html). Solar defaults: 50% compression, planetScale 1, starScale 0.63. The portfolio uses fictional diameters converted from its previous composition, 0% compression and the same display multipliers.
 
-- Position and size, including an uncropped centered view.
-- Primary, highlight and shadow colors; palette presets, including the current stellar palettes.
-- Surface detail, convection strength and timescale.
-- Sunspot frequency, size, lifetime and travel speed; independent enable/disable controls where useful.
-- Glow size/intensity and edge softness.
-- Seed and independent reroll.
-- A solar-performance control that can freeze convection and sunspot activity while other scene motion continues.
+`model/scene.ts` supplies pure creation and reroll operations. Each randomized part has its own stream; rerolling moons preserves the surface and rings. `model/geometry.ts` defines focus-centered ellipses and camera framing in common world units. Camera presets and manual camera edits do not rewrite object positions, orbital planes, or spin axes. Optional `layout` stores `distanceCompression`, `orbitScale` and `orbitSpacing`; missing layout uses default compression 0.7 and scale/spacing 1. The renderer applies a Sun-relative physical-to-display transform to both mesh positions and orbit lines, leaving physical orbit JSON intact. Its power curve is `innerBaseline * (majorAxis / innermostMajorAxis) ** (1 - distanceCompression)`. Centered paths whose original radial envelopes did not intersect retain a minimum displayed gap; intentionally crossing/off-center paths remain available. Optional `view.camera` stores azimuth/elevation, an explicit world-space target and unzoomed projection height; absent fields retain exact earlier framing. Entering free rotation captures the current composition without a jump, and subsequent zoom/resize retains the custom target. The last snap preset remains available for reset. `model/camera.ts` supplies pure rotation, screen-relative pan and snap operations. The renderer extends its clipping range for the free camera, while pointer capture separates pan/rotation from selection and cancels interrupted gestures. New scenes use the `portfolio` framing profile; existing JSON without a profile retains the earlier `standard` camera behavior. The side framing matches the portfolio’s 112% sun height and visible limb position while preserving a spherical 3D sun.
 
-The first version can reuse the current solar process. Flares, prominences and other larger solar effects are future experiments.
+## Rendering
 
-### Planets
+`scene/rendering/SceneRenderer.ts` owns one Three.js world, orthographic camera, sphere/ring geometry, ray picking, resource lifecycle, and animation. `rendering/materials.ts` adapts the portfolio's procedural maps and solar/storm/shadow shader functions to actual 3D meshes. Giant maps use equal-area coordinates; rocky maps use latitude coordinates. Material alpha is terrain height, not transparency. The legacy procedural shader color convention is retained explicitly rather than treating these maps as ordinary transparent image textures. Wrapped longitude derivatives prevent mipmap seams; planet maps clamp at the poles. Rings reuse the portfolio’s seeded radial opacity profile in a filtered, mipmapped texture instead of analytic fine stripes. Scene lighting is independent of star visibility. Fully lit uses 40% ambient fill for planets, 28% for moons and 55% for rings, with a softer terminator; realistic uses 14% ambient fill, star-position directional light, a terminator shaped by displayed source size, and planet/moon eclipses affecting direct light in both modes. Clouds share the surface lighting uniforms; atmosphere rims and rings honor the same mode.
 
-- Surface family/preset: rocky/terrestrial, banded gas giant or subdued icy giant.
-- Primary and accent colors, size, position and procedural seed.
-- Surface intensity and family-specific detail: terrain relief/cratering, band contrast/variation, icy gradients and storm properties.
-- Rotation speed, direction, starting phase and spin-axis tilt/orientation.
-- Lighting direction, fill/shadow strength and optionally distance-based lighting from the sun.
-- Storm size/shape, frequency, lifetime, circulation and drift for applicable families.
-- Independent appearance reroll and motion reset.
-- Appearance locking that excludes a planet from scene and individual rerolls while motion continues; deliberate manual edits remain available.
-- Separate current values and next-roll minimum/maximum ranges for size, surface detail, moon count and ring-belt count. For example, a planet may currently have seven moons while the next roll is constrained to five through ten.
-- Independent random streams for surfaces, weather, moons and rings; rerolling one part must preserve the others.
-- Remember family-specific settings when switching rocky/gas/icy types and back.
-- Export and import complete planet presets as JSON files.
+`rendering/atmospheres.ts` builds optional spherical cloud/haze shells only for rocky planets. The cloud field uses continuous 3D noise, avoiding longitude texture seams, and shares solar/eclipsing lighting with the surface. Clouds drift independently, follow live spin edits, and gently reshape through a bounded looping 3D flow offset. Evolution continues even with zero spin/drift and freezes with the scene clock. The haze is an artistic sunlit rim rather than a physical atmospheric-scattering simulation; it stays outside the cloud shell. Materials are disposed with their planet while the shared sphere geometry remains owned by the scene. `utils/earthMaps.ts` generates seam-continuous spherical continents and climate fields, with area-calibrated land coverage, ocean depth/coasts, green/desert regions and polar ice. These are generated Earth-like worlds rather than geographic maps of Earth. Terrain normals, mountain/biome transitions and masked ocean reflections refine the surface; cloud-cast surface shadows remain future work. Visual reference for Venus's cloud-covered appearance: [NASA Venus facts](https://science.nasa.gov/venus/venus-facts/).
 
-Axis editing should rotate the actual sampled surface and its bands together. A sideways planet such as Uranus should have corresponding sideways banding; simply rotating a highlight or moving a flat texture would not achieve that. The existing seeded inclination is a starting point, not a complete arbitrary spin-axis editor.
+`rendering/clock.ts` supplies shared pause, speed, visibility suspension and reduced-motion behavior. The renderer accumulates `timeline.rotationHours`, `timeline.orbitDays` and `timeline.moonDays` using their selected rates, alongside elapsed scene seconds and solar seconds. `model/time.ts` handles period-derived phases, rate conversions and continuous individual timing edits. Orbital reset uses `motion.orbitEpochDays`; solar activity has an independently pausable time. The starfield remains mounted above page-specific content and samples the same clock. Its deep-sky cutouts use the portfolio’s original selection, placement, screen blending, rotation, size, and opacity at default settings. Stars and deep-sky objects use independent seeds; omitted optional background fields use portfolio defaults. Cluster and large-star frequencies multiply the original per-site probabilities (0 disables that feature). Overall star density controls site density, so richer clusters add their member stars.
 
-### System, orbits and view
+The old renderer projected DOM rectangles directly and allocated artificial depth bands to each planetary system. It was replaced because a common 3D world better supports the requested camera views, independent axes, ring planes, occlusion, and picking. Reference copies are in ignored `.work/reference/`; reusable generators remain under `scene/utils/` and palette data under `scene/data/`.
 
-- Centered full-sun composition, with adjustable positions and framing.
-- Orbit size, eccentricity, inclination, direction, speed and initial phase.
-- Camera/view angle, zoom and pan, including more face-on and more edge-on systems.
-- Optional orbit-line visibility, color, opacity and thickness.
-- Global play/pause, orbit-position reset and separate motion controls where helpful.
+Further crater/storm shaping, ring appearance controls, manual object placement, and camera refinements can build on the current model. Generator changes must preserve existing version behavior or provide explicit migration/compatibility handling for saved presets.
 
-Prefer projecting a simple common system of orbital planes into the view so changing the viewing angle remains coherent. Spin axes, orbital inclinations and camera orientation are separate settings. Elliptical paths and front/back depth ordering should follow the chosen view. A planet can naturally pass behind the sun or leave the frame; there is no portfolio navigation reason to skip or accelerate that part of its orbit.
+## Background assets
 
-The first view prototype uses Three.js with a shared 3D world and orthographic camera. The imported renderer projected DOM rectangles into screen space and needed replacement at the orchestration layer. Procedural maps and solar/storm/shadow work remain reusable. Initial presets are bird’s-eye, centered side view, and side view with the sun framed at the edge.
+`public/space/deep-sky/` contains 100 small transparent WebP thumbnails, their catalogue, and the original [credits](public/space/deep-sky/CREDITS.md). These render behind the procedural stars using the portfolio’s cutout treatment and are configurable in the Starfield inspector. Full-size photographs remain publisher links.
 
-## Reusing the portfolio work
+The same files are public at `https://ammarz.com/space/deep-sky/`, but the catalogue and sample thumbnail checked on November 2, 2026 lacked CORS permission for `https://space.ammarz.com`. Local copies avoid cross-origin fetch/canvas restrictions. The header logo and favicon are copied from the portfolio as local assets too.
 
-Reusable code now lives in `src/react-app/scene/utils/` and `scene/data/`. Current orchestration lives in `scene/rendering/`; the scene model and JSON schema live in `scene/model/`. Original portfolio starting points were:
+## Verification
 
-- `src/react-app/utils/starfield.ts` and `twinkleShader.ts`: seeded colors, ordinary/standout populations, cluster generation and scintillation.
-- `planetTextures.ts`, `planetMaps.ts` and `giantMaps.ts`: procedural materials and existing static fallbacks.
-- `giantStorms.ts`: seeded evolving weather with local cloud circulation and band bending.
-- `solarMaps.ts`, `solarActivity.ts` and `solarShader.ts`: convection, seeded sunspot events and spherical travel.
-- `planetRenderer.ts`: shared WebGL rendering, spherical projection, lighting, animation clocks and solar caching.
-- `planetRotation.ts`, `planetLighting.ts`, `spaceGeometry.ts` and `orbitalMotion.ts`: motion/lighting defaults and reusable geometric ideas.
+Node tests cover the original seeded-generator artwork, strict JSON validation and round trips, lock behavior, independent ranged rerolls, world-space orbit/view behavior, timeline snapshots, orbital resets, and clock suspension. Browser checks exercise the real WebGL renderer, selection, editing, import/export, view switching, and persistent starfield; screenshots and results belong in `.work/verification/`.
 
-Some of these utilities currently contain portfolio-specific assumptions, measured DOM geometry or fixed parameters. Reuse them behind scene-model adapters, and parameterize what the editor needs. Keep the portfolio's present appearance as a tested default rather than requiring a broad rewrite before the builder can exist.
+Current browser verification uses desktop Chromium with software WebGL. Hardware/browser diversity and mobile testing are separate follow-up work.
 
-## Configuration and responsiveness
+Physical-unit changes use the requested lightweight verification workflow: TypeScript/production builds and a small preset/rate sanity check. Existing model assertions were updated for the current schema but were not run; historical `.work/` browser fixtures and authoring scripts target schema 1. Manual steps are in `.work/notes/physical-sizes-manual.md`.
 
-Define a serializable scene model from the start, even before adding a Save button. It should contain stable object IDs, seeds, appearance parameters, initial motion phases, lighting, orbit definitions, view settings and a schema version. Include generator-version information if later algorithm changes could otherwise alter saved scenes.
+Display multipliers use linear whole-percent sliders: planets100–500%, star10–100%, with a63% star default. Physical diameter sliders remain logarithmic.
 
-Store the inputs needed to recreate a scene, not generated texture blobs, DOM measurements or WebGL resources. Use consistent units, and distinguish a planet's rotation axis from its orbit plane and the camera angle. Resetting orbital positions should not reroll materials or reset unrelated activity.
+The solar recipe uses 70% distance compression, one physical hour per rendered second for rotation, and three physical days per rendered second for orbits. Earth deliberately uses 24 hours for the requested editing convention; the other physical period/distance values use the [NASA metric factsheet](https://nssdc.gsfc.nasa.gov/planetary/factsheet/). The portfolio uses0% distance compression and fictional physical periods/distances chosen to preserve its previous composition and angular motion. Manual steps: `.work/notes/physical-motion-manual.md`.
 
-Cheap controls should update immediately. Cache procedural materials and debounce expensive regeneration while dragging detail controls. Preserve the shared animation clock, pause behavior, reduced-motion support, visibility suspension and bounded rendering resolution. Avoid rebuilding textures for motion-only edits.
+Named-moon reference data use [JPL satellite physical parameters](https://ssd.jpl.nasa.gov/sats/phys_par/) and [mean orbital elements](https://ssd.jpl.nasa.gov/sats/elem/sep.html); Pluto/Charon use the [NASA Pluto factsheet](https://nssdc.gsfc.nasa.gov/planetary/factsheet/plutofact.html). These are composed illustrations with simplified equatorial reference planes and sampled ellipses, not ephemerides or an N-body/barycentric simulation. Solar named moons: Earth's Moon; Phobos/Deimos; Io/Europa/Ganymede/Callisto; Mimas/Enceladus/Tethys/Dione/Rhea/Titan/Iapetus; Miranda/Ariel/Umbriel/Titania/Oberon; Triton; Charon. The portfolio converts its previous generated satellites into named fictional moons. Pluto uses a tilted eccentric solar orbit; Charon retains its large physical size ratio, with local moon size compression disabled.
 
-A mobile editor can use a drawer or bottom sheet so its panel does not consume the whole scene. The portfolio's current project-detail layout is not a requirement for this separate app.
+This pass uses a build/type check and a small preset/model sanity check; no full browser or regression suite. Manual steps: `.work/notes/notable-moons-manual.md`.
 
-## Preset files and later persistence
 
-Planet presets and whole-scene presets are JSON files. Save explicit current parameters together with seeds, lock state, reroll ranges, family-specific settings, and version information. Scene presets embed all object configurations and capture camera and timeline settings. Loading a scene must not depend on external planet preset files. Imports validate before replacing state; imported individual planets receive fresh IDs.
+The belt distance range follows [NASA Dawn's approximate 2.2–3.2 AU region](https://science.nasa.gov/mission/dawn/faq/). Its population, sizes, period ranges and display-size boost are illustrative. [NASA describes Triton's orbit as retrograde](https://science.nasa.gov/neptune/moons/triton/); its preset inclination retains this distinction after the positive-orbit sign correction. `model/asteroidBelt.ts` provides deterministic profiles and radial display mapping; `rendering/AsteroidBeltRenderer.ts` shares a small pool of textured moon surfaces across instanced irregular geometry. The surface vertex shader applies instance transforms to position, normals and tangent. Belt pause/reverse transitions rebase physical orbit-day offsets; whole-scene rerolls change the belt's seed.
 
-Local browser autosave, shareable links, hosted saves, accounts and galleries remain optional later work. No backend is needed for JSON preset files. Image/video export is separate from saving an editable scene.
+Asteroid/direction verification: focused `tests/small-bodies.test.mjs` and native TypeScript/production build; no browser/full suite. Manual steps: `.work/notes/asteroid-belt-manual.md`.
 
-## “My Space”
 
-Add a personal **About** page titled **My Space**—“my” means Ammar specifically, not a visitor-owned space or saved scene. The name is part of the idea :^)
+Star preset color families follow [NASA's O/B/A/F/G/K/M classification](https://science.nasa.gov/exoplanets/stars/). The Sun-like recipe uses the [NASA Sun factsheet](https://nssdc.gsfc.nasa.gov/planetary/factsheet/sunfact.html) diameter of 1,391,400 km and preserves the current golden solar palette. Other class sizes are representative editing defaults, and palettes are artistic choices. The white dwarf defaults to 12,000 km; the red giant to 50 solar diameters. All presets use the existing procedural stellar surface and glow. Recipes and matching/apply helpers live in `data/starPresets.ts`; changing custom colors still commits on picker release.
 
-Use a single central reading column, with space beside it for Ammar’s actual astrophotography and captions. Personal page content and photographs are site-level assets, separate from editable scene/preset data. Keep the header translucent like the portfolio.
+Star preset verification: native TypeScript/production build and a lightweight JSON/model/framing smoke check, with browser review left manual. Manual steps: `.work/notes/star-presets-manual.md`.
 
-It can explain why I made the site, how it grew out of the portfolio's Space Mode, and what interests me about space and procedural scenes. Include some of my personal astrophotography, with captions and any equipment/exposure details I want to share. The photos should feel like a personal part of the project rather than stock decoration.
 
-Keep the playful builder as the main destination, with My Space providing the personal background and a link back to ammarz.com. Its background is the exact currently rendered starfield, kept mounted at app level with the same settings, seed, and clock across navigation.
+Sunspot-control verification: native TypeScript/production build and a small model/JSON check. The original portfolio solar-activity hash is unchanged at default settings. Tested zero/max/fractional frequency, bounded event slots, size scaling, JSON round trips and star-preset preservation; no browser/full suite. Manual steps: `.work/notes/sunspot-controls-manual.md`.
 
-## Build order
 
-- [x] Clean the template and import reusable generators and attributed assets.
-- [x] Define a versioned scene/planet model and validated JSON preset format.
-- [x] Evaluate renderer constraints and prototype all three views in common 3D coordinates.
-- [x] Build the first desktop editor with starfield, sun, clickable planets, object list, basic appearance controls and locks.
-- [x] Add independent rerolls, next-roll ranges, and planet/scene JSON import/export.
-- [x] Preserve scene timelines and separate orbital reset from other activity.
-- [ ] Review the first desktop milestone and expand family-specific surface/weather/ring controls.
-- [ ] Refine camera/view editing and manual composition after prototype review.
-- [ ] Expand My Space with selected personal astrophotography while preserving its shared starfield.
-- [ ] Complete desktop behavior and polish before considering mobile.
-- [ ] Decide whether browser autosave, sharing or hosted persistence are useful later.
+Glow/lighting verification: native TypeScript/production build and a focused model/material/JSON check cover visibility-independent light settings, shared cloud/atmosphere uniforms, compact glow bounds/framing and saved mode/strength. No browser/full suite was run, and the VA/IPS halo needs manual display comparison. Steps: `.work/notes/lighting-glow-manual.md`.
 
-Keep UI colors, typography, and the header close to the portfolio’s blue glass styling and AmmarZ identity. Implementation progress and verification notes are maintained in `.work/todo.md`; this document records the longer-term direction.
 
-## Desktop site basics — clarified November 3, 2026
+The first rocky/moon detail pass lives in `utils/rockyMaps.ts`, with common settings/reroll helpers in `model/rockySurfaces.ts`. Map cache keys include all terrain controls and quality. GPU color/normal textures share a reference-counted lease and are released together, including pending or superseded work. Legacy calls without explicit terrain settings retain their previous generator output. Both built-in scene JSON recipes declare terrain settings/ranges for rocky bodies and named moons.
 
-- About navigation leads to the personal My Space page described above.
-- Preserve a readable, translucent navy header over bright solar content; scene rendering can continue behind it.
-- Start with a larger sun and portfolio-like cropped side composition. Preserve the requested full-sun centered and bird’s-eye alternatives. Custom orbits need not be forced into the frame.
-- Provide an explicit, labeled orbit-line toggle.
-- Full-screen/focus mode expands the scene and hides chrome away from the edges. Header, object list, inspector and playback/camera controls reveal near their respective edges. A selected object keeps its inspector visible.
-- Revealed full-screen side panels fill the entire height; leave their text and controls at their existing vertical positions using top padding. This fill applies only in full-screen mode.
-- Preserve keyboard access, Escape to exit, and a focus-mode fallback when native fullscreen is unavailable.
+Later, after the texture generators are refined, curate Solar System surfaces that resemble each planet and save their unlit color and normal maps plus surface masks alongside the complete seed/settings/generator recipe. Camera angles, source lighting and display scaling should remain live. Asset loading and baking are future work; this pass continues procedural generation.
 
+Rocky-surface verification: native TypeScript/production build, focused deterministic/model/resource-lifetime checks, and local offline shaded PNG previews in `.work/verification/`. These are not browser screenshots. No full browser/test suite was run. Manual steps: `.work/notes/rocky-surfaces-manual.md`.
 
-## Background and rendering review
 
-- Deep-sky objects retain the portfolio’s photograph cutouts, default selection, placement, and blending. Expose visibility, density, size, brightness, and a separate reroll seed in Starfield settings and scene JSON.
-- Configure cluster and large-star frequencies independently, from zero through five times the portfolio defaults. Density controls star sites; clusters contribute additional members.
-- Planet longitude wraps must remain seamless during spin; ring bands should use the portfolio’s filtered opacity texture. Preserve gentle ambient fill and soft planetary terminators with the sun visible.
+`terrain.plains` stores optional coverage, spatial scale and color; optional `ranges.terrain.plains` (or moon `surface.ranges.plains`) stores scalar ranges. Plains reduce terrain/old-impact relief independently of their color. Lunar maria terminology follows [NASA's lunar-crater description](https://science.nasa.gov/moon/lunar-craters/); bright Pluto plains reference [NASA's nitrogen-ice geology map](https://science.nasa.gov/resource/putting-plutos-geology-on-the-map/).
 
+Optional Earth-like `mountainHeight`, `iceCoverage` and `oceanReflectivity` default to 1, 0.08 and 0.5. The shared `utils/surfaceNormals.ts` builds normals from spherical floating-point heights; Earth uses the GPU normal texture's alpha for a water mask. Future curated assets should preserve normal RGB and surface-mask data explicitly. Reflectivity is excluded from the CPU map cache key. Optional `gas` settings default to turbulence1, softness0.5 and detail1 for gas-family bodies; `utils/gasMaps.ts` refines their existing rasterized maps without changing icy-family SVG generation or animated storm code.
 
-## Desktop editing refinements — November 3, 2026
+Refinement validation: native type/build, focused model/JSON checks, the existing Earth-like regression file and offline shaded previews. Saturn/Uranus/Neptune configuration and texture-source hashes match the pre-change snapshots. Gas previews use a CPU band proxy; actual SVG/WebGL results, animated storms and ocean glints remain manual browser checks. Steps: `.work/notes/earth-gas-plains-manual.md`.
 
-- Built-in Portfolio system and Our solar system presets are complete editable JSON files. Use original portfolio seeds, colors, satellite counts and projected desktop starting positions. The solar-system illustration includes a temporary blue rocky Earth, compressed sizes/spacing, selected moons and Saturn’s prominent rings.
-- Orbit shape, position and orientation are independent. Default to a fixed geometric center with separate X/Z radii and numeric controls; optionally keep the Sun at a focus. Preserve old JSON trajectories and avoid a jump when converting them for editing.
-- Ring amount runs from zero to one full system, approximately the previous single belt maximum. Vary width, opacity, inner edge and seeded structure; sparse settings produce a single simple band rather than several Saturn-like belts.
-- Each planet offers a possible moon palette and ranges for orbital radius, signed speed, relative size and inclination. Use independent seeded properties so changing colors does not shuffle orbits.
-- Clicking the Sun selects it, opens Sun settings and draws a highlight, just like planet selection.
 
-
-## Preset refinements — November 3, 2026
-
-- Start with a generated Portfolio system, with no temporary starter-scene flash. Built-ins are JSON recipes with identity palettes and allowed size/detail/moon/ring ranges; importing an exported scene remains an exact snapshot restore.
-- Move Word Wasp back to the 18° reference phase. Project X keeps its original starting point but follows a real closed orbit centered on the Sun, avoiding the previous physical solar intersection.
-- The solar-system illustration uses a larger Sun and wider orbital spacing, including clearance at the maximum Sun size of 80. Keep moon systems compact enough to read as parent groups.
-- Jupiter stays cream/tan/brown through generation and rerolls, using warm band-shadow colors. Use the icy visual family for Saturn and give Uranus a narrow ring system.
-
-
-## Clouds and atmospheric detailing — November 3, 2026
-
-- Fix the compressed solar orbit spacing: retaining Mercury's eccentricity with the previous semimajor distances caused its outer path to overlap Venus's. Check every neighboring envelope and both overhead/side projections, not only Sun clearance.
-- Keep surface, clouds and atmospheric haze separate. First examples: dense cream cloud cover on Venus and partial white clouds plus blue haze on the temporary blue Earth. A proper Earth surface can follow without replacing this layer architecture.
-- Expose rocky-planet atmosphere controls and independent cloud seed/reroll, opacity, coverage, scale, altitude and drift. Save everything in JSON and preserve exact timeline/pause behavior. Gas/icy surfaces continue using their established renderer.
-- Start with sunlit artistic shells and continuous 3D cloud fields. Later add more surface detail, cloud-cast shadows, richer scattering/weather and additional cloud layers as useful.
-
-
-## Earth-like surfaces and weather motion — November 3, 2026
-
-- Color pickers commit once selection finishes; dragging through preview colors must not rebuild terrain or solar fields.
-- Keep Earth-like as an optional mode within Rocky, preserving existing mechanics and remembered rocky/gas/icy settings. Initialize moderate clouds and blue haze once, then preserve edits.
-- Earth-like surfaces use seeded spherical continents, mostly blue ocean, green/yellow land regions and polar ice. Save their three colors, coverage and continent scale independently of the rocky family palette. Surface rerolls change continent shapes without moving cloud patterns. The solar preset now enables this for Earth.
-- Cloud patterns combine body rotation, relative drift and a gentle looping deformation. Evolution has its own speed control, can be disabled independently, and freezes with the shared scene clock.
-
-
-## Free camera — November 3, 2026
-
-- Treat the existing three views as composed snap positions rather than limits on orientation. Right drag rotates around a fixed look-at point; left drag pans in the camera's screen plane; wheel zooms.
-- Offer horizontal and vertical angle sliders plus precise values and zoom in a compact Camera panel. Cover the full azimuth and both poles/below-plane views.
-- Preserve existing JSON framing, materialize custom pose without a jump, and save custom angles/target/projection height in optional view fields. Named view/reset clears the custom pose and restores framing.
-- Keep planets/orbits untouched by camera edits, preserve mesh picking from arbitrary angles, and keep the camera controls usable in full screen.
-
-
-## Scene orbit layout — November 3, 2026
-
-- Scene-level Orbit scale multiplies whole paths about the Sun. Orbit spacing expands semimajor-axis gaps from the innermost base orbit. Compose the factors, preserve individual base orbits and all body/satellite sizes and periods, and save layout separately in JSON. Reset to 100% restores the original paths.
-- Fit scene covers complete visible orbital paths, not just their current planet positions; account for moon/ring/layer extents, retain viewing angle, and expand camera clipping/zoom-out for larger layouts.
-- User requested minimal verification for this pass: TypeScript plus native production build only. Visual testing is left to the user.
-- Proposed next sizing model (not yet implemented): retain actual configured radii, use scene-level geometric size compression toward the largest planet, and keep the Sun independent of that reference. Save display parameters without baking them into planet radii.
-
-
-## Physical diameter model — November 3, 2026
-
-- Explicitly discard schema1 compatibility: only the two built-in recipes need conversion. Use schema2/generator2 with planet diameter and ranges.diameter in ×1,000km, star diameter in ×10,000km, rounded to hundredths.
-- Add logarithmic physical-diameter sliders with linked scaled-unit/km fields. Numeric entries commit on blur/Enter and extend the slider span when needed. The diameter range for rerolls uses logarithmic slider coordinates.
-- Keep scene sizing separate: geometric planetCompression toward the largest physical planet (including hidden ones), planetScale, and independent starScale. Never bake display changes into physical diameters.
-- Show Rendered as in the same field units, with a hover/focus explanation of compression and the display multiplier. Use derived world radii consistently for geometry, moons/rings/layers, lighting/eclipses, picking, highlight, clipping and fit.
-- Solar recipe uses rounded NASA physical diameters with50% compression. Portfolio recipe retains its composition through converted fictional diameters and0% compression.
-- Minimal verification remains the user's preference: build/type check only; no test/browser suite for this pass.
-
-
-## Physical periods and distances — November 4, 2026
-
-- Schema3/generator3 replace angular speeds with orbital periodDays and rotation periodHours, positive durations plus local reverse/playing flags. Orbit axes/centers and star position use million km; explicit ellipses replace redundant radius/eccentricity inputs.
-- Rotation render units: hour/hour, hour/minute, hour/second plus0.1–10×. Orbit units: day/minute, day/second plus0.1–100×. Accumulate separate physical time streams for continuous rate edits and exact saved snapshots. Rebase a planet phase when its period/direction/animation state changes.
-- Distance compression uses a power curve relative to the innermost major axis. The display baseline leaves room for the star/inner system. Apply spacing beyond that baseline and overall orbit scale afterwards. Keep originally separate centered paths apart while retaining intentionally crossing/off-center source paths. Physical values remain untouched.
-- Defaults:70% compression for the solar recipe; Earth24hours, rotation1hour/second and orbits3days/second. Preserve the portfolio's previous motion through fictional periods and its layout through0% compression.
-- Clouds follow the integrated physical surface rotation while their drift/evolution and decorative moons remain in scene seconds.
-
-
-## Individually configured moons — November 4, 2026
-
-- Schema4 separates notableMoons from the procedural population. Named satellites have identity, physical diameter, colors/cratering and seed, orbit axes/period/plane/phase/direction and rotation/tidal-lock settings. Use ×1,000km for moon diameter and axes, days/hours for periods. Preserve physical values while compressing the local display.
-- A local orbit-plane hierarchy under the parent axis follows its equator/rings without inheriting diurnal surface spin. Each moon can change inclination/orientation. Moon size/distance display settings are relative to the parent and independent of solar orbit scaling.
-- Tidal lock overrides periodHours to24×periodDays, disables free-spin editing and faces the same lunar longitude toward the parent using its actual position. Follow the rendered moon orbit regardless of differing rotation/orbit render rates.
-- Add an independent moonDays clock/rate (day/minute ×3 default), include it in snapshots/reset, and preserve phases on per-moon timing edits.
-- Make moons clickable/selectable with their own inspector and parent-list children. Include them in fit/clipping/shadows and selection highlights; preserve them across parent/scene rerolls.
-- Replace existing preset satellites with explicit named moons; procedural populations default off. Solar has21 named moons and now includes Pluto with Charon; portfolio satellites become named fictional moons with retained palettes/seeds.
-
-
-## Camera close-ups and planet tracking — November 4, 2026
-
-- Replace the shared4×zoom ceiling with a common minimum visible height of1scene unit. Derive a view's zoom limit from its base height so offset, centered, overhead and fitted views can all reach the same close-up scale. Use logarithmic slider coordinates with an exact zoom input.
-- Planet and named-moon orbital multipliers use whole numbers1–100. Keep fractional free-body rotation multipliers.
-- Explicit Follow planet mode tracks rendered orbital position every frame, with a stored relative camera offset for panning and the existing rotation/zoom controls. Selection is independent. Stop, hide or delete freezes the current world framing; snap/reset/fit releases follow. Persist camera.followPlanetId in scene JSON.
-
-
-## Prograde motion and procedural asteroid belt — November 4, 2026
-
-- Match positive orbital motion to the right-hand positive-Y body spin. Keep stored starting phases/geometry unchanged; negative time phase fixes planets, named moons and procedural satellites consistently. Preserve intentional retrograde inclinations, especially Triton. Tidal facing continues to derive from actual position.
-- Optional asteroidBelt settings hold seeded population count, million-km radial envelope, physical diameters in thousands of km, inclination/eccentricity, orbital days, spin hours, palette, independent display boost and local motion/epoch offsets. Solar enables1,200 members at329.12–478.71million km; portfolio/default leaves it off.
-- Reuse procedural moon palette/crater surface generation on displaced icosahedra, batching a small pool with instance transforms. Bodies have their own orbital/rotation variations. Avoid allocating belt surfaces until shown. No per-asteroid editor yet.
-- Interpolate the planet radial display mapping for compressed belt positions without feeding the population back into planet spacing. Include complete belt bounds in clipping/fit. Preserve local pause/reverse phase, reset with planetary orbital positions, and save configuration/clock offsets in JSON.
-- Controls under Scene presets → Asteroid belt; ranges regenerate deterministically for the current seed, reroll explicitly changes it. Shared scene/planet-orbit time controls apply.
-
-
-## Stellar appearance presets — November 4, 2026
-
-- Add nine one-shot recipes in the Star inspector: White dwarf, Sun-like G, Red giant and the remaining main-sequence O/B/A/F/K/M color families. Use representative physical sizes in existing ×10,000 km units, with the current solar palette for Sun-like. Other palettes follow the site's stylized rendering.
-- A recipe sets diameter and the three surface colors only. Preserve seed, activity, visibility, position, display scales and the rest of the scene. Custom controls remain available; match explicit appearance values to derive the preset label and show Custom star after manual edits. Do not store a preset link or change the JSON schema.
-- Add Frame star to center/fit the displayed star at the current view angle, clearing planet follow without editing physical/display sizes. Tiny white dwarfs and enlarged giants remain easy to inspect. Keep existing surface animation/shaders.
-
-
-## Sunspot controls — November 4, 2026
-
-- Replace the Star inspector's Reroll surface action with sunspot frequency (0–4×, zero disables) and size (25–300%). Store optional sun.sunspots configuration with 1×/100% fallback; both built-in scenes and new scenes declare defaults.
-- Use the original eight independent event slots at 1× and a bounded pool of 32 at 4×. Fractional populations deterministically accept some epochs. Preserve event timing/drift and convection speed while changing the event rate. Scale the angular radius separately. Keep the original default event output/seed hash exactly.
-- Apply controls through existing per-frame sunspot uniforms, clear unused slots when reducing frequency, and avoid material/solar-map regeneration. Solar activity still pauses the surface and spot clock together; settings can change while paused. Star color/size presets preserve the settings.
-
-
-## Compact stellar glow and independent scene lighting — November 4, 2026
-
-- Replace the broad 3.2-star-radius additive glow with a smooth compact falloff ending at exactly 1.5 radii. Add Star glow strength 0–100%, including off; preserve it through star appearance presets. Include halo bounds in framing/clipping.
-- Scene presets gains Fully lit / Realistic lighting independently of star visibility. Realistic lighting is the default. Fully lit restores the original softer night-side shading and keeps eclipses. Realistic uses the configured star position even when hidden, 14% ambient fill, directional shading and eclipses. Remove the hidden-star fallback light source.
-- Apply the mode consistently to planet and moon surfaces, clouds, atmosphere rims, rings and asteroid batches. Shared uniforms update live without regenerating surfaces.
-- Store optional scene.lighting and sun.glow, with defaults in new/built-in scenes and fallbacks for older JSON. Keep star visibility scoped to its visible meshes/glow.
-- The wide existing shader halo is a plausible explanation for different near-black visibility on the user's VA/IPS displays; physical-panel verification remains manual.
-
-
-## Lighting refinement — November 4, 2026
-
-- Default new scenes, both built-in recipes and missing JSON modes to Realistic lighting. Respect explicitly saved Fully lit choices.
-- Fully lit means the original gentler star-visible lighting: planet fill40%, moon fill28%, ring fill55%, asteroid fill30% and softer terminators. Keep directional shading, atmosphere depth and eclipses in both modes, independently of star visibility.
+Plains calibration verification: native build, seed/coverage/color/JSON checks and offline before/after previews across three seeds per body. Five additional seeds verify a dominant broad region at low scale, and flat terrain with no craters remains flat even with plains enabled. Evidence and comparisons are in `.work/verification/plains-tuning-*`; GPU/browser review remains manual.

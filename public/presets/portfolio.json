@@ -101,7 +101,12 @@
           "ringAmount": [0, 0],
           "ringProbability": 0,
           "detail": [0.85, 1.15],
-          "diameter": [46.65, 51.56]
+          "diameter": [46.65, 51.56],
+          "terrain": {
+            "craterDensity": [0.85, 1.15],
+            "craterSize": [0.65, 1.45],
+            "roughness": [0.6, 1.4]
+          }
         },
         "orbit": {
           "inclination": 3.18165067,
@@ -139,7 +144,17 @@
             "surface": {
               "color": "#d1c5ae",
               "accent": "#5e594e",
-              "detail": 0.9
+              "detail": 0.9,
+              "terrain": {
+                "craterDensity": 0.9,
+                "craterSize": 1,
+                "roughness": 1
+              },
+              "ranges": {
+                "craterDensity": [0.9, 0.9],
+                "craterSize": [0.8, 1.2],
+                "roughness": [0.7, 1.3]
+              }
             },
             "orbit": {
               "radiusX": 38.846634,
@@ -168,6 +183,11 @@
           "orbitScale": 1,
           "sizeCompression": 0,
           "sizeScale": 1
+        },
+        "terrain": {
+          "craterDensity": 1,
+          "craterSize": 1,
+          "roughness": 1
         }
       },
       {
@@ -227,7 +247,12 @@
           "ringAmount": [0, 0],
           "ringProbability": 0,
           "detail": [0.85, 1.15],
-          "diameter": [57.02, 63.02]
+          "diameter": [57.02, 63.02],
+          "terrain": {
+            "craterDensity": [0.85, 1.15],
+            "craterSize": [0.65, 1.45],
+            "roughness": [0.6, 1.4]
+          }
         },
         "orbit": {
           "inclination": 1.55140743,
@@ -265,7 +290,17 @@
             "surface": {
               "color": "#a3998b",
               "accent": "#49453f",
-              "detail": 0.9
+              "detail": 0.9,
+              "terrain": {
+                "craterDensity": 0.9,
+                "craterSize": 1,
+                "roughness": 1
+              },
+              "ranges": {
+                "craterDensity": [0.9, 0.9],
+                "craterSize": [0.8, 1.2],
+                "roughness": [0.7, 1.3]
+              }
             },
             "orbit": {
               "radiusX": 43.811297,
@@ -298,7 +333,17 @@
             "surface": {
               "color": "#989ca1",
               "accent": "#444648",
-              "detail": 0.9
+              "detail": 0.9,
+              "terrain": {
+                "craterDensity": 0.9,
+                "craterSize": 1,
+                "roughness": 1
+              },
+              "ranges": {
+                "craterDensity": [0.9, 0.9],
+                "craterSize": [0.8, 1.2],
+                "roughness": [0.7, 1.3]
+              }
             },
             "orbit": {
               "radiusX": 56.437162,
@@ -331,7 +376,17 @@
             "surface": {
               "color": "#989ca1",
               "accent": "#444648",
-              "detail": 0.9
+              "detail": 0.9,
+              "terrain": {
+                "craterDensity": 0.9,
+                "craterSize": 1,
+                "roughness": 1
+              },
+              "ranges": {
+                "craterDensity": [0.9, 0.9],
+                "craterSize": [0.8, 1.2],
+                "roughness": [0.7, 1.3]
+              }
             },
             "orbit": {
               "radiusX": 54.030181,
@@ -360,6 +415,11 @@
           "orbitScale": 1,
           "sizeCompression": 0,
           "sizeScale": 1
+        },
+        "terrain": {
+          "craterDensity": 1,
+          "craterSize": 1,
+          "roughness": 1
         }
       },
       {
@@ -457,7 +517,17 @@
             "surface": {
               "color": "#989ca1",
               "accent": "#444648",
-              "detail": 0.9
+              "detail": 0.9,
+              "terrain": {
+                "craterDensity": 0.9,
+                "craterSize": 1,
+                "roughness": 1
+              },
+              "ranges": {
+                "craterDensity": [0.9, 0.9],
+                "craterSize": [0.8, 1.2],
+                "roughness": [0.7, 1.3]
+              }
             },
             "orbit": {
               "radiusX": 137.68218,
@@ -490,7 +560,17 @@
             "surface": {
               "color": "#989ca1",
               "accent": "#444648",
-              "detail": 0.9
+              "detail": 0.9,
+              "terrain": {
+                "craterDensity": 0.9,
+                "craterSize": 1,
+                "roughness": 1
+              },
+              "ranges": {
+                "craterDensity": [0.9, 0.9],
+                "craterSize": [0.8, 1.2],
+                "roughness": [0.7, 1.3]
+              }
             },
             "orbit": {
               "radiusX": 137.417958,
@@ -523,7 +603,17 @@
             "surface": {
               "color": "#d1c5ae",
               "accent": "#5e594e",
-              "detail": 0.9
+              "detail": 0.9,
+              "terrain": {
+                "craterDensity": 0.9,
+                "craterSize": 1,
+                "roughness": 1
+              },
+              "ranges": {
+                "craterDensity": [0.9, 0.9],
+                "craterSize": [0.8, 1.2],
+                "roughness": [0.7, 1.3]
+              }
             },
             "orbit": {
               "radiusX": 139.311884,
@@ -552,6 +642,11 @@
           "orbitScale": 1,
           "sizeCompression": 0,
           "sizeScale": 1
+        },
+        "gas": {
+          "turbulence": 1,
+          "softness": 0.5,
+          "detail": 1
         }
       },
       {
@@ -649,7 +744,17 @@
             "surface": {
               "color": "#d1c5ae",
               "accent": "#5e594e",
-              "detail": 0.9
+              "detail": 0.9,
+              "terrain": {
+                "craterDensity": 0.9,
+                "craterSize": 1,
+                "roughness": 1
+              },
+              "ranges": {
+                "craterDensity": [0.9, 0.9],
+                "craterSize": [0.8, 1.2],
+                "roughness": [0.7, 1.3]
+              }
             },
             "orbit": {
               "radiusX": 115.151954,
@@ -682,7 +787,17 @@
             "surface": {
               "color": "#989ca1",
               "accent": "#444648",
-              "detail": 0.9
+              "detail": 0.9,
+              "terrain": {
+                "craterDensity": 0.9,
+                "craterSize": 1,
+                "roughness": 1
+              },
+              "ranges": {
+                "craterDensity": [0.9, 0.9],
+                "craterSize": [0.8, 1.2],
+                "roughness": [0.7, 1.3]
+              }
             },
             "orbit": {
               "radiusX": 116.179582,
@@ -715,7 +830,17 @@
             "surface": {
               "color": "#a3998b",
               "accent": "#49453f",
-              "detail": 0.9
+              "detail": 0.9,
+              "terrain": {
+                "craterDensity": 0.9,
+                "craterSize": 1,
+                "roughness": 1
+              },
+              "ranges": {
+                "craterDensity": [0.9, 0.9],
+                "craterSize": [0.8, 1.2],
+                "roughness": [0.7, 1.3]
+              }
             },
             "orbit": {
               "radiusX": 114.370853,
@@ -748,7 +873,17 @@
             "surface": {
               "color": "#d1c5ae",
               "accent": "#5e594e",
-              "detail": 0.9
+              "detail": 0.9,
+              "terrain": {
+                "craterDensity": 0.9,
+                "craterSize": 1,
+                "roughness": 1
+              },
+              "ranges": {
+                "craterDensity": [0.9, 0.9],
+                "craterSize": [0.8, 1.2],
+                "roughness": [0.7, 1.3]
+              }
             },
             "orbit": {
               "radiusX": 133.231564,
@@ -781,7 +916,17 @@
             "surface": {
               "color": "#d1c5ae",
               "accent": "#5e594e",
-              "detail": 0.9
+              "detail": 0.9,
+              "terrain": {
+                "craterDensity": 0.9,
+                "craterSize": 1,
+                "roughness": 1
+              },
+              "ranges": {
+                "craterDensity": [0.9, 0.9],
+                "craterSize": [0.8, 1.2],
+                "roughness": [0.7, 1.3]
+              }
             },
             "orbit": {
               "radiusX": 115.658894,
@@ -814,7 +959,17 @@
             "surface": {
               "color": "#aaa79d",
               "accent": "#4d4b47",
-              "detail": 0.9
+              "detail": 0.9,
+              "terrain": {
+                "craterDensity": 0.9,
+                "craterSize": 1,
+                "roughness": 1
+              },
+              "ranges": {
+                "craterDensity": [0.9, 0.9],
+                "craterSize": [0.8, 1.2],
+                "roughness": [0.7, 1.3]
+              }
             },
             "orbit": {
               "radiusX": 114.488654,
@@ -847,7 +1002,17 @@
             "surface": {
               "color": "#aaa79d",
               "accent": "#4d4b47",
-              "detail": 0.9
+              "detail": 0.9,
+              "terrain": {
+                "craterDensity": 0.9,
+                "craterSize": 1,
+                "roughness": 1
+              },
+              "ranges": {
+                "craterDensity": [0.9, 0.9],
+                "craterSize": [0.8, 1.2],
+                "roughness": [0.7, 1.3]
+              }
             },
             "orbit": {
               "radiusX": 116.582486,
@@ -880,7 +1045,17 @@
             "surface": {
               "color": "#d1c5ae",
               "accent": "#5e594e",
-              "detail": 0.9
+              "detail": 0.9,
+              "terrain": {
+                "craterDensity": 0.9,
+                "craterSize": 1,
+                "roughness": 1
+              },
+              "ranges": {
+                "craterDensity": [0.9, 0.9],
+                "craterSize": [0.8, 1.2],
+                "roughness": [0.7, 1.3]
+              }
             },
             "orbit": {
               "radiusX": 126.285812,
@@ -913,7 +1088,17 @@
             "surface": {
               "color": "#989ca1",
               "accent": "#444648",
-              "detail": 0.9
+              "detail": 0.9,
+              "terrain": {
+                "craterDensity": 0.9,
+                "craterSize": 1,
+                "roughness": 1
+              },
+              "ranges": {
+                "craterDensity": [0.9, 0.9],
+                "craterSize": [0.8, 1.2],
+                "roughness": [0.7, 1.3]
+              }
             },
             "orbit": {
               "radiusX": 120.416341,
@@ -946,7 +1131,17 @@
             "surface": {
               "color": "#aaa79d",
               "accent": "#4d4b47",
-              "detail": 0.9
+              "detail": 0.9,
+              "terrain": {
+                "craterDensity": 0.9,
+                "craterSize": 1,
+                "roughness": 1
+              },
+              "ranges": {
+                "craterDensity": [0.9, 0.9],
+                "craterSize": [0.8, 1.2],
+                "roughness": [0.7, 1.3]
+              }
             },
             "orbit": {
               "radiusX": 115.599861,
@@ -975,6 +1170,11 @@
           "orbitScale": 1,
           "sizeCompression": 0,
           "sizeScale": 1
+        },
+        "gas": {
+          "turbulence": 1,
+          "softness": 0.5,
+          "detail": 1
         }
       },
       {
@@ -1072,7 +1272,17 @@
             "surface": {
               "color": "#989ca1",
               "accent": "#444648",
-              "detail": 0.9
+              "detail": 0.9,
+              "terrain": {
+                "craterDensity": 0.9,
+                "craterSize": 1,
+                "roughness": 1
+              },
+              "ranges": {
+                "craterDensity": [0.9, 0.9],
+                "craterSize": [0.8, 1.2],
+                "roughness": [0.7, 1.3]
+              }
             },
             "orbit": {
               "radiusX": 61.904283,
@@ -1105,7 +1315,17 @@
             "surface": {
               "color": "#aaa79d",
               "accent": "#4d4b47",
-              "detail": 0.9
+              "detail": 0.9,
+              "terrain": {
+                "craterDensity": 0.9,
+                "craterSize": 1,
+                "roughness": 1
+              },
+              "ranges": {
+                "craterDensity": [0.9, 0.9],
+                "craterSize": [0.8, 1.2],
+                "roughness": [0.7, 1.3]
+              }
             },
             "orbit": {
               "radiusX": 61.819312,
@@ -1138,7 +1358,17 @@
             "surface": {
               "color": "#aaa79d",
               "accent": "#4d4b47",
-              "detail": 0.9
+              "detail": 0.9,
+              "terrain": {
+                "craterDensity": 0.9,
+                "craterSize": 1,
+                "roughness": 1
+              },
+              "ranges": {
+                "craterDensity": [0.9, 0.9],
+                "craterSize": [0.8, 1.2],
+                "roughness": [0.7, 1.3]
+              }
             },
             "orbit": {
               "radiusX": 61.053528,
@@ -1171,7 +1401,17 @@
             "surface": {
               "color": "#989ca1",
               "accent": "#444648",
-              "detail": 0.9
+              "detail": 0.9,
+              "terrain": {
+                "craterDensity": 0.9,
+                "craterSize": 1,
+                "roughness": 1
+              },
+              "ranges": {
+                "craterDensity": [0.9, 0.9],
+                "craterSize": [0.8, 1.2],
+                "roughness": [0.7, 1.3]
+              }
             },
             "orbit": {
               "radiusX": 54.981692,
@@ -1297,7 +1537,17 @@
             "surface": {
               "color": "#989ca1",
               "accent": "#444648",
-              "detail": 0.9
+              "detail": 0.9,
+              "terrain": {
+                "craterDensity": 0.9,
+                "craterSize": 1,
+                "roughness": 1
+              },
+              "ranges": {
+                "craterDensity": [0.9, 0.9],
+                "craterSize": [0.8, 1.2],
+                "roughness": [0.7, 1.3]
+              }
             },
             "orbit": {
               "radiusX": 60.080928,
@@ -1330,7 +1580,17 @@
             "surface": {
               "color": "#989ca1",
               "accent": "#444648",
-              "detail": 0.9
+              "detail": 0.9,
+              "terrain": {
+                "craterDensity": 0.9,
+                "craterSize": 1,
+                "roughness": 1
+              },
+              "ranges": {
+                "craterDensity": [0.9, 0.9],
+                "craterSize": [0.8, 1.2],
+                "roughness": [0.7, 1.3]
+              }
             },
             "orbit": {
               "radiusX": 56.751864,
@@ -1363,7 +1623,17 @@
             "surface": {
               "color": "#aaa79d",
               "accent": "#4d4b47",
-              "detail": 0.9
+              "detail": 0.9,
+              "terrain": {
+                "craterDensity": 0.9,
+                "craterSize": 1,
+                "roughness": 1
+              },
+              "ranges": {
+                "craterDensity": [0.9, 0.9],
+                "craterSize": [0.8, 1.2],
+                "roughness": [0.7, 1.3]
+              }
             },
             "orbit": {
               "radiusX": 52.994886,
@@ -1396,7 +1666,17 @@
             "surface": {
               "color": "#d1c5ae",
               "accent": "#5e594e",
-              "detail": 0.9
+              "detail": 0.9,
+              "terrain": {
+                "craterDensity": 0.9,
+                "craterSize": 1,
+                "roughness": 1
+              },
+              "ranges": {
+                "craterDensity": [0.9, 0.9],
+                "craterSize": [0.8, 1.2],
+                "roughness": [0.7, 1.3]
+              }
             },
             "orbit": {
               "radiusX": 62.582445,
@@ -1429,7 +1709,17 @@
             "surface": {
               "color": "#989ca1",
               "accent": "#444648",
-              "detail": 0.9
+              "detail": 0.9,
+              "terrain": {
+                "craterDensity": 0.9,
+                "craterSize": 1,
+                "roughness": 1
+              },
+              "ranges": {
+                "craterDensity": [0.9, 0.9],
+                "craterSize": [0.8, 1.2],
+                "roughness": [0.7, 1.3]
+              }
             },
             "orbit": {
               "radiusX": 62.841989,

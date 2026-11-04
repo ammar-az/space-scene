@@ -13,6 +13,9 @@ export const defaultEarthlike: Earthlike = {
   desertColor: "#c6ad76",
   landCoverage: 0.3,
   continentScale: 1.8,
+  mountainHeight: 1,
+  iceCoverage: 0.08,
+  oceanReflectivity: 0.5,
 };
 /** Initialize once; toggling or changing family later preserves the edited surface and weather. */
 export function setEarthlike(planet: Planet, enabled: boolean): Planet {

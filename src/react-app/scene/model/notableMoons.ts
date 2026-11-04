@@ -2,6 +2,7 @@ import type { NotableMoon, Planet } from "./schema.ts";
 import { orbitPhase } from "./time.ts";
 import { planetRing } from "./systems.ts";
 import { environmentSettings } from "./atmospheres.ts";
+import { defaultRockyTerrain, defaultRockyRanges } from "./rockySurfaces.ts";
 export const defaultMoonSystem: Planet["moonSystem"] = {
   distanceCompression: 0.65,
   orbitScale: 1,
@@ -28,7 +29,13 @@ export function createNotableMoon(
     locked: false,
     diameter: 1,
     seed,
-    surface: { color: "#b9b5aa", accent: "#625f59", detail: 1 },
+    surface: {
+      color: "#b9b5aa",
+      accent: "#625f59",
+      detail: 1,
+      terrain: { ...defaultRockyTerrain },
+      ranges: structuredClone(defaultRockyRanges),
+    },
     orbit: {
       radiusX: 100 + index * 80,
       radiusZ: 100 + index * 80,

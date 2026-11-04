@@ -1,4 +1,6 @@
 import type { Earthlike } from "../model/earthlike.ts";
+import type { RockyTerrain } from "../model/schema.ts";
+import type { GasSurface } from "../model/gas.ts";
 import { seededRandom } from "./seededRandom.ts";
 
 export type PlanetTextureOptions = {
@@ -12,6 +14,9 @@ export type PlanetTextureOptions = {
   detail?: "moon";
   cratering?: number;
   contrast?: number;
+  terrain?: RockyTerrain;
+  resolution?: 128 | 512 | 1024;
+  gas?: GasSurface;
 };
 
 type Random = () => number;

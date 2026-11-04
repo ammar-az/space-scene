@@ -4,6 +4,7 @@ import { seededRandom } from "./seededRandom.ts";
 import { getPlanetRotation } from "./planetRotation.ts";
 import type { PlanetMap } from "./planetMaps.ts";
 import type { GiantStormProfile } from "./giantStorms.ts";
+import { refineGasMap } from "./gasMaps.ts";
 
 type RGB = [number, number, number];
 const worldWidth = 1024;
@@ -150,7 +151,7 @@ export async function generateGiantMap(
       );
       // Alpha is terrain height in our material format, not image opacity.
       for (let i = 3; i < pixels.length; i += 4) pixels[i] = 128;
-      return {
+      const map: PlanetMap = {
         width: canvas.width,
         height: canvas.height,
         pixels,
@@ -158,6 +159,7 @@ export async function generateGiantMap(
         axisTilt,
         storms: stormProfiles,
       };
+      return options.gas ? refineGasMap(map, options.seed, options.gas) : map;
     } finally {
       canvas.width = 0;
       canvas.height = 0;

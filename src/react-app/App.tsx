@@ -1,5 +1,15 @@
 import NotableMoonInspector from "./components/editor/NotableMoonInspector.tsx";
 import MoonSystemControls from "./components/editor/MoonSystemControls.tsx";
+import GasSurfaceControls from "./components/editor/GasSurfaceControls.tsx";
+import { defaultGasSurface } from "./scene/model/gas.ts";
+import RockySurfaceControls, {
+  RockySurfaceRanges,
+} from "./components/editor/RockySurfaceControls.tsx";
+import {
+  rockyTerrain,
+  rockyRanges,
+  rerollMoonSurface,
+} from "./scene/model/rockySurfaces.ts";
 import {
   createNotableMoon,
   normalizeMoon,
@@ -1105,7 +1115,7 @@ export default function App() {
               onReroll={() => {
                 const seed = freshSeed();
                 changeNamedMoon((moon) =>
-                  moon.locked || planet.locked ? moon : { ...moon, seed },
+                  planet.locked ? moon : rerollMoonSurface(moon, seed),
                 );
               }}
             />
@@ -1255,22 +1265,34 @@ export default function App() {
                         changePlanet((item) => ({ ...item, diameter }))
                       }
                     />
-                    {!(
-                      planet.type === "rocky" && planet.earthlike?.enabled
-                    ) && (
-                      <Slider
-                        label={
-                          planet.type === "rocky"
-                            ? "Cratering"
-                            : planet.type === "gas"
+                    {!(planet.type === "rocky" && planet.earthlike?.enabled) &&
+                      (planet.type === "rocky" ? (
+                        <RockySurfaceControls
+                          value={rockyTerrain(planet.terrain, family.detail)}
+                          onChange={(terrain) =>
+                            changePlanet((item) => ({ ...item, terrain }))
+                          }
+                        />
+                      ) : (
+                        <Slider
+                          label={
+                            planet.type === "gas"
                               ? "Storm activity"
                               : "Band variation"
+                          }
+                          value={family.detail}
+                          min={0}
+                          max={2}
+                          step={0.05}
+                          onChange={(detail) => changeFamily({ detail })}
+                        />
+                      ))}
+                    {planet.type === "gas" && (
+                      <GasSurfaceControls
+                        settings={planet.gas ?? defaultGasSurface}
+                        onChange={(gas) =>
+                          changePlanet((item) => ({ ...item, gas }))
                         }
-                        value={family.detail}
-                        min={0}
-                        max={2}
-                        step={0.05}
-                        onChange={(detail) => changeFamily({ detail })}
                       />
                     )}
                     <div className="section-separator" />
@@ -1790,19 +1812,35 @@ export default function App() {
                         }))
                       }
                     />
-                    <RangeField
-                      label="Surface detail"
-                      value={planet.ranges.detail}
-                      min={0}
-                      max={2}
-                      step={0.05}
-                      onChange={(detail) =>
-                        changePlanet((item) => ({
-                          ...item,
-                          ranges: { ...item.ranges, detail },
-                        }))
-                      }
-                    />
+                    {planet.type === "rocky" && !planet.earthlike?.enabled ? (
+                      <RockySurfaceRanges
+                        terrain={planet.terrain}
+                        value={rockyRanges(
+                          planet.ranges.terrain,
+                          planet.ranges.detail,
+                        )}
+                        onChange={(terrain) =>
+                          changePlanet((item) => ({
+                            ...item,
+                            ranges: { ...item.ranges, terrain },
+                          }))
+                        }
+                      />
+                    ) : (
+                      <RangeField
+                        label="Surface detail"
+                        value={planet.ranges.detail}
+                        min={0}
+                        max={2}
+                        step={0.05}
+                        onChange={(detail) =>
+                          changePlanet((item) => ({
+                            ...item,
+                            ranges: { ...item.ranges, detail },
+                          }))
+                        }
+                      />
+                    )}
                     <div className="section-separator" />
                     <div className="field-heading">ROLL ONE PART</div>
                     <div className="partial-rolls">

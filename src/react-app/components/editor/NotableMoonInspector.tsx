@@ -16,6 +16,10 @@ import {
 } from "../../scene/model/time.ts";
 import { ColorInput, Icon, Slider } from "./controls.tsx";
 import PhysicalValueControl from "./PhysicalValueControl.tsx";
+import RockySurfaceControls, {
+  RockySurfaceRanges,
+} from "./RockySurfaceControls.tsx";
+import { rockyTerrain, rockyRanges } from "../../scene/model/rockySurfaces.ts";
 export default function NotableMoonInspector({
   scene,
   planet,
@@ -126,16 +130,26 @@ export default function NotableMoonInspector({
             </label>
           ))}
         </div>
-        <Slider
-          label="Moon cratering"
-          value={moon.surface.detail}
-          min={0}
-          max={2}
-          step={0.05}
-          onChange={(detail) =>
-            onChange({ surface: { ...moon.surface, detail } })
+        <RockySurfaceControls
+          value={rockyTerrain(moon.surface.terrain, moon.surface.detail)}
+          onChange={(terrain) =>
+            onChange({ surface: { ...moon.surface, terrain } })
           }
+          prefix="Moon "
         />
+        <details className="procedural-details">
+          <summary>Surface reroll ranges</summary>
+          <RockySurfaceRanges
+            terrain={moon.surface.terrain}
+            value={rockyRanges(moon.surface.ranges, [
+              moon.surface.detail,
+              moon.surface.detail,
+            ])}
+            onChange={(ranges) =>
+              onChange({ surface: { ...moon.surface, ranges } })
+            }
+          />
+        </details>
         <div className="section-separator" />
         <div className="field-heading">
           ORBIT AROUND {planet.name.toUpperCase()}

@@ -1,6 +1,7 @@
 import { hash, noise, fractal } from "./noise3d.ts";
 import { generateEarthMap } from "./earthMaps.ts";
 import { generateGiantMap } from "./giantMaps.ts";
+import { generateRockyMap } from "./rockyMaps.ts";
 import type { PlanetTextureOptions } from "./planetTextures.ts";
 import { seededRandom } from "./seededRandom.ts";
 import type { GiantStormProfile } from "./giantStorms.ts";
@@ -13,6 +14,7 @@ export type PlanetMap = {
   equalArea?: boolean;
   axisTilt?: number;
   storms?: GiantStormProfile[];
+  normals?: Uint8Array<ArrayBuffer>;
 };
 const cache = new Map<string, PlanetMap | Promise<PlanetMap>>();
 const mix = (a: number, b: number, t: number) => a + (b - a) * t;
@@ -41,12 +43,21 @@ export function generatePlanetMap(
     options.cratering,
     options.contrast,
     options.bandShadow,
-    options.earthlike,
+    options.earthlike
+      ? { ...options.earthlike, oceanReflectivity: undefined }
+      : undefined,
+    options.terrain,
+    options.resolution,
+    options.gas,
   ]);
   const existing = cache.get(key);
   if (existing) return existing;
   if (options.type === "terrestrial" && options.earthlike?.enabled) {
-    const map = generateEarthMap(options.seed, options.earthlike);
+    const map = generateEarthMap(
+      options.seed,
+      options.earthlike,
+      options.resolution ?? 1024,
+    );
     if (cache.size >= 12) cache.delete(cache.keys().next().value!);
     cache.set(key, map);
     return map;
@@ -59,6 +70,12 @@ export function generatePlanetMap(
     if (cache.size >= 12) cache.delete(cache.keys().next().value!);
     cache.set(key, pending);
     return pending;
+  }
+  if (options.terrain) {
+    const map = generateRockyMap(options, options.terrain);
+    if (cache.size >= 12) cache.delete(cache.keys().next().value!);
+    cache.set(key, map);
+    return map;
   }
   const random = seededRandom(`${options.seed}:surface-map`);
   const seed = Math.floor(random() * 2147483647);

@@ -41,6 +41,25 @@ const family = z.strictObject({
     .optional(),
 });
 
+export const rockyTerrainSchema = z.strictObject({
+  craterDensity: number(0, 3),
+  craterSize: number(0.25, 2.5),
+  roughness: number(0, 2),
+  plains: z
+    .strictObject({ coverage: number(0, 1), scale: number(0.5, 4), color })
+    .optional(),
+});
+export const rockyTerrainRangesSchema = z.strictObject({
+  craterDensity: range(0, 3),
+  craterSize: range(0.25, 2.5),
+  roughness: range(0, 2),
+  plains: z
+    .strictObject({ coverage: range(0, 1), scale: range(0.5, 4) })
+    .optional(),
+});
+export type RockyTerrain = z.infer<typeof rockyTerrainSchema>;
+export type RockyTerrainRanges = z.infer<typeof rockyTerrainRangesSchema>;
+
 export const notableMoonSchema = z
   .strictObject({
     id: z.string().regex(/^[a-zA-Z0-9_-]{1,100}$/),
@@ -49,7 +68,13 @@ export const notableMoonSchema = z
     locked: z.boolean(),
     diameter: number(0.000001, 1000000), // thousands of km; retain sub-km precision for small named moons.
     seed: planetSeed,
-    surface: z.strictObject({ color, accent: color, detail: number(0, 2) }),
+    surface: z.strictObject({
+      color,
+      accent: color,
+      detail: number(0, 2),
+      terrain: rockyTerrainSchema.optional(),
+      ranges: rockyTerrainRangesSchema.optional(),
+    }),
     orbit: z.strictObject({
       radiusX: number(0.000001, 1e9),
       radiusZ: number(0.000001, 1e9), // thousands of km
@@ -114,6 +139,17 @@ export const planetSchema = z.strictObject({
       desertColor: color,
       landCoverage: number(0.05, 0.85),
       continentScale: number(1, 5),
+      mountainHeight: number(0, 2).optional(),
+      iceCoverage: number(0, 0.5).optional(),
+      oceanReflectivity: number(0, 1).optional(),
+    })
+    .optional(),
+  terrain: rockyTerrainSchema.optional(),
+  gas: z
+    .strictObject({
+      turbulence: number(0, 2),
+      softness: number(0, 1),
+      detail: number(0, 2),
     })
     .optional(),
   diameter: number(0.01, 1000000).transform(roundDiameter),
@@ -188,6 +224,7 @@ export const planetSchema = z.strictObject({
     ringAmount: range(0, 1).optional(),
     ringProbability: number(0, 1).optional(),
     detail: range(0, 2),
+    terrain: rockyTerrainRangesSchema.optional(),
   }),
   orbit: z.strictObject({
     inclination: number(-80, 80),

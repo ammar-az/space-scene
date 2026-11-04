@@ -39,8 +39,13 @@ export class TextureStore {
     string,
     {
       refs: number;
-      promise: Promise<{ texture: THREE.DataTexture; map: PlanetMap }>;
+      promise: Promise<{
+        texture: THREE.DataTexture;
+        normalTexture?: THREE.DataTexture;
+        map: PlanetMap;
+      }>;
       texture?: THREE.DataTexture;
+      normalTexture?: THREE.DataTexture;
     }
   >();
   acquire(options: PlanetTextureOptions) {
@@ -54,9 +59,17 @@ export class TextureStore {
         .then((map) => {
           const texture = dataTexture(map);
           texture.wrapT = THREE.ClampToEdgeWrapping;
+          const normalTexture = map.normals
+            ? dataTexture({ ...map, pixels: map.normals })
+            : undefined;
+          if (normalTexture) normalTexture.wrapT = THREE.ClampToEdgeWrapping;
           current.texture = texture;
-          if (current.refs === 0) texture.dispose();
-          return { texture, map };
+          current.normalTexture = normalTexture;
+          if (current.refs === 0) {
+            texture.dispose();
+            normalTexture?.dispose();
+          }
+          return { texture, normalTexture, map };
         });
       this.entries.set(key, entry);
     }
@@ -70,6 +83,7 @@ export class TextureStore {
         released = true;
         if (--current.refs === 0) {
           current.texture?.dispose();
+          current.normalTexture?.dispose();
           if (this.entries.get(key) === current) this.entries.delete(key);
         }
       },
@@ -104,6 +118,9 @@ const planetFragment = `
 precision highp float;
 const float PI = 3.141592653589793;
 uniform sampler2D u_map;
+uniform sampler2D u_normals;
+uniform float u_hasNormals;
+uniform float u_oceanReflectivity;
 uniform float u_equalArea;
 uniform float u_relief;
 uniform float u_fill;
@@ -123,6 +140,12 @@ vec4 sampleSurface(vec2 uv) {
     dy.x -= floor(dy.x + 0.5);
     return textureGrad(u_map, uv, dx, dy);
 }
+vec4 sampleNormals(vec2 uv) {
+    vec2 dx = dFdx(uv), dy = dFdy(uv);
+    dx.x -= floor(dx.x + 0.5);
+    dy.x -= floor(dy.x + 0.5);
+    return textureGrad(u_normals, uv, dx, dy);
+}
 void main() {
     vec3 local = normalize(v_localNormal);
     float v = u_equalArea > 0.5 ? 0.5 - local.y * 0.5 : asin(clamp(local.y, -1.0, 1.0)) / PI + 0.5;
@@ -130,7 +153,14 @@ void main() {
     vec2 flow = giantFlow(uv);
     vec3 albedo = giantWeather(sampleSurface(flow).rgb, uv) * u_tint;
     vec3 normal = normalize(v_worldNormal);
-    if (u_relief > 0.0) {
+    float water = 0.0;
+    if (u_hasNormals > 0.5) {
+        vec3 tangent = normalize(v_tangent - normal * dot(normal, v_tangent));
+        vec4 normalData = sampleNormals(uv);
+        vec3 detail = normalData.xyz * 2.0 - 1.0;
+        water = normalData.a;
+        normal = normalize(tangent * detail.x + cross(normal, tangent) * detail.y + normal * detail.z);
+    } else if (u_relief > 0.0) {
         float dx = sampleSurface(uv + vec2(1.0/512.0,0.0)).a - sampleSurface(uv - vec2(1.0/512.0,0.0)).a;
         float dy = sampleSurface(uv + vec2(0.0,1.0/256.0)).a - sampleSurface(uv - vec2(0.0,1.0/256.0)).a;
         vec3 tangent = normalize(v_tangent - normal * dot(normal, v_tangent));
@@ -141,6 +171,14 @@ void main() {
     float shadow = planetShadowVisibility(normalize(v_worldNormal));
     float brightness = u_fill + (1.0 - u_fill) * diffuse * shadow;
     vec3 color = albedo * brightness;
+    if (u_oceanReflectivity > 0.0 && water > 0.0) {
+        vec3 view = normalize(cameraPosition - v_worldPosition);
+        vec3 halfway = normalize(light + view + vec3(0.00001));
+        float fresnel = 0.02 + 0.98 * pow(1.0 - max(0.0, dot(normal, view)), 5.0);
+        float glint = pow(max(0.0, dot(normal, halfway)), 90.0);
+        color += vec3(0.8,0.9,1.0) * glint * (0.3 + 0.7 * fresnel) * water
+            * u_oceanReflectivity * shadow * smoothstep(0.0,0.15,dot(normal,light));
+    }
     gl_FragColor = vec4(color, 1.0);
 }`;
 
@@ -171,6 +209,13 @@ export function createPlanetSurface(
     fragmentShader: planetFragment,
     uniforms: {
       u_map: { value: placeholder },
+      u_normals: { value: placeholder },
+      u_hasNormals: { value: 0 },
+      u_oceanReflectivity: {
+        value: options.earthlike?.enabled
+          ? (options.earthlike.oceanReflectivity ?? 0.5)
+          : 0,
+      },
       u_equalArea: { value: options.type === "giant" ? 1 : 0 },
       u_relief: {
         value: options.earthlike?.enabled
@@ -221,10 +266,12 @@ export function createPlanetSurface(
     },
   };
   void lease.ready
-    .then(({ texture, map }) => {
+    .then(({ texture, normalTexture, map }) => {
       if (!alive) return;
       surface.map = map;
       material.uniforms.u_map.value = texture;
+      material.uniforms.u_normals.value = normalTexture ?? texture;
+      material.uniforms.u_hasNormals.value = normalTexture ? 1 : 0;
       placeholder.dispose();
     })
     .catch((error) => {

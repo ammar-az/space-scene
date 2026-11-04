@@ -13,6 +13,7 @@ import { starRenderPosition } from "../model/sizes.ts";
 import { smallBodyAppearance } from "../model/systems.ts";
 import { seededRandom } from "../utils/seededRandom.ts";
 import { rotationPhase } from "../model/time.ts";
+import { defaultRockyTerrain } from "../model/rockySurfaces.ts";
 import { createPlanetSurface, TextureStore } from "./materials.ts";
 import type { PlanetSurface } from "./materials.ts";
 
@@ -76,6 +77,8 @@ export class AsteroidBeltRenderer {
             accentColor: palette.accent,
             seed,
             detail: "moon",
+            terrain: defaultRockyTerrain,
+            resolution: 128,
           },
           this.onError,
         );

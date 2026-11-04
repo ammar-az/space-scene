@@ -1,5 +1,12 @@
 import { defaultMoonSystem } from "./notableMoons.ts";
+import {
+  defaultRockyTerrain,
+  defaultRockyRanges,
+  rockyRanges,
+  rollRockyTerrain,
+} from "./rockySurfaces.ts";
 import { defaultLighting } from "./lighting.ts";
+import { defaultGasSurface } from "./gas.ts";
 import { defaultAsteroidBelt } from "./asteroidBelt.ts";
 import { defaultSizing, roundDiameter } from "./sizes.ts";
 import { seededRandom } from "../utils/seededRandom.ts";
@@ -45,6 +52,8 @@ export function createPlanet(
     id,
     name: `Planet ${index + 1}`,
     type,
+    ...(type === "gas" ? { gas: { ...defaultGasSurface } } : {}),
+    terrain: { ...defaultRockyTerrain },
     visible: true,
     locked: false,
     diameter: type === "rocky" ? 12.76 : 120,
@@ -76,6 +85,7 @@ export function createPlanet(
       rings: [0, 2],
       ringAmount: [0, 1],
       detail: [0.4, 1.4],
+      terrain: structuredClone(defaultRockyRanges),
     },
     orbit: {
       inclination: Math.min(30, index * 2),
@@ -209,6 +219,13 @@ export function rerollPlanet(
       ...palette,
       detail: sample("detail", next.ranges.detail),
     };
+    if (next.type === "rocky" && !next.earthlike?.enabled) {
+      next.terrain = rollRockyTerrain(
+        rockyRanges(next.ranges.terrain, next.ranges.detail),
+        `${nonce}:${planet.id}`,
+        next.terrain,
+      );
+    }
   }
   if (
     scope === "clouds" ||
