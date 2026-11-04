@@ -1,5 +1,5 @@
 import type { SceneModel } from "../../scene/model/schema.ts";
-import { viewAngles } from "../../scene/model/camera.ts";
+import { viewAngles, zoomBounds } from "../../scene/model/camera.ts";
 import { Slider } from "./controls.tsx";
 export default function CameraControls({
   view,
@@ -15,6 +15,7 @@ export default function CameraControls({
   onFit(): void;
 }) {
   const angles = viewAngles(view);
+  const zoom = zoomBounds(view);
   return (
     <section
       className="camera-controls"
@@ -54,10 +55,11 @@ export default function CameraControls({
       <Slider
         label="Camera zoom"
         value={view.zoom}
-        min={0.01}
-        max={4}
+        min={zoom.min}
+        max={zoom.max}
         step={0.01}
         precise
+        logarithmic
         onChange={onZoom}
       />
       <button className="button full camera-fit" onClick={onFit}>

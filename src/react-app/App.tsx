@@ -1,8 +1,27 @@
+import NotableMoonInspector from "./components/editor/NotableMoonInspector.tsx";
+import MoonSystemControls from "./components/editor/MoonSystemControls.tsx";
+import {
+  createNotableMoon,
+  normalizeMoon,
+} from "./scene/model/notableMoons.ts";
+import type { NotableMoon } from "./scene/model/schema.ts";
+import PhysicalValueControl from "./components/editor/PhysicalValueControl.tsx";
+import {
+  rebaseOrbit,
+  rebaseSpin,
+  formatDuration,
+  orbitDaysPerSecond,
+  rotationHoursPerSecond,
+} from "./scene/model/time.ts";
+import { orbitLayoutFactors } from "./scene/model/layout.ts";
 import {
   PlanetDiameterControl,
   StarDiameterControl,
 } from "./components/editor/SizeControls.tsx";
-import { roundDiameter } from "./scene/model/sizes.ts";
+import {
+  roundDiameter,
+  WORLD_UNITS_PER_MILLION_KM,
+} from "./scene/model/sizes.ts";
 import { defaultLayout } from "./scene/model/layout.ts";
 import CameraControls from "./components/editor/CameraControls.tsx";
 import {
@@ -12,6 +31,9 @@ import {
   setViewAngles,
   snapView,
   viewAngles,
+  clampZoom,
+  followPlanetView,
+  resolveFollowView,
 } from "./scene/model/camera.ts";
 import EarthlikeControls from "./components/editor/EarthlikeControls.tsx";
 import { setEarthlike } from "./scene/model/earthlike.ts";
@@ -117,11 +139,12 @@ export default function App() {
   }
   const [cameraOpen, setCameraOpen] = useState(false);
   const [selected, setSelected] = useState<string | null>(null);
+  const [selectedMoonId, setSelectedMoonId] = useState<string | null>(null);
   const [panel, setPanel] = useState<"planet" | "sun" | "background" | "scene">(
     "scene",
   );
   const [section, setSection] = useState<
-    "appearance" | "environment" | "motion" | "generation"
+    "appearance" | "environment" | "motion" | "generation" | "moons"
   >("appearance");
   const [page, setPage] = useState<"builder" | "about">("builder");
   const [notice, setNotice] = useState("");
@@ -153,7 +176,17 @@ export default function App() {
   const canvasHost = useRef<HTMLDivElement>(null);
   const clock = useMemo(() => new SceneClock(), []);
   const planet = scene.planets.find((item) => item.id === selected);
+  const followedPlanet = scene.planets.find(
+    (item) => item.id === scene.view.camera?.followPlanetId,
+  );
   const family = planet?.families[planet.type];
+  const selectedMoon = planet?.notableMoons.find(
+    (moon) => moon.id === selectedMoonId,
+  );
+  const renderedOrbitFactors = useMemo(
+    () => orbitLayoutFactors(scene),
+    [scene.layout, scene.planets, scene.sun, scene.sizing],
+  );
   const ellipse = planet ? orbitEllipse(planet.orbit) : null;
   const ring = planet ? ringSettings(planet) : null;
   const moons = planet?.moons ?? defaultMoons;
@@ -210,6 +243,7 @@ export default function App() {
   }
 
   function select(id: string | null) {
+    setSelectedMoonId(null);
     setSelected(id);
     setPanel(id ? "planet" : "scene");
     if (
@@ -224,6 +258,49 @@ export default function App() {
       planets: previous.planets.map((item) =>
         item.id === selected ? update(item) : item,
       ),
+    }));
+  }
+  function selectMoon(parentId: string, moonId: string) {
+    setSelected(parentId);
+    setSelectedMoonId(moonId);
+    setPanel("planet");
+  }
+  function changeNamedMoon(update: (moon: NotableMoon) => NotableMoon) {
+    changePlanet((parent) => ({
+      ...parent,
+      notableMoons: parent.notableMoons.map((moon) =>
+        moon.id === selectedMoonId ? normalizeMoon(update(moon)) : moon,
+      ),
+    }));
+  }
+  function addNamedMoon() {
+    if (!planet || planet.notableMoons.length >= 64) return;
+    const moon = createNotableMoon(
+      objectId(),
+      freshSeed(),
+      planet.notableMoons.length,
+    );
+    changePlanet((parent) => ({
+      ...parent,
+      notableMoons: [...parent.notableMoons, moon],
+    }));
+    setSelectedMoonId(moon.id);
+    setPanel("planet");
+  }
+  function changeNamedOrbit(patch: Partial<NotableMoon["orbit"]>) {
+    const days =
+      (runtime.current?.() ?? scene.timeline).moonDays -
+      scene.motion.moonEpochDays;
+    changeNamedMoon((moon) => ({
+      ...moon,
+      orbit: rebaseOrbit(moon.orbit, patch, days),
+    }));
+  }
+  function changeNamedSpin(patch: Partial<NotableMoon["spin"]>) {
+    const hours = (runtime.current?.() ?? scene.timeline).rotationHours;
+    changeNamedMoon((moon) => ({
+      ...moon,
+      spin: rebaseSpin(moon.spin, patch, hours),
     }));
   }
   function changeFamily(patch: Partial<Planet["families"]["rocky"]>) {
@@ -265,9 +342,19 @@ export default function App() {
     }));
   }
   function changeOrbit(patch: Partial<Planet["orbit"]>) {
+    const days =
+      (runtime.current?.() ?? scene.timeline).orbitDays -
+      scene.motion.orbitEpochDays;
     changePlanet((item) => ({
       ...item,
-      orbit: { ...editOrbit(item.orbit, {}, scene.sun.position), ...patch },
+      orbit: rebaseOrbit(item.orbit, patch, days),
+    }));
+  }
+  function changeSpin(patch: Partial<Planet["spin"]>) {
+    const hours = (runtime.current?.() ?? scene.timeline).rotationHours;
+    changePlanet((item) => ({
+      ...item,
+      spin: rebaseSpin(item.spin, patch, hours),
     }));
   }
   function changeEllipse(
@@ -279,6 +366,7 @@ export default function App() {
     }));
   }
   function selectSun() {
+    setSelectedMoonId(null);
     setSelected(null);
     setPanel("sun");
   }
@@ -413,6 +501,29 @@ export default function App() {
       view: fitSceneView(previous, aspect),
     }));
   }
+  function followPlanet(id: string | null) {
+    const { aspect } = cameraViewport();
+    const days = (runtime.current?.() ?? scene.timeline).orbitDays;
+    setScene((previous) => ({
+      ...previous,
+      view: id
+        ? followPlanetView(previous, id, aspect)
+        : resolveFollowView(previous, days),
+    }));
+  }
+  function togglePlanetVisibility(id: string) {
+    const days = (runtime.current?.() ?? scene.timeline).orbitDays;
+    setScene((previous) => ({
+      ...previous,
+      view:
+        previous.view.camera?.followPlanetId === id
+          ? resolveFollowView(previous, days)
+          : previous.view,
+      planets: previous.planets.map((body) =>
+        body.id === id ? { ...body, visible: !body.visible } : body,
+      ),
+    }));
+  }
   function changeSizing(patch: Partial<SceneModel["sizing"]>) {
     setScene((previous) => ({
       ...previous,
@@ -430,7 +541,7 @@ export default function App() {
       ...previous,
       view: {
         ...previous.view,
-        zoom: Math.max(0.01, Math.min(4, previous.view.zoom * factor)),
+        zoom: clampZoom(previous.view, previous.view.zoom * factor),
       },
     }));
   }
@@ -548,7 +659,13 @@ export default function App() {
           <div className="panel-title">
             <span>YOUR UNIVERSE</span>
             <span className="muted">
-              {scene.planets.length + Number(scene.sun.visible)} bodies
+              {scene.planets.length +
+                Number(scene.sun.visible) +
+                scene.planets.reduce(
+                  (n, p) => n + p.notableMoons.length,
+                  0,
+                )}{" "}
+              bodies
             </span>
           </div>
           <div className="scene-objects">
@@ -569,6 +686,7 @@ export default function App() {
               className={`object-row ${panel === "background" ? "selected" : ""}`}
               onClick={() => {
                 setSelected(null);
+                setSelectedMoonId(null);
                 setPanel("background");
               }}
             >
@@ -597,67 +715,78 @@ export default function App() {
               <span>{scene.planets.length.toString().padStart(2, "0")}</span>
             </div>
             {scene.planets.map((item, index) => (
-              <div
-                key={item.id}
-                className={`planet-row ${selected === item.id ? "selected" : ""} ${!item.visible ? "is-hidden" : ""}`}
-              >
-                <button
-                  className="planet-select"
-                  onClick={() => select(item.id)}
-                  aria-label={`Select ${item.name}`}
+              <div className="planet-object-group" key={item.id}>
+                <div
+                  className={`planet-row ${selected === item.id ? "selected" : ""} ${!item.visible ? "is-hidden" : ""}`}
                 >
-                  <span
-                    className={`planet-swatch ${item.type}`}
-                    style={
-                      {
-                        "--planet-color":
-                          item.type === "rocky" && item.earthlike?.enabled
-                            ? item.earthlike.oceanColor
-                            : item.families[item.type].color,
-                        "--planet-accent":
-                          item.type === "rocky" && item.earthlike?.enabled
-                            ? item.earthlike.landColor
-                            : item.families[item.type].accent,
-                      } as React.CSSProperties
-                    }
-                  />
-                  <span className="object-name">
-                    {item.name}
-                    <small>
-                      {item.type === "rocky"
-                        ? item.earthlike?.enabled
-                          ? "Earth-like planet"
-                          : "Rocky planet"
-                        : item.type === "gas"
-                          ? "Gas giant"
-                          : "Icy giant"}
-                    </small>
-                  </span>
-                  <span className="body-index">
-                    {(index + 1).toString().padStart(2, "0")}
-                  </span>
-                </button>
-                {item.locked && (
-                  <span className="lock-indicator" title="Appearance locked">
-                    <Icon name="lock" size={12} />
-                  </span>
+                  <button
+                    className="planet-select"
+                    onClick={() => select(item.id)}
+                    aria-label={`Select ${item.name}`}
+                  >
+                    <span
+                      className={`planet-swatch ${item.type}`}
+                      style={
+                        {
+                          "--planet-color":
+                            item.type === "rocky" && item.earthlike?.enabled
+                              ? item.earthlike.oceanColor
+                              : item.families[item.type].color,
+                          "--planet-accent":
+                            item.type === "rocky" && item.earthlike?.enabled
+                              ? item.earthlike.landColor
+                              : item.families[item.type].accent,
+                        } as React.CSSProperties
+                      }
+                    />
+                    <span className="object-name">
+                      {item.name}
+                      <small>
+                        {item.type === "rocky"
+                          ? item.earthlike?.enabled
+                            ? "Earth-like planet"
+                            : "Rocky planet"
+                          : item.type === "gas"
+                            ? "Gas giant"
+                            : "Icy giant"}
+                      </small>
+                    </span>
+                    <span className="body-index">
+                      {(index + 1).toString().padStart(2, "0")}
+                    </span>
+                  </button>
+                  {item.locked && (
+                    <span className="lock-indicator" title="Appearance locked">
+                      <Icon name="lock" size={12} />
+                    </span>
+                  )}
+                  <button
+                    className="icon-button row-visibility"
+                    aria-label={`${item.visible ? "Hide" : "Show"} ${item.name}`}
+                    onClick={() => togglePlanetVisibility(item.id)}
+                  >
+                    <Icon name={item.visible ? "eye" : "hidden"} size={14} />
+                  </button>
+                </div>
+                {selected === item.id && item.notableMoons.length > 0 && (
+                  <div className="moon-children">
+                    {item.notableMoons.map((moon) => (
+                      <button
+                        key={moon.id}
+                        className={`moon-child ${selectedMoonId === moon.id ? "active" : ""}`}
+                        aria-label={`Select moon ${moon.name}`}
+                        onClick={() => selectMoon(item.id, moon.id)}
+                      >
+                        <span
+                          className="moon-dot"
+                          style={{ background: moon.surface.color }}
+                        />
+                        <span>{moon.name}</span>
+                        {!moon.visible && <Icon name="hidden" size={11} />}
+                      </button>
+                    ))}
+                  </div>
                 )}
-                <button
-                  className="icon-button row-visibility"
-                  aria-label={`${item.visible ? "Hide" : "Show"} ${item.name}`}
-                  onClick={() =>
-                    setScene((previous) => ({
-                      ...previous,
-                      planets: previous.planets.map((body) =>
-                        body.id === item.id
-                          ? { ...body, visible: !body.visible }
-                          : body,
-                      ),
-                    }))
-                  }
-                >
-                  <Icon name={item.visible ? "eye" : "hidden"} size={14} />
-                </button>
               </div>
             ))}
             <button className="add-planet" onClick={() => addPlanet()}>
@@ -719,6 +848,8 @@ export default function App() {
             scene={scene}
             selected={selected}
             sunSelected={panel === "sun"}
+            selectedMoon={selectedMoonId}
+            onSelectMoon={selectMoon}
             clock={clock}
             active={page === "builder"}
             onSelect={select}
@@ -748,7 +879,10 @@ export default function App() {
                 onZoom={(zoom) =>
                   setScene((previous) => ({
                     ...previous,
-                    view: { ...previous.view, zoom },
+                    view: {
+                      ...previous.view,
+                      zoom: clampZoom(previous.view, zoom),
+                    },
                   }))
                 }
                 onFit={fitScene}
@@ -804,6 +938,31 @@ export default function App() {
               <span>Camera</span>
             </button>
             <button
+              className={`camera-toggle follow-toggle ${followedPlanet ? "active" : ""}`}
+              disabled={!followedPlanet && !planet?.visible}
+              aria-pressed={!!followedPlanet}
+              aria-label={
+                followedPlanet
+                  ? `Stop following ${followedPlanet.name}`
+                  : `Follow ${planet?.name ?? "selected planet"}`
+              }
+              title={
+                followedPlanet
+                  ? `Stop following ${followedPlanet.name}`
+                  : "Keep the selected planet in view"
+              }
+              onClick={() =>
+                followPlanet(followedPlanet ? null : (planet?.id ?? null))
+              }
+            >
+              <Icon name="target" size={17} />
+              <span>
+                {followedPlanet
+                  ? `Following ${followedPlanet.name}`
+                  : "Follow planet"}
+              </span>
+            </button>
+            <button
               className={`orbit-toggle ${scene.motion.orbitLines ? "active" : ""}`}
               title="Toggle orbit lines"
               aria-label="Toggle orbit lines"
@@ -828,7 +987,13 @@ export default function App() {
               onClick={() =>
                 setScene({
                   ...scene,
-                  motion: { ...scene.motion, orbitEpoch: clock.elapsed },
+                  motion: {
+                    ...scene.motion,
+                    orbitEpochDays: (runtime.current?.() ?? scene.timeline)
+                      .orbitDays,
+                    moonEpochDays: (runtime.current?.() ?? scene.timeline)
+                      .moonDays,
+                  },
                 })
               }
             >
@@ -863,7 +1028,49 @@ export default function App() {
             <span>INSPECTOR</span>
             <span className="inspector-dot" />
           </div>
-          {panel === "planet" && planet && family ? (
+          {panel === "planet" && planet && selectedMoon ? (
+            <NotableMoonInspector
+              scene={scene}
+              planet={planet}
+              moon={selectedMoon}
+              onChange={(patch) =>
+                changeNamedMoon((moon) => ({ ...moon, ...patch }))
+              }
+              onOrbit={changeNamedOrbit}
+              onSpin={changeNamedSpin}
+              onBack={() => {
+                setSelectedMoonId(null);
+                setSection("moons");
+              }}
+              onDelete={() => {
+                changePlanet((parent) => ({
+                  ...parent,
+                  notableMoons: parent.notableMoons.filter(
+                    (m) => m.id !== selectedMoonId,
+                  ),
+                }));
+                setSelectedMoonId(null);
+                setSection("moons");
+              }}
+              onDuplicate={() => {
+                const copy = structuredClone(selectedMoon);
+                copy.id = objectId();
+                copy.name = `${copy.name.slice(0, 72)} copy`;
+                copy.orbit.phase = (copy.orbit.phase + 30) % 360;
+                changePlanet((parent) => ({
+                  ...parent,
+                  notableMoons: [...parent.notableMoons, copy],
+                }));
+                setSelectedMoonId(copy.id);
+              }}
+              onReroll={() => {
+                const seed = freshSeed();
+                changeNamedMoon((moon) =>
+                  moon.locked || planet.locked ? moon : { ...moon, seed },
+                );
+              }}
+            />
+          ) : panel === "planet" && planet && family ? (
             <>
               <div className="inspector-identity">
                 <span
@@ -907,6 +1114,7 @@ export default function App() {
                   [
                     ["appearance", "Appearance"],
                     ["environment", "Atmosphere"],
+                    ["moons", "Moons"],
                     ["motion", "Motion"],
                     ["generation", "Reroll ranges"],
                   ] as const
@@ -1028,15 +1236,12 @@ export default function App() {
                     )}
                     <div className="section-separator" />
                     <div className="field-heading">SATELLITES & RINGS</div>
-                    <Slider
-                      label="Moons"
-                      value={planet.moonCount}
-                      min={0}
-                      max={12}
-                      onChange={(moonCount) =>
-                        changePlanet((item) => ({ ...item, moonCount }))
-                      }
-                    />
+                    <button
+                      className="button full moon-back"
+                      onClick={() => setSection("moons")}
+                    >
+                      {planet.notableMoons.length} named moons · Manage moons
+                    </button>
                     {ring && (
                       <>
                         <Slider
@@ -1100,97 +1305,120 @@ export default function App() {
                       Rings and bands follow the planet’s actual axis.
                     </p>
                     <div className="section-separator" />
-                    <div className="field-heading">MOON VARIATION</div>
-                    <div className="moon-colors">
-                      {moons.colors.map((color, index) => (
-                        <div key={index}>
-                          <ColorInput
-                            aria-label={`Moon color ${index + 1}`}
-                            value={color}
-                            onCommit={(color) =>
-                              changeMoons({
-                                colors: moons.colors.map((old, i) =>
-                                  i === index ? color : old,
-                                ),
-                              })
-                            }
-                          />
-                          <button
-                            className="icon-button"
-                            aria-label={`Remove moon color ${index + 1}`}
-                            disabled={moons.colors.length <= 1}
-                            onClick={() =>
-                              changeMoons({
-                                colors: moons.colors.filter(
-                                  (_, i) => i !== index,
-                                ),
-                              })
-                            }
-                          >
-                            ×
-                          </button>
-                        </div>
-                      ))}
-                      <button
-                        className="button"
-                        disabled={moons.colors.length >= 8}
-                        onClick={() =>
-                          changeMoons({ colors: [...moons.colors, "#b9b2a2"] })
-                        }
-                        aria-label="Add moon color"
-                      >
-                        <Icon name="plus" size={14} />
-                      </button>
-                    </div>
-                    <RangeField
-                      label="Moon orbit radius"
-                      value={moons.radius}
-                      min={1.2}
-                      max={12}
-                      step={0.05}
-                      onChange={(radius) => changeMoons({ radius })}
-                    />
-                    <RangeField
-                      label="Moon orbit speed"
-                      value={moons.speed}
-                      min={-60}
-                      max={60}
-                      step={0.1}
-                      onChange={(speed) => changeMoons({ speed })}
-                    />
-                    <RangeField
-                      label="Moon size"
-                      value={moons.size}
-                      min={0.03}
-                      max={0.4}
-                      step={0.01}
-                      onChange={(size) => changeMoons({ size })}
-                    />
-                    <RangeField
-                      label="Moon inclination"
-                      value={moons.inclination}
-                      min={-80}
-                      max={80}
-                      step={0.1}
-                      onChange={(inclination) => changeMoons({ inclination })}
-                    />
-                    <button
-                      className="button full"
-                      disabled={planet.locked}
-                      onClick={() =>
-                        changePlanet((item) =>
-                          rerollPlanet(item, freshSeed(), "moons"),
-                        )
+                  </>
+                )}
+                {section === "moons" && (
+                  <>
+                    <MoonSystemControls
+                      planet={planet}
+                      onSelect={(id) => selectMoon(planet.id, id)}
+                      onAdd={addNamedMoon}
+                      onChange={(patch) =>
+                        changePlanet((parent) => ({ ...parent, ...patch }))
                       }
-                    >
-                      <Icon name="dice" size={15} />
-                      Reroll moons
-                    </button>
-                    <p className="field-note">
-                      Distances and sizes use planet radii; speeds use degrees
-                      per second. Short orbits expand to clear the planet and
-                      rings. Colors leave orbital rolls fixed.
-                    </p>
+                      onSystem={(patch) =>
+                        changePlanet((parent) => ({
+                          ...parent,
+                          moonSystem: { ...parent.moonSystem, ...patch },
+                        }))
+                      }
+                    />
+                    <details className="procedural-details">
+                      <summary>Procedural palette and ranges</summary>
+                      <div className="field-heading">MOON VARIATION</div>
+                      <div className="moon-colors">
+                        {moons.colors.map((color, index) => (
+                          <div key={index}>
+                            <ColorInput
+                              aria-label={`Moon color ${index + 1}`}
+                              value={color}
+                              onCommit={(color) =>
+                                changeMoons({
+                                  colors: moons.colors.map((old, i) =>
+                                    i === index ? color : old,
+                                  ),
+                                })
+                              }
+                            />
+                            <button
+                              className="icon-button"
+                              aria-label={`Remove moon color ${index + 1}`}
+                              disabled={moons.colors.length <= 1}
+                              onClick={() =>
+                                changeMoons({
+                                  colors: moons.colors.filter(
+                                    (_, i) => i !== index,
+                                  ),
+                                })
+                              }
+                            >
+                              ×
+                            </button>
+                          </div>
+                        ))}
+                        <button
+                          className="button"
+                          disabled={moons.colors.length >= 8}
+                          onClick={() =>
+                            changeMoons({
+                              colors: [...moons.colors, "#b9b2a2"],
+                            })
+                          }
+                          aria-label="Add moon color"
+                        >
+                          <Icon name="plus" size={14} />
+                        </button>
+                      </div>
+                      <RangeField
+                        label="Moon orbit radius"
+                        value={moons.radius}
+                        min={1.2}
+                        max={12}
+                        step={0.05}
+                        onChange={(radius) => changeMoons({ radius })}
+                      />
+                      <RangeField
+                        label="Moon orbit speed"
+                        value={moons.speed}
+                        min={-60}
+                        max={60}
+                        step={0.1}
+                        onChange={(speed) => changeMoons({ speed })}
+                      />
+                      <RangeField
+                        label="Moon size"
+                        value={moons.size}
+                        min={0.03}
+                        max={0.4}
+                        step={0.01}
+                        onChange={(size) => changeMoons({ size })}
+                      />
+                      <RangeField
+                        label="Moon inclination"
+                        value={moons.inclination}
+                        min={-80}
+                        max={80}
+                        step={0.1}
+                        onChange={(inclination) => changeMoons({ inclination })}
+                      />
+                      <button
+                        className="button full"
+                        disabled={planet.locked}
+                        onClick={() =>
+                          changePlanet((item) =>
+                            rerollPlanet(item, freshSeed(), "moons"),
+                          )
+                        }
+                      >
+                        <Icon name="dice" size={15} />
+                        Reroll procedural moons
+                      </button>
+                      <p className="field-note">
+                        Distances and sizes use planet radii; speeds use degrees
+                        per second. Short orbits expand to clear the planet and
+                        rings. Colors leave orbital rolls fixed.
+                      </p>
+                    </details>
                   </>
                 )}
                 {section === "environment" && planet.type === "rocky" && (
@@ -1224,24 +1452,42 @@ export default function App() {
                             Sun at focus
                           </button>
                         </div>
-                        <Slider
+                        <PhysicalValueControl
                           label="Orbit X radius"
+                          unit="million km"
                           value={ellipse.radiusX}
-                          min={1}
-                          max={500}
-                          step={0.01}
-                          precise
+                          max={1e9}
+                          km
                           onChange={(radiusX) => changeEllipse({ radiusX })}
                         />
-                        <Slider
+                        <PhysicalValueControl
                           label="Orbit Z radius"
+                          unit="million km"
                           value={ellipse.radiusZ}
-                          min={1}
-                          max={500}
-                          step={0.01}
-                          precise
+                          max={1e9}
+                          km
                           onChange={(radiusZ) => changeEllipse({ radiusZ })}
                         />
+                        <p className="field-note">
+                          Rendered radii:{" "}
+                          {Number(
+                            (
+                              (ellipse.radiusX *
+                                (renderedOrbitFactors.get(planet.id) ?? 1)) /
+                              WORLD_UNITS_PER_MILLION_KM
+                            ).toFixed(3),
+                          )}{" "}
+                          ×{" "}
+                          {Number(
+                            (
+                              (ellipse.radiusZ *
+                                (renderedOrbitFactors.get(planet.id) ?? 1)) /
+                              WORLD_UNITS_PER_MILLION_KM
+                            ).toFixed(3),
+                          )}{" "}
+                          million km. Physical axes stay unchanged by layout
+                          controls.
+                        </p>
                         <Slider
                           label="Ellipse rotation"
                           value={ellipse.rotation}
@@ -1259,7 +1505,7 @@ export default function App() {
                         </div>
                         {(["X", "Y", "Z"] as const).map((axis, index) => (
                           <label className="number-field" key={axis}>
-                            {axis}
+                            {axis} (million km)
                             <input
                               type="number"
                               aria-label={`Orbit center ${axis}`}
@@ -1271,12 +1517,12 @@ export default function App() {
                               defaultValue={Number(
                                 orbitCenter(planet.orbit, scene.sun.position)[
                                   index
-                                ].toFixed(4),
+                                ].toFixed(6),
                               )}
                               disabled={ellipse.anchor === "sun"}
-                              min={-2000}
-                              max={2000}
-                              step={0.01}
+                              min={-1000000}
+                              max={1000000}
+                              step={0.000001}
                               onBlur={(event) => {
                                 const value = event.currentTarget.valueAsNumber;
                                 if (!Number.isFinite(value)) {
@@ -1293,8 +1539,8 @@ export default function App() {
                                   scene.sun.position,
                                 );
                                 center[index] = Math.max(
-                                  -2000,
-                                  Math.min(2000, value),
+                                  -1000000,
+                                  Math.min(1000000, value),
                                 );
                                 changeOrbit({ center });
                               }}
@@ -1331,16 +1577,42 @@ export default function App() {
                       unit="°"
                       onChange={(orientation) => changeOrbit({ orientation })}
                     />
-                    <Slider
-                      label="Orbit speed"
-                      value={planet.orbit.speed}
-                      min={-20}
-                      max={20}
-                      step={0.01}
-                      precise
-                      unit="°/s"
-                      onChange={(speed) => changeOrbit({ speed })}
+                    <PhysicalValueControl
+                      label="Orbital period"
+                      unit="days"
+                      value={planet.orbit.periodDays}
+                      initialMax={1000000}
+                      onChange={(periodDays) => changeOrbit({ periodDays })}
                     />
+                    <p className="field-note">
+                      One rendered orbit:{" "}
+                      {formatDuration(
+                        planet.orbit.periodDays /
+                          (orbitDaysPerSecond(scene.motion.orbitRate) *
+                            scene.motion.speed),
+                      )}{" "}
+                      at the current rate.
+                    </p>
+                    <label className="check-field">
+                      <input
+                        type="checkbox"
+                        checked={planet.orbit.reverse}
+                        onChange={(e) =>
+                          changeOrbit({ reverse: e.target.checked })
+                        }
+                      />
+                      Reverse orbit
+                    </label>
+                    <label className="check-field">
+                      <input
+                        type="checkbox"
+                        checked={planet.orbit.playing}
+                        onChange={(e) =>
+                          changeOrbit({ playing: e.target.checked })
+                        }
+                      />
+                      Animate orbit
+                    </label>
                     <Slider
                       label="Starting orbital phase"
                       value={planet.orbit.phase}
@@ -1353,20 +1625,42 @@ export default function App() {
                     />
                     <div className="section-separator" />
                     <div className="field-heading">ROTATION</div>
-                    <Slider
-                      label="Spin speed"
-                      value={planet.spin.speed}
-                      min={-60}
-                      max={60}
-                      step={0.5}
-                      unit="°/s"
-                      onChange={(speed) =>
-                        changePlanet((item) => ({
-                          ...item,
-                          spin: { ...item.spin, speed },
-                        }))
-                      }
+                    <PhysicalValueControl
+                      label="Rotation period"
+                      unit="hours"
+                      value={planet.spin.periodHours}
+                      initialMax={100000}
+                      onChange={(periodHours) => changeSpin({ periodHours })}
                     />
+                    <p className="field-note">
+                      One rendered rotation:{" "}
+                      {formatDuration(
+                        planet.spin.periodHours /
+                          (rotationHoursPerSecond(scene.motion.rotationRate) *
+                            scene.motion.speed),
+                      )}{" "}
+                      at the current rate.
+                    </p>
+                    <label className="check-field">
+                      <input
+                        type="checkbox"
+                        checked={planet.spin.reverse}
+                        onChange={(e) =>
+                          changeSpin({ reverse: e.target.checked })
+                        }
+                      />
+                      Reverse around axis
+                    </label>
+                    <label className="check-field">
+                      <input
+                        type="checkbox"
+                        checked={planet.spin.playing}
+                        onChange={(e) =>
+                          changeSpin({ playing: e.target.checked })
+                        }
+                      />
+                      Rotate planet
+                    </label>
                     <Slider
                       label="Axis orientation"
                       value={planet.spin.orientation}
@@ -1381,7 +1675,8 @@ export default function App() {
                       }
                     />
                     <p className="field-note">
-                      Negative speeds reverse direction. Camera changes preserve
+                      Direction follows the configured axis; tilts past90°
+                      already reverse apparent rotation. Camera changes preserve
                       these settings.
                     </p>
                   </>
@@ -1416,10 +1711,10 @@ export default function App() {
                       }
                     />
                     <RangeField
-                      label="Moon count"
+                      label="Procedural moon count"
                       value={planet.ranges.moons}
                       min={0}
-                      max={12}
+                      max={64}
                       onChange={(moons) =>
                         changePlanet((item) => ({
                           ...item,
@@ -1506,6 +1801,21 @@ export default function App() {
               </div>
               <div className="inspector-footer">
                 <button
+                  className={`button full planet-follow ${followedPlanet?.id === planet.id ? "primary" : ""}`}
+                  disabled={!planet.visible}
+                  aria-pressed={followedPlanet?.id === planet.id}
+                  onClick={() =>
+                    followPlanet(
+                      followedPlanet?.id === planet.id ? null : planet.id,
+                    )
+                  }
+                >
+                  <Icon name="target" size={16} />
+                  {followedPlanet?.id === planet.id
+                    ? "Stop following planet"
+                    : "Follow planet"}
+                </button>
+                <button
                   className={`lock-button ${planet.locked ? "locked" : ""}`}
                   aria-pressed={planet.locked}
                   onClick={() =>
@@ -1553,8 +1863,14 @@ export default function App() {
                     aria-label="Delete planet"
                     title="Delete planet"
                     onClick={() => {
+                      const days = (runtime.current?.() ?? scene.timeline)
+                        .orbitDays;
                       setScene((previous) => ({
                         ...previous,
+                        view:
+                          previous.view.camera?.followPlanetId === selected
+                            ? resolveFollowView(previous, days)
+                            : previous.view,
                         planets: previous.planets.filter(
                           (item) => item.id !== selected,
                         ),
@@ -1847,6 +2163,13 @@ export default function App() {
             <ScenePresets
               layout={scene.layout}
               sizing={scene.sizing}
+              motion={scene.motion}
+              onMotion={(patch) =>
+                setScene((previous) => ({
+                  ...previous,
+                  motion: { ...previous.motion, ...patch },
+                }))
+              }
               onSizing={changeSizing}
               onLayout={changeLayout}
               onFit={fitScene}

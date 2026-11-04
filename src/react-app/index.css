@@ -1684,6 +1684,15 @@ button:disabled:hover {
 .camera-fit {
   margin-bottom: 14px;
 }
+.planet-follow {
+  margin-bottom: 14px;
+}
+.follow-toggle span {
+  max-width: 140px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
 
 .size-control {
   margin: 20px 0 26px;
@@ -1779,4 +1788,122 @@ button:disabled:hover {
 .rendered-size:hover .size-tooltip,
 .rendered-size:focus .size-tooltip {
   display: block;
+}
+
+.rate-unit {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 10px;
+  margin: 18px 0;
+  font-size: 11px;
+  color: #a0adbd;
+}
+.rate-unit select {
+  min-width: 0;
+  border: 1px solid #35536d;
+  border-radius: 4px;
+  background: #172334;
+  color: #d8e6f2;
+  padding: 8px 6px;
+  font: 10px var(--mono);
+}
+.physical-number label > span {
+  display: block;
+  color: #8b9caf;
+  font: 8px var(--mono);
+  margin-bottom: 7px;
+}
+
+.inspector-tabs {
+  gap: 6px;
+  padding-inline: 13px;
+}
+.inspector-tabs button {
+  font-size: 9px;
+}
+.moon-children {
+  border-left: 1px solid #34465b;
+  margin: -1px 0 12px 33px;
+  padding-left: 12px;
+}
+.moon-child {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  width: 100%;
+  padding: 7px 5px;
+  border: 0;
+  background: none;
+  text-align: left;
+  font-size: 10px;
+  color: #8d9cb0;
+}
+.moon-child:hover,
+.moon-child.active {
+  color: #c5e9ff;
+  background: #182b3d;
+  border-radius: 4px;
+}
+.moon-dot {
+  display: inline-block;
+  flex-shrink: 0;
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  box-shadow: inset -3px -2px 4px #0007;
+}
+.named-moon-list {
+  margin-bottom: 16px;
+}
+.named-moon-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  width: 100%;
+  margin-bottom: 7px;
+  padding: 12px 10px;
+  background: #152335;
+  color: #c1d6e7;
+  border: 1px solid #30465b;
+  border-radius: 5px;
+  text-align: left;
+  font-size: 11px;
+}
+.named-moon-row > span:nth-child(2) {
+  flex: 1;
+}
+.named-moon-row small {
+  display: block;
+  font-size: 8px;
+  color: #7b8b9f;
+  margin-top: 4px;
+}
+.moon-back {
+  margin-bottom: 20px;
+}
+.moon-actions {
+  margin: 14px 0 24px;
+}
+.moon-actions .button {
+  font-size: 9px;
+  padding-inline: 6px;
+}
+.moon-free-spin {
+  border: 0;
+  padding: 0;
+  margin: 0;
+  min-width: 0;
+}
+.moon-free-spin:disabled {
+  opacity: 0.4;
+}
+.procedural-details {
+  margin: 20px 0 24px;
+}
+.procedural-details summary {
+  cursor: pointer;
+  color: #8da4ba;
+  font-size: 10px;
+  margin-bottom: 20px;
 }

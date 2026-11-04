@@ -130,6 +130,12 @@ export function Icon({ name, size = 18 }: { name: string; size?: number }) {
         <path d="m8 6 1-3h6l1 3" />
       </>
     ),
+    target: (
+      <>
+        <circle cx="12" cy="12" r="6" />
+        <path d="M12 2v5M12 17v5M2 12h5M17 12h5" />
+      </>
+    ),
     chevron: <path d="m9 5 7 7-7 7" />,
   };
   return (
@@ -156,6 +162,7 @@ export function Slider({
   step = 1,
   unit = "",
   precise = false,
+  logarithmic = false,
   onChange,
 }: {
   label: string;
@@ -165,8 +172,12 @@ export function Slider({
   step?: number;
   unit?: string;
   precise?: boolean;
+  logarithmic?: boolean;
   onChange(value: number): void;
 }) {
+  const sliderValue = logarithmic
+    ? (Math.log(value / min) / Math.log(max / min)) * 1000
+    : value;
   return (
     <label className="slider-field">
       <span>
@@ -201,11 +212,17 @@ export function Slider({
       <input
         type="range"
         aria-label={label}
-        min={min}
-        max={max}
-        step={step}
-        value={value}
-        onChange={(event) => onChange(Number(event.target.value))}
+        min={logarithmic ? 0 : min}
+        max={logarithmic ? 1000 : max}
+        step={logarithmic ? 1 : step}
+        value={sliderValue}
+        onChange={(event) =>
+          onChange(
+            logarithmic
+              ? min * Math.pow(max / min, Number(event.target.value) / 1000)
+              : Number(event.target.value),
+          )
+        }
       />
     </label>
   );

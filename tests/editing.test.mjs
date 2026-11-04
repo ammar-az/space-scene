@@ -27,16 +27,14 @@ import {
 const near = (a, b) =>
   a.forEach((v, i) => assert.ok(Math.abs(v - b[i]) < 1e-8, `${a} vs ${b}`));
 
-test("legacy ellipses upgrade without a jump; independent axes and rotations hold the center", () => {
+test("explicit physical ellipses retain their center through shape and orientation edits", () => {
   const orbit = {
     ...createScene().planets[0].orbit,
-    radius: 100,
-    eccentricity: 0.6,
+    ellipse: { radiusX: 100, radiusZ: 80, rotation: 0, anchor: "center" },
     inclination: 24,
     orientation: -37,
     center: [20, 8, 30],
   };
-  delete orbit.ellipse;
   const sun = [10, 2, -30],
     upgraded = editOrbit(orbit, {}, sun);
   for (let phase = 0; phase < 360; phase += 15)
@@ -97,6 +95,7 @@ test("solar anchoring keeps the Sun at a focus on either ellipse axis and follow
 
 test("rings vary from a single narrow band to one bounded intricate system", () => {
   const p = createScene().planets[1];
+  p.proceduralMoons = true;
   delete p.rings;
   p.ringCount = 1;
   const full = planetRing(p),
@@ -133,6 +132,7 @@ test("rings vary from a single narrow band to one bounded intricate system", () 
 
 test("moon recipes are deterministic, independent and constrained by rings", () => {
   const p = createScene().planets[1];
+  p.proceduralMoons = true;
   p.moonCount = 8;
   p.moons = {
     ...structuredClone(defaultMoons),

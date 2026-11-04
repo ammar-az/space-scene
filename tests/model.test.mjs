@@ -1,4 +1,8 @@
 import {
+  orbitLayoutFactors,
+  scaleOrbitPoint,
+} from "../src/react-app/scene/model/layout.ts";
+import {
   planetRenderRadius,
   starRenderRadius,
 } from "../src/react-app/scene/model/sizes.ts";
@@ -144,15 +148,27 @@ test("shared clock pauses, suspends hidden time, and advances only once per fram
 
 test("scene snapshots retain separate orbital and solar time, and reset only orbit positions", () => {
   const scene = createScene();
-  scene.timeline = { elapsed: 120, solar: 48 };
+  scene.timeline = {
+    elapsed: 120,
+    solar: 48,
+    rotationHours: 120,
+    orbitDays: 360,
+    moonDays: 12,
+  };
   const loaded = parsePreset(serializeScene(scene)).scene;
-  assert.deepEqual(loaded.timeline, { elapsed: 120, solar: 48 });
+  assert.deepEqual(loaded.timeline, {
+    elapsed: 120,
+    solar: 48,
+    rotationHours: 120,
+    orbitDays: 360,
+    moonDays: 12,
+  });
   const initial = orbitPosition(loaded.planets[0].orbit, 0);
-  loaded.motion.orbitEpoch = 120;
+  loaded.motion.orbitEpochDays = 360;
   assert.deepEqual(
     orbitPosition(
       loaded.planets[0].orbit,
-      loaded.timeline.elapsed - loaded.motion.orbitEpoch,
+      loaded.timeline.orbitDays - loaded.motion.orbitEpochDays,
     ),
     initial,
   );
@@ -178,15 +194,28 @@ test("portfolio side framing matches the initial sun height and visible limb", (
   for (const aspect of [1.06, 1.6, 1.92]) {
     const frame = viewFrame(scene.view, aspect);
     assert.ok(
-      Math.abs((starRenderRadius(scene) * 2) / frame.height - 1.12 * (55.44 / 55)) < 1e-10,
+      Math.abs(
+        (starRenderRadius(scene) * 2) / frame.height - 1.12 * (55.44 / 55),
+      ) < 1e-10,
     );
     const centerRatio = (0.5 - frame.target[0] / frame.width) * aspect;
     const limbRatio = centerRatio + starRenderRadius(scene) / frame.height;
-    assert.ok(Math.abs(limbRatio - ((1.12 * 0.86) / 2 - 0.11 + (55.44 - 55) / frame.height)) < 1e-10);
+    assert.ok(
+      Math.abs(
+        limbRatio - ((1.12 * 0.86) / 2 - 0.11 + (55.44 - 55) / frame.height),
+      ) < 1e-10,
+    );
   }
+  const factors = orbitLayoutFactors(scene);
   for (const planet of scene.planets)
     assert.ok(
-      planet.orbit.radius * (1 - planet.orbit.eccentricity) >
+      Math.hypot(
+        ...scaleOrbitPoint(
+          orbitPosition(planet.orbit, 0),
+          scene.sun.position,
+          factors.get(planet.id),
+        ),
+      ) >
         starRenderRadius(scene) + planetRenderRadius(scene, planet),
     );
 });

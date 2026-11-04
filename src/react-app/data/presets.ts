@@ -14,8 +14,8 @@ export const scenePresets = [
     name: "Our solar system",
     path: "/presets/solar-system.json",
     description:
-      "Mercury through Neptune, with physical diameters, Earth-like oceans and moving clouds.",
-    note: "50% planet-size compression, independent star scaling, compact moons and rings for Saturn and Uranus. Saturn uses the icy visual family.",
+      "Mercury through Pluto, with named moons, physical periods, Earth-like oceans and moving clouds.",
+    note: "50% planet-size compression, independent star scaling, named satellites including Charon, and rings for Saturn and Uranus. Saturn uses the icy visual family.",
     colors: [
       "#a6a39b",
       "#d7b675",

@@ -1,6 +1,11 @@
+import { starRenderPosition } from "./sizes.ts";
 import type { SceneModel, ViewPreset } from "./schema.ts";
-import { sceneFitSamples } from "./layout.ts";
-import { viewFrame } from "./geometry.ts";
+import {
+  orbitLayoutFactors,
+  scaleOrbitPoint,
+  sceneFitSamples,
+} from "./layout.ts";
+import { MIN_VIEW_HEIGHT, orbitPosition, viewFrame } from "./geometry.ts";
 type View = SceneModel["view"];
 type Vector = [number, number, number];
 const degrees = 180 / Math.PI;
@@ -8,6 +13,60 @@ const clamp = (value: number, min: number, max: number) =>
   Math.max(min, Math.min(max, value));
 export const wrapAzimuth = (value: number) =>
   ((((value + 180) % 360) + 360) % 360) - 180;
+
+export function zoomBounds(view: View) {
+  const baseHeight = viewFrame({ ...view, zoom: 1 }, 1).height;
+  return { min: 0.01, max: baseHeight / MIN_VIEW_HEIGHT };
+}
+export function clampZoom(view: View, zoom: number): number {
+  const bounds = zoomBounds(view);
+  return clamp(zoom, bounds.min, bounds.max);
+}
+
+/** Store a render-space offset so a followed planet can move without React updates. */
+export function followPlanetView(
+  scene: SceneModel,
+  id: string,
+  aspect: number,
+): View {
+  if (!scene.planets.some((p) => p.id === id && p.visible)) return scene.view;
+  const view = setViewAngles(scene.view, aspect, {});
+  return {
+    ...view,
+    camera: { ...view.camera!, target: [0, 0, 0], followPlanetId: id },
+  };
+}
+
+/** Resolve a relative follow target to a fixed world view, also used when releasing follow. */
+export function resolveFollowView(
+  scene: SceneModel,
+  orbitDays: number,
+  factors?: Map<string, number>,
+): View {
+  const view = scene.view,
+    camera = view.camera;
+  if (!camera?.followPlanetId) return view;
+  const { followPlanetId, ...fixed } = camera;
+  const planet = scene.planets.find((p) => p.id === followPlanetId);
+  const position = planet
+    ? scaleOrbitPoint(
+        orbitPosition(
+          planet.orbit,
+          orbitDays - scene.motion.orbitEpochDays,
+          scene.sun.position,
+        ),
+        scene.sun.position,
+        (factors ?? orbitLayoutFactors(scene)).get(planet.id) ?? 1,
+      )
+    : [0, 0, 0];
+  return {
+    ...view,
+    camera: {
+      ...fixed,
+      target: fixed.target.map((v, i) => v + position[i]) as Vector,
+    },
+  };
+}
 
 export function viewAngles(view: View) {
   return view.camera
@@ -120,7 +179,8 @@ export function fitSceneView(scene: SceneModel, aspect: number): View {
     min = [Infinity, Infinity, Infinity],
     max = [-Infinity, -Infinity, -Infinity];
   const samples = sceneFitSamples(scene);
-  if (!samples.length) samples.push({ center: scene.sun.position, radius: 10 });
+  if (!samples.length)
+    samples.push({ center: starRenderPosition(scene), radius: 10 });
   for (const sample of samples)
     for (let i = 0; i < 3; i++) {
       const coordinate = sample.center.reduce(

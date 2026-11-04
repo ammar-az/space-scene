@@ -1,7 +1,17 @@
 import {
+  notableMoonLayout,
+  notableMoonPosition,
+} from "../model/notableMoons.ts";
+import {
+  rotationHoursPerSecond,
+  orbitDaysPerSecond,
+  rotationPhase,
+} from "../model/time.ts";
+import {
   largestPlanetDiameter,
   planetRenderRadius,
   starRenderRadius,
+  starRenderPosition,
 } from "../model/sizes.ts";
 import {
   orbitLayoutFactors,
@@ -11,6 +21,7 @@ import {
 import * as THREE from "three";
 import type { Planet, SceneModel } from "../model/schema.ts";
 import { orbitPosition, viewFrame } from "../model/geometry.ts";
+import { resolveFollowView } from "../model/camera.ts";
 import { moonProfiles, moonPosition, planetRing } from "../model/systems.ts";
 import type { MoonProfile } from "../model/systems.ts";
 import { getSolarActivity } from "../utils/solarActivity.ts";
@@ -35,6 +46,16 @@ type Moon = MoonProfile & {
   surface: PlanetSurface;
   id: string;
 };
+type NamedMoon = {
+  id: string;
+  key: string;
+  node: THREE.Group;
+  mesh: THREE.Mesh;
+  surface: PlanetSurface;
+  orbitLine: THREE.LineLoop;
+  radius: number;
+  factor: number;
+};
 type Entry = {
   signature: string;
   root: THREE.Group;
@@ -42,6 +63,7 @@ type Entry = {
   body: THREE.Mesh;
   surface: PlanetSurface;
   moons: Moon[];
+  notableMoons: NamedMoon[];
   rings: THREE.ShaderMaterial[];
   environment?: PlanetEnvironment;
   orbit: THREE.LineLoop;
@@ -75,6 +97,7 @@ export class SceneRenderer {
   private envelopes: ReturnType<typeof sceneEnvelopes> = [];
   private selected: string | null = null;
   private sunSelected = false;
+  private selectedMoon: string | null = null;
   private active = true;
   private frame = 0;
   private aspect = 1;
@@ -89,6 +112,9 @@ export class SceneRenderer {
     rotate: boolean;
   } | null = null;
   private solarElapsed = 0;
+  private rotationHours = 0;
+  private orbitDays = 0;
+  private moonDays = 0;
   private previousElapsed = 0;
   private disposed = false;
 
@@ -99,6 +125,7 @@ export class SceneRenderer {
     callbacks: {
       select(id: string | null): void;
       selectSun(): void;
+      selectMoon(parentId: string, moonId: string): void;
       pan(dx: number, dy: number): void;
       rotate(dx: number, dy: number): void;
       zoom(factor: number): void;
@@ -110,6 +137,9 @@ export class SceneRenderer {
     this.callbacks = callbacks;
     this.model = model;
     this.solarElapsed = model.timeline.solar;
+    this.rotationHours = model.timeline.rotationHours;
+    this.orbitDays = model.timeline.orbitDays;
+    this.moonDays = model.timeline.moonDays;
     this.previousElapsed = model.timeline.elapsed;
     this.renderer = new THREE.WebGLRenderer({
       canvas: this.canvas,
@@ -180,6 +210,7 @@ export class SceneRenderer {
   private callbacks: {
     select(id: string | null): void;
     selectSun(): void;
+    selectMoon(parentId: string, moonId: string): void;
     pan(dx: number, dy: number): void;
     rotate(dx: number, dy: number): void;
     zoom(factor: number): void;
@@ -198,11 +229,25 @@ export class SceneRenderer {
     this.active = active;
   }
   snapshotTimeline() {
-    return { elapsed: this.clock.elapsed, solar: this.solarElapsed };
+    return {
+      elapsed: this.clock.elapsed,
+      solar: this.solarElapsed,
+      rotationHours: this.rotationHours,
+      orbitDays: this.orbitDays,
+      moonDays: this.moonDays,
+    };
   }
-  setModel(model: SceneModel, selected: string | null, sunSelected = false) {
+  setModel(
+    model: SceneModel,
+    selected: string | null,
+    sunSelected = false,
+    selectedMoon: string | null = null,
+  ) {
     if (model.timeline !== this.model.timeline) {
       this.solarElapsed = model.timeline.solar;
+      this.rotationHours = model.timeline.rotationHours;
+      this.orbitDays = model.timeline.orbitDays;
+      this.moonDays = model.timeline.moonDays;
       this.previousElapsed = model.timeline.elapsed;
     }
     if (
@@ -220,6 +265,7 @@ export class SceneRenderer {
     this.model = model;
     this.selected = selected;
     this.sunSelected = sunSelected;
+    this.selectedMoon = selectedMoon;
     if (this.sunSignature(model) !== this.sunKey) {
       const next = createSunSurface(model.sun);
       this.sunSurface.dispose();
@@ -239,17 +285,36 @@ export class SceneRenderer {
     for (const planet of model.planets) {
       const signature = JSON.stringify([
         planet.type,
+        planet.diameter,
         planet.earthlike,
         planet.seeds,
         planet.families[planet.type],
         planet.moonCount,
+        planet.proceduralMoons,
+        planet.notableMoons.map((moon) => [
+          moon.id,
+          moon.seed,
+          moon.diameter,
+          moon.surface,
+          moon.orbit.radiusX,
+          moon.orbit.radiusZ,
+          moon.orbit.rotation,
+          moon.orbit.inclination,
+          moon.orbit.orientation,
+        ]),
+        planet.moonSystem,
         planet.ringCount,
         planet.rings,
         planet.moons,
         planet.atmosphere,
         planet.clouds,
         planet.orbit.ellipse?.anchor === "sun" ? model.sun.position : null,
-        planet.orbit,
+        [
+          planet.orbit.center,
+          planet.orbit.ellipse,
+          planet.orbit.inclination,
+          planet.orbit.orientation,
+        ],
       ]);
       const previous = this.entries.get(planet.id);
       if (previous?.signature === signature) continue;
@@ -334,6 +399,78 @@ export class SceneRenderer {
         id: `${planet.id}-moon-${index}`,
       };
     });
+    const notableLayout = notableMoonLayout(planet);
+    const notableMoons: NamedMoon[] = planet.notableMoons.map((moon) => {
+      const profile = notableLayout.get(moon.id)!;
+      const moonSurface = createPlanetSurface(
+        this.textures,
+        {
+          type: "terrestrial",
+          intense: true,
+          color: moon.surface.color,
+          accentColor: moon.surface.accent,
+          cratering: moon.surface.detail,
+          seed: moon.seed,
+          detail: "moon",
+        },
+        this.callbacks.error,
+      );
+      const plane = new THREE.Group(),
+        shape = new THREE.Group(),
+        node = new THREE.Group();
+      plane.rotation.set(
+        -THREE.MathUtils.degToRad(moon.orbit.inclination),
+        -THREE.MathUtils.degToRad(moon.orbit.orientation),
+        0,
+        "YXZ",
+      );
+      shape.rotation.y = -THREE.MathUtils.degToRad(moon.orbit.rotation);
+      plane.add(shape);
+      shape.add(node);
+      axis.add(plane);
+      const mesh = new THREE.Mesh(this.sphere, moonSurface.material);
+      mesh.scale.setScalar(profile.radius);
+      mesh.userData.planetId = planet.id;
+      mesh.userData.moonId = moon.id;
+      const raycast = mesh.raycast;
+      mesh.raycast = function (raycaster, hits) {
+        if (node.visible) raycast.call(this, raycaster, hits);
+      };
+      node.visible = moon.visible;
+      node.add(mesh);
+      const points = Array.from(
+        { length: 192 },
+        (_, i) =>
+          new THREE.Vector3(
+            ...notableMoonPosition(
+              { ...moon, orbit: { ...moon.orbit, phase: (i / 192) * 360 } },
+              0,
+              profile.factor,
+            ),
+          ),
+      );
+      const geometry = new THREE.BufferGeometry().setFromPoints(points),
+        material = new THREE.LineBasicMaterial({
+          color: 0x76a6bd,
+          transparent: true,
+          opacity: 0.25,
+          depthWrite: false,
+        });
+      const orbitLine = new THREE.LineLoop(geometry, material);
+      orbitLine.raycast = () => {};
+      shape.add(orbitLine);
+      disposables.push(moonSurface, geometry, material);
+      return {
+        id: moon.id,
+        key: `${planet.id}:notable:${moon.id}`,
+        node,
+        mesh,
+        surface: moonSurface,
+        orbitLine,
+        radius: profile.radius,
+        factor: profile.factor,
+      };
+    });
     const orbitPoints = Array.from(
       { length: 256 },
       (_, i) =>
@@ -363,6 +500,7 @@ export class SceneRenderer {
       body,
       surface,
       moons,
+      notableMoons,
       rings,
       orbit,
       disposables,
@@ -382,7 +520,10 @@ export class SceneRenderer {
     this.updateCamera();
   };
   private updateCamera() {
-    const frame = viewFrame(this.model.view, this.aspect);
+    const frame = viewFrame(
+      resolveFollowView(this.model, this.orbitDays, this.orbitFactors),
+      this.aspect,
+    );
     const direction = new THREE.Vector3(...frame.position).sub(
       new THREE.Vector3(...frame.target),
     );
@@ -417,10 +558,15 @@ export class SceneRenderer {
       delta = Math.max(0, time - this.previousElapsed);
     this.previousElapsed = time;
     if (this.model.sun.activity) this.solarElapsed += delta;
+    this.rotationHours +=
+      delta * rotationHoursPerSecond(this.model.motion.rotationRate);
+    this.orbitDays += delta * orbitDaysPerSecond(this.model.motion.orbitRate);
+    this.moonDays += delta * orbitDaysPerSecond(this.model.motion.moonRate);
     if (!this.active) return;
+    if (this.model.view.camera?.followPlanetId) this.updateCamera();
     const sun = this.model.sun;
     this.sun.visible = this.glow.visible = sun.visible;
-    this.sun.position.set(...sun.position);
+    this.sun.position.set(...starRenderPosition(this.model));
     const sunRadius = starRenderRadius(this.model);
     this.sun.scale.setScalar(sunRadius);
     this.glow.position.copy(this.sun.position);
@@ -457,7 +603,7 @@ export class SceneRenderer {
         ...scaleOrbitPoint(
           orbitPosition(
             planet.orbit,
-            time - this.model.motion.orbitEpoch,
+            this.orbitDays - this.model.motion.orbitEpochDays,
             sun.position,
           ),
           sun.position,
@@ -466,11 +612,9 @@ export class SceneRenderer {
       );
       entry.orbit.scale.setScalar(factor);
       entry.orbit.position.set(
-        ...(sun.position.map((value) => value * (1 - factor)) as [
-          number,
-          number,
-          number,
-        ]),
+        ...(starRenderPosition(this.model).map(
+          (value, i) => value - sun.position[i] * factor,
+        ) as [number, number, number]),
       );
       const radius = planetRenderRadius(
         this.model,
@@ -484,10 +628,9 @@ export class SceneRenderer {
         THREE.MathUtils.degToRad(planet.spin.tilt),
         "YXZ",
       );
-      entry.body.rotation.y = THREE.MathUtils.degToRad(
-        planet.spin.phase + time * planet.spin.speed,
-      );
-      entry.environment?.update(time, radius, viewDirection, planet.spin);
+      const spinDegrees = rotationPhase(planet.spin, this.rotationHours);
+      entry.body.rotation.y = THREE.MathUtils.degToRad(spinDegrees);
+      entry.environment?.update(time, radius, viewDirection, spinDegrees);
       const uniforms = entry.surface.material.uniforms;
       const profiles = entry.surface.map?.storms;
       const activity = profiles?.length
@@ -522,6 +665,45 @@ export class SceneRenderer {
           center: moon.mesh.getWorldPosition(new THREE.Vector3()),
           radius: moon.size * radius,
           id: moon.id,
+          moon: true,
+        });
+      }
+      for (const named of entry.notableMoons) {
+        const moon = planet.notableMoons.find((m) => m.id === named.id)!;
+        named.node.visible = moon.visible;
+        named.orbitLine.visible =
+          moon.visible &&
+          this.model.motion.orbitLines &&
+          this.selected === planet.id;
+        (named.orbitLine.material as THREE.LineBasicMaterial).opacity =
+          this.selectedMoon === moon.id ? 0.5 : 0.2;
+        if (!moon.visible) continue;
+        const point = notableMoonPosition(
+          moon,
+          this.moonDays - this.model.motion.moonEpochDays,
+          named.factor,
+        );
+        named.node.position.set(...point);
+        if (moon.spin.tidallyLocked) {
+          named.node.rotation.set(0, Math.atan2(-point[0], -point[2]), 0);
+          named.mesh.rotation.y = THREE.MathUtils.degToRad(moon.spin.phase);
+        } else {
+          named.node.rotation.set(
+            0,
+            THREE.MathUtils.degToRad(moon.spin.orientation),
+            THREE.MathUtils.degToRad(moon.spin.tilt),
+            "YXZ",
+          );
+          named.mesh.rotation.y = THREE.MathUtils.degToRad(
+            rotationPhase(moon.spin, this.rotationHours),
+          );
+        }
+        named.node.updateMatrixWorld(true);
+        frames.push({
+          surface: named.surface,
+          center: named.mesh.getWorldPosition(new THREE.Vector3()),
+          radius: named.radius * radius,
+          id: named.key,
           moon: true,
         });
       }
@@ -577,8 +759,28 @@ export class SceneRenderer {
     const selected = this.model.planets.find(
       (planet) => planet.id === this.selected && planet.visible,
     );
-    this.selection.visible = !!selected || (this.sunSelected && sun.visible);
-    if (selected) {
+    const selectedNamed =
+      selected && this.selectedMoon
+        ? this.entries
+            .get(selected.id)
+            ?.notableMoons.find(
+              (m) => m.id === this.selectedMoon && m.node.visible,
+            )
+        : undefined;
+    this.selection.visible =
+      this.selectedMoon && selected
+        ? !!selectedNamed
+        : !!selected || (this.sunSelected && sun.visible);
+    if (selectedNamed && selected) {
+      this.selection.position.copy(
+        selectedNamed.mesh.getWorldPosition(new THREE.Vector3()),
+      );
+      this.selection.quaternion.copy(this.camera.quaternion);
+      this.selection.scale.setScalar(
+        selectedNamed.radius *
+          planetRenderRadius(this.model, selected, this.largestDiameter),
+      );
+    } else if (selected && !this.selectedMoon) {
       this.selection.position.copy(
         this.entries.get(selected.id)!.root.position,
       );
@@ -630,6 +832,11 @@ export class SceneRenderer {
         if (entry.root.visible) targets.push(entry.axis);
       const intersection = this.raycaster.intersectObjects(targets, true)[0];
       if (intersection?.object === this.sun) this.callbacks.selectSun();
+      else if (intersection?.object.userData.moonId)
+        this.callbacks.selectMoon(
+          intersection.object.userData.planetId,
+          intersection.object.userData.moonId,
+        );
       else
         this.callbacks.select(intersection?.object.userData.planetId ?? null);
     }

@@ -223,3 +223,29 @@ Keep UI colors, typography, and the header close to the portfolio’s blue glass
 - Show Rendered as in the same field units, with a hover/focus explanation of compression and the display multiplier. Use derived world radii consistently for geometry, moons/rings/layers, lighting/eclipses, picking, highlight, clipping and fit.
 - Solar recipe uses rounded NASA physical diameters with50% compression. Portfolio recipe retains its composition through converted fictional diameters and0% compression.
 - Minimal verification remains the user's preference: build/type check only; no test/browser suite for this pass.
+
+
+## Physical periods and distances — November 4, 2026
+
+- Schema3/generator3 replace angular speeds with orbital periodDays and rotation periodHours, positive durations plus local reverse/playing flags. Orbit axes/centers and star position use million km; explicit ellipses replace redundant radius/eccentricity inputs.
+- Rotation render units: hour/hour, hour/minute, hour/second plus0.1–10×. Orbit units: day/minute, day/second plus0.1–100×. Accumulate separate physical time streams for continuous rate edits and exact saved snapshots. Rebase a planet phase when its period/direction/animation state changes.
+- Distance compression uses a power curve relative to the innermost major axis. The display baseline leaves room for the star/inner system. Apply spacing beyond that baseline and overall orbit scale afterwards. Keep originally separate centered paths apart while retaining intentionally crossing/off-center source paths. Physical values remain untouched.
+- Defaults:70% compression for the solar recipe; Earth24hours, rotation1hour/second and orbits3days/second. Preserve the portfolio's previous motion through fictional periods and its layout through0% compression.
+- Clouds follow the integrated physical surface rotation while their drift/evolution and decorative moons remain in scene seconds.
+
+
+## Individually configured moons — November 4, 2026
+
+- Schema4 separates notableMoons from the procedural population. Named satellites have identity, physical diameter, colors/cratering and seed, orbit axes/period/plane/phase/direction and rotation/tidal-lock settings. Use ×1,000km for moon diameter and axes, days/hours for periods. Preserve physical values while compressing the local display.
+- A local orbit-plane hierarchy under the parent axis follows its equator/rings without inheriting diurnal surface spin. Each moon can change inclination/orientation. Moon size/distance display settings are relative to the parent and independent of solar orbit scaling.
+- Tidal lock overrides periodHours to24×periodDays, disables free-spin editing and faces the same lunar longitude toward the parent using its actual position. Follow the rendered moon orbit regardless of differing rotation/orbit render rates.
+- Add an independent moonDays clock/rate (day/minute ×3 default), include it in snapshots/reset, and preserve phases on per-moon timing edits.
+- Make moons clickable/selectable with their own inspector and parent-list children. Include them in fit/clipping/shadows and selection highlights; preserve them across parent/scene rerolls.
+- Replace existing preset satellites with explicit named moons; procedural populations default off. Solar has21 named moons and now includes Pluto with Charon; portfolio satellites become named fictional moons with retained palettes/seeds.
+
+
+## Camera close-ups and planet tracking — November 4, 2026
+
+- Replace the shared4×zoom ceiling with a common minimum visible height of1scene unit. Derive a view's zoom limit from its base height so offset, centered, overhead and fitted views can all reach the same close-up scale. Use logarithmic slider coordinates with an exact zoom input.
+- Planet and named-moon orbital multipliers use whole numbers1–100. Keep fractional free-body rotation multipliers.
+- Explicit Follow planet mode tracks rendered orbital position every frame, with a stored relative camera offset for panning and the existing rotation/zoom controls. Selection is independent. Stop, hide or delete freezes the current world framing; snap/reset/fit releases follow. Persist camera.followPlanetId in scene JSON.

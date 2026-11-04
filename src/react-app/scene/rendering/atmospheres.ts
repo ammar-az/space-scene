@@ -58,12 +58,7 @@ const rgb = (hex: string) =>
 export type PlanetEnvironment = {
   clouds?: THREE.Mesh;
   atmosphere?: THREE.Mesh;
-  update(
-    time: number,
-    radius: number,
-    view: THREE.Vector3,
-    spin: Planet["spin"],
-  ): void;
+  update(time: number, radius: number, view: THREE.Vector3, spin: number): void;
   dispose(): void;
 };
 /** Actual shells keep weather separate from the underlying surface and its random stream. */

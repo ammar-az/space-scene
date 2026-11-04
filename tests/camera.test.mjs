@@ -16,7 +16,17 @@ import {
   panView,
   rotateView,
   snapView,
+  clampZoom,
+  zoomBounds,
+  followPlanetView,
+  resolveFollowView,
+  fitSceneView,
 } from "../src/react-app/scene/model/camera.ts";
+import { orbitPosition } from "../src/react-app/scene/model/geometry.ts";
+import {
+  orbitLayoutFactors,
+  scaleOrbitPoint,
+} from "../src/react-app/scene/model/layout.ts";
 const near = (a, b, tolerance = 1e-8) =>
   assert.ok(Math.abs(a - b) < tolerance, `${a} != ${b}`);
 function camera(view, aspect = 1.6) {
@@ -150,4 +160,87 @@ test("snap/reset and JSON preserve saved custom views without moving scene objec
     parsePreset(serializeScene(createScene())).scene.view.camera,
     undefined,
   );
+});
+
+test("every composed and fitted view reaches the same close-up scale", () => {
+  const scene = createScene();
+  const views = [
+    ...["overhead", "centered", "offset"].map((preset) =>
+      snapView(scene.view, preset),
+    ),
+    fitSceneView(scene, 1.6),
+  ];
+  for (const view of views) {
+    const zoom = clampZoom(view, 1e12);
+    assert.equal(zoom, zoomBounds(view).max);
+    near(viewFrame({ ...view, zoom }, 1.6).height, 1);
+    assert.ok(zoom > 4);
+    assert.equal(clampZoom(view, 0), 0.01);
+  }
+});
+
+test("follow tracks the rendered planet with editable framing and releases without a jump", () => {
+  const scene = createScene();
+  const planet = scene.planets[0];
+  const before = structuredClone(scene.planets);
+  const fixedHeight = viewFrame(scene.view, 1.6).height;
+  scene.view = followPlanetView(scene, planet.id, 1.6);
+  near(viewFrame(scene.view, 1.6).height, fixedHeight);
+  assert.equal(scene.view.camera.followPlanetId, planet.id);
+  assert.deepEqual(scene.view.camera.target, [0, 0, 0]);
+  const factors = orbitLayoutFactors(scene);
+  const position = (days) =>
+    scaleOrbitPoint(
+      orbitPosition(
+        planet.orbit,
+        days - scene.motion.orbitEpochDays,
+        scene.sun.position,
+      ),
+      scene.sun.position,
+      factors.get(planet.id),
+    );
+  for (const days of [0, 10, 1000]) {
+    const frame = resolveFollowView(scene, days, factors);
+    assert.deepEqual(frame.camera.target, position(days));
+    const point = new THREE.Vector3(...position(days)).project(camera(frame));
+    near(point.x, 0);
+    near(point.y, 0);
+  }
+  scene.view = panView(rotateView(scene.view, 1.6, 20, 30), 1.6, 50, -30, 1000);
+  const p1 = new THREE.Vector3(...position(10)).project(
+    camera(resolveFollowView(scene, 10, factors)),
+  );
+  const p2 = new THREE.Vector3(...position(1000)).project(
+    camera(resolveFollowView(scene, 1000, factors)),
+  );
+  near(p1.x, p2.x);
+  near(p1.y, p2.y);
+  assert.deepEqual(parsePreset(serializeScene(scene)).scene.view, scene.view);
+  const released = resolveFollowView(scene, 1000, factors);
+  assert.equal(released.camera.followPlanetId, undefined);
+  assert.deepEqual(
+    released.camera.target,
+    scene.view.camera.target.map((v, i) => v + position(1000)[i]),
+  );
+  assert.equal(snapView(scene.view).camera, undefined);
+  assert.equal(fitSceneView(scene, 1.6).camera.followPlanetId, undefined);
+  assert.deepEqual(scene.planets, before);
+});
+
+test("orbital multipliers accept only whole numbers from one through one hundred", () => {
+  for (const key of ["orbitRate", "moonRate"]) {
+    for (const value of [1, 10, 100]) {
+      const scene = createScene();
+      scene.motion[key].multiplier = value;
+      assert.equal(
+        parsePreset(serializeScene(scene)).scene.motion[key].multiplier,
+        value,
+      );
+    }
+    for (const value of [0.1, 1.5, 101]) {
+      const scene = createScene();
+      scene.motion[key].multiplier = value;
+      assert.throws(() => serializeScene(scene));
+    }
+  }
 });

@@ -1,3 +1,4 @@
+import TimeControls from "./TimeControls.tsx";
 import { scenePresets } from "../../data/presets.ts";
 import type { ScenePreset } from "../../data/presets.ts";
 import { Icon, Slider } from "./controls.tsx";
@@ -12,6 +13,8 @@ export default function ScenePresets({
   onFit,
   sizing,
   onSizing,
+  motion,
+  onMotion,
 }: {
   loadingPreset: string | null;
   onLoad(preset: ScenePreset): void;
@@ -21,6 +24,8 @@ export default function ScenePresets({
   onFit(): void;
   sizing: SceneModel["sizing"];
   onSizing(patch: Partial<SceneModel["sizing"]>): void;
+  motion: SceneModel["motion"];
+  onMotion(patch: Partial<SceneModel["motion"]>): void;
 }) {
   const settings = layout ?? defaultLayout;
   return (
@@ -32,6 +37,20 @@ export default function ScenePresets({
       </div>
       <div className="section-separator" />
       <div className="field-heading">SCENE LAYOUT</div>
+      <Slider
+        label="Orbit distance compression"
+        value={settings.distanceCompression * 100}
+        min={0}
+        max={100}
+        unit="%"
+        precise
+        onChange={(percent) => onLayout({ distanceCompression: percent / 100 })}
+      />
+      <p className="field-note">
+        Compression pulls distant orbits inward while preserving each ellipse. A
+        baseline around the displayed star leaves room for the innermost system.
+        Originally separate, centered paths retain small gaps.
+      </p>
       <Slider
         label="Orbit scale"
         value={settings.orbitScale * 100}
@@ -53,9 +72,10 @@ export default function ScenePresets({
         onChange={(value) => onLayout({ orbitSpacing: value / 100 })}
       />
       <p className="field-note">
-        Values are percentages; 100 restores the original layout. Scale changes
-        every orbit. Spacing keeps the innermost orbit fixed and stretches the
-        gaps outward. Planet sizes, moons and timing stay the same.
+        Scale and spacing are percentages; 100 leaves their compressed layout
+        unchanged. Scale changes every orbit. Spacing keeps the innermost orbit
+        fixed and stretches the gaps outward. Planet sizes, moons and timing
+        stay the same.
       </p>
       <div className="layout-actions">
         <button className="button" onClick={onFit}>
@@ -63,7 +83,7 @@ export default function ScenePresets({
         </button>
         <button
           className="button"
-          onClick={() => onLayout({ orbitScale: 1, orbitSpacing: 1 })}
+          onClick={() => onLayout({ ...defaultLayout })}
         >
           Reset layout
         </button>
@@ -102,6 +122,8 @@ export default function ScenePresets({
         unit="%"
         onChange={(percent) => onSizing({ starScale: percent / 100 })}
       />
+      <div className="section-separator" />
+      <TimeControls motion={motion} onChange={onMotion} />
       <div className="section-separator" />
       <div className="field-heading">SCENE PRESETS</div>
       <div

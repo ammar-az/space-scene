@@ -52,3 +52,13 @@ export function renderedStarDiameter(scene: SceneModel): number {
 export function starRenderRadius(scene: SceneModel): number {
   return (renderedStarDiameter(scene) * 10 * WORLD_UNITS_PER_THOUSAND_KM) / 2;
 }
+
+/** Physical position units are millions of km; camera coordinates remain scene units. */
+export const WORLD_UNITS_PER_MILLION_KM = WORLD_UNITS_PER_THOUSAND_KM * 1000;
+export function starRenderPosition(
+  scene: SceneModel,
+): [number, number, number] {
+  return scene.sun.position.map(
+    (value) => value * WORLD_UNITS_PER_MILLION_KM,
+  ) as [number, number, number];
+}

@@ -1,8 +1,8 @@
 import { roundDiameter } from "./sizes.ts";
 import { z } from "zod";
 
-export const SCHEMA_VERSION = 2;
-export const GENERATOR_VERSION = "2";
+export const SCHEMA_VERSION = 4;
+export const GENERATOR_VERSION = "4";
 const number = (min: number, max: number) => z.number().min(min).max(max);
 const color = z
   .string()
@@ -13,6 +13,11 @@ const vector = z.tuple([
   number(-2000, 2000),
   number(-2000, 2000),
   number(-2000, 2000),
+]);
+const physicalVector = z.tuple([
+  number(-1000000, 1000000),
+  number(-1000000, 1000000),
+  number(-1000000, 1000000),
 ]);
 const range = (min: number, max: number, integer = false) =>
   z
@@ -36,6 +41,46 @@ const family = z.strictObject({
     .optional(),
 });
 
+export const notableMoonSchema = z
+  .strictObject({
+    id: z.string().regex(/^[a-zA-Z0-9_-]{1,100}$/),
+    name,
+    visible: z.boolean(),
+    locked: z.boolean(),
+    diameter: number(0.000001, 1000000), // thousands of km; retain sub-km precision for small named moons.
+    seed: planetSeed,
+    surface: z.strictObject({ color, accent: color, detail: number(0, 2) }),
+    orbit: z.strictObject({
+      radiusX: number(0.000001, 1e9),
+      radiusZ: number(0.000001, 1e9), // thousands of km
+      rotation: number(-180, 180),
+      inclination: number(-180, 180),
+      orientation: number(-180, 180),
+      phase: number(0, 360),
+      periodDays: number(0.000001, 1e9),
+      reverse: z.boolean(),
+      playing: z.boolean(),
+    }),
+    spin: z.strictObject({
+      tidallyLocked: z.boolean(),
+      periodHours: number(0.000001, 1e12),
+      tilt: number(-180, 180),
+      orientation: number(-180, 180),
+      phase: number(0, 360),
+      reverse: z.boolean(),
+      playing: z.boolean(),
+    }),
+  })
+  .transform((moon) =>
+    moon.spin.tidallyLocked
+      ? {
+          ...moon,
+          spin: { ...moon.spin, periodHours: moon.orbit.periodDays * 24 },
+        }
+      : moon,
+  );
+export type NotableMoon = z.infer<typeof notableMoonSchema>;
+
 export const planetSchema = z.strictObject({
   id: z.string().regex(/^[a-zA-Z0-9_-]{1,100}$/),
   name,
@@ -53,7 +98,21 @@ export const planetSchema = z.strictObject({
     })
     .optional(),
   diameter: number(0.01, 1000000).transform(roundDiameter),
-  moonCount: number(0, 12).int(),
+  moonCount: number(0, 64).int(),
+  proceduralMoons: z.boolean(),
+  notableMoons: z
+    .array(notableMoonSchema)
+    .max(64)
+    .refine(
+      (moons) => new Set(moons.map((m) => m.id)).size === moons.length,
+      "Moon IDs must be unique within each planet",
+    ),
+  moonSystem: z.strictObject({
+    distanceCompression: number(0, 1),
+    orbitScale: number(0.5, 5),
+    sizeCompression: number(0, 1),
+    sizeScale: number(0.25, 5),
+  }),
   atmosphere: z
     .strictObject({
       visible: z.boolean(),
@@ -105,34 +164,34 @@ export const planetSchema = z.strictObject({
       ([low, high]) =>
         [roundDiameter(low), roundDiameter(high)] as [number, number],
     ),
-    moons: range(0, 12, true),
+    moons: range(0, 64, true),
     rings: range(0, 4, true),
     ringAmount: range(0, 1).optional(),
     ringProbability: number(0, 1).optional(),
     detail: range(0, 2),
   }),
   orbit: z.strictObject({
-    radius: number(30, 240),
-    eccentricity: number(0, 0.65),
     inclination: number(-80, 80),
     orientation: number(-180, 180),
     phase: number(0, 360),
-    speed: number(-20, 20),
-    center: vector,
-    ellipse: z
-      .strictObject({
-        radiusX: number(1, 500),
-        radiusZ: number(1, 500),
-        rotation: number(-180, 180),
-        anchor: z.enum(["center", "sun"]),
-      })
-      .optional(),
+    periodDays: number(0.000001, 1e12),
+    reverse: z.boolean(),
+    playing: z.boolean(),
+    center: physicalVector,
+    ellipse: z.strictObject({
+      radiusX: number(0.000001, 1e9),
+      radiusZ: number(0.000001, 1e9),
+      rotation: number(-180, 180),
+      anchor: z.enum(["center", "sun"]),
+    }),
   }),
   spin: z.strictObject({
     tilt: number(-180, 180),
     orientation: number(-180, 180),
     phase: number(0, 360),
-    speed: number(-60, 60),
+    periodHours: number(0.000001, 1e12),
+    reverse: z.boolean(),
+    playing: z.boolean(),
   }),
 });
 
@@ -161,6 +220,9 @@ export const sceneSchema = z
     timeline: z.strictObject({
       elapsed: number(0, 1e12),
       solar: number(0, 1e12),
+      rotationHours: number(0, 1e18),
+      orbitDays: number(0, 1e18),
+      moonDays: number(0, 1e18),
     }),
     background: backgroundSchema,
     sun: z.strictObject({
@@ -171,7 +233,7 @@ export const sceneSchema = z
       highlight: color,
       shadow: color,
       activity: z.boolean(),
-      position: vector,
+      position: physicalVector,
     }),
     planets: z.array(planetSchema).max(64),
     sizing: z.strictObject({
@@ -181,6 +243,7 @@ export const sceneSchema = z
     }),
     layout: z
       .strictObject({
+        distanceCompression: number(0, 1),
         orbitScale: number(0.5, 5),
         orbitSpacing: number(0.5, 5),
       })
@@ -198,16 +261,33 @@ export const sceneSchema = z
             number(-1000000, 1000000),
           ]),
           baseHeight: number(1, 1000000),
+          followPlanetId: z
+            .string()
+            .regex(/^[a-zA-Z0-9_-]{1,100}$/)
+            .optional(),
         })
         .optional(),
-      zoom: number(0.01, 4),
+      zoom: number(0.01, 1000000),
       pan: vector,
     }),
     motion: z.strictObject({
       playing: z.boolean(),
       speed: number(0, 5),
       orbitLines: z.boolean(),
-      orbitEpoch: number(0, 1e12),
+      orbitEpochDays: number(0, 1e18),
+      moonEpochDays: number(0, 1e18),
+      rotationRate: z.strictObject({
+        unit: z.enum(["hour/hour", "hour/minute", "hour/second"]),
+        multiplier: number(0.1, 10),
+      }),
+      orbitRate: z.strictObject({
+        unit: z.enum(["day/minute", "day/second"]),
+        multiplier: number(1, 100).int(),
+      }),
+      moonRate: z.strictObject({
+        unit: z.enum(["day/minute", "day/second"]),
+        multiplier: number(1, 100).int(),
+      }),
     }),
   })
   .refine(
@@ -215,6 +295,15 @@ export const sceneSchema = z
       new Set(scene.planets.map((planet) => planet.id)).size ===
       scene.planets.length,
     "Planet IDs must be unique",
+  )
+  .refine(
+    (scene) =>
+      !scene.view.camera?.followPlanetId ||
+      scene.planets.some(
+        (planet) =>
+          planet.id === scene.view.camera?.followPlanetId && planet.visible,
+      ),
+    "The followed planet must be visible and belong to this scene",
   );
 
 const version = {

@@ -1,35 +1,108 @@
-import { planetRenderRadius, starRenderRadius } from "./sizes.ts";
+import { notableSystemExtent } from "./notableMoons.ts";
+import {
+  planetRenderRadius,
+  starRenderRadius,
+  starRenderPosition,
+  WORLD_UNITS_PER_MILLION_KM,
+} from "./sizes.ts";
 import type { Planet, SceneModel } from "./schema.ts";
 import { orbitCenter, orbitEllipse, orbitPosition } from "./geometry.ts";
 import { environmentSettings } from "./atmospheres.ts";
 import { moonProfiles, planetRing } from "./systems.ts";
 type Vector = [number, number, number];
-export const defaultLayout = { orbitScale: 1, orbitSpacing: 1 };
+export const defaultLayout = {
+  distanceCompression: 0.7,
+  orbitScale: 1,
+  orbitSpacing: 1,
+};
 
-/** Scale each entire path about the Sun; hidden worlds retain their place in the layout. */
+/** Physical-to-render factors preserve each complete ellipse while compressing distance ratios. */
 export function orbitLayoutFactors(scene: SceneModel): Map<string, number> {
   const settings = scene.layout ?? defaultLayout;
-  const radii = scene.planets.map((planet) => {
-    const ellipse = orbitEllipse(planet.orbit);
-    return Math.max(ellipse.radiusX, ellipse.radiusZ);
-  });
-  const inner = Math.min(...radii);
-  return new Map(
-    scene.planets.map((planet, i) => [
-      planet.id,
-      (settings.orbitScale *
-        (inner + (radii[i] - inner) * settings.orbitSpacing)) /
-        radii[i],
-    ]),
+  const paths = scene.planets
+    .map((planet) => {
+      const ellipse = orbitEllipse(planet.orbit),
+        major = Math.max(ellipse.radiusX, ellipse.radiusZ);
+      let near = Infinity,
+        far = 0;
+      for (let phase = 0; phase < 360; phase += 2) {
+        const point = orbitPosition(
+          { ...planet.orbit, phase },
+          0,
+          scene.sun.position,
+        );
+        const distance = Math.hypot(
+          ...point.map((v, i) => v - scene.sun.position[i]),
+        );
+        near = Math.min(near, distance);
+        far = Math.max(far, distance);
+      }
+      const centered =
+        ellipse.anchor === "sun" ||
+        Math.hypot(
+          ...planet.orbit.center.map((v, i) => v - scene.sun.position[i]),
+        ) < 1e-8;
+      const environment = environmentSettings(planet);
+      const body =
+        planetRenderRadius(scene, planet) *
+        Math.max(
+          1,
+          environment.hasAtmosphere ? environment.atmosphereScale : 1,
+          environment.hasClouds ? environment.cloudScale : 1,
+        );
+      return { planet, major, near, far, centered, body };
+    })
+    .sort((a, b) => a.major - b.major);
+  if (!paths.length) return new Map();
+  const inner = paths[0],
+    star = starRenderRadius(scene);
+  const baseline = Math.max(
+    80,
+    star * 1.5,
+    inner.near > 1e-8
+      ? ((star + planetSystemRadius(scene, inner.planet) + 12) * inner.major) /
+          inner.near
+      : 0,
   );
+  const result = new Map<string, number>();
+  let previous: (typeof paths)[number] | undefined,
+    previousFactor = 0;
+  for (const path of paths) {
+    const compressed =
+      baseline *
+      Math.pow(path.major / inner.major, 1 - settings.distanceCompression);
+    let displayed = baseline + (compressed - baseline) * settings.orbitSpacing;
+    // Retain intentionally crossing/off-center source paths; keep originally nested, centered paths readable.
+    if (
+      previous &&
+      path.centered &&
+      previous.centered &&
+      path.near > previous.far &&
+      path.near > 1e-8
+    ) {
+      const needed =
+        ((previous.far * previousFactor + previous.body + path.body + 6) /
+          path.near) *
+        path.major;
+      displayed = Math.max(displayed, needed);
+    }
+    const factor = displayed / path.major;
+    result.set(path.planet.id, factor * settings.orbitScale);
+    previous = path;
+    previousFactor = factor;
+  }
+  return result;
 }
+/** Convert physical Mkm coordinates around the star into scene coordinates. */
 export function scaleOrbitPoint(
   point: Vector,
   sun: Vector,
   factor: number,
 ): Vector {
-  if (factor === 1) return point;
-  return point.map((value, i) => sun[i] + (value - sun[i]) * factor) as Vector;
+  return point.map(
+    (value, i) =>
+      sun[i] * WORLD_UNITS_PER_MILLION_KM + (value - sun[i]) * factor,
+  ) as Vector;
 }
 /** Parent-relative moons/rings/layers contribute to fit/clipping, without being resized. */
 export function planetSystemRadius(scene: SceneModel, planet: Planet) {
@@ -38,6 +111,7 @@ export function planetSystemRadius(scene: SceneModel, planet: Planet) {
     planetRenderRadius(scene, planet) *
     Math.max(
       1,
+      notableSystemExtent(planet),
       planetRing(planet)?.outer ?? 1,
       environment.hasAtmosphere ? environment.atmosphereScale : 1,
       environment.hasClouds ? environment.cloudScale : 1,
@@ -50,7 +124,7 @@ export function sceneEnvelopes(
   factors = orbitLayoutFactors(scene),
 ) {
   const spheres: { center: Vector; radius: number }[] = scene.sun.visible
-    ? [{ center: scene.sun.position, radius: starRenderRadius(scene) }]
+    ? [{ center: starRenderPosition(scene), radius: starRenderRadius(scene) }]
     : [];
   for (const planet of scene.planets) {
     if (!planet.visible) continue;
@@ -73,7 +147,7 @@ export function sceneEnvelopes(
 export function sceneFitSamples(scene: SceneModel) {
   const factors = orbitLayoutFactors(scene);
   const samples: { center: Vector; radius: number }[] = scene.sun.visible
-    ? [{ center: scene.sun.position, radius: starRenderRadius(scene) }]
+    ? [{ center: starRenderPosition(scene), radius: starRenderRadius(scene) }]
     : [];
   for (const planet of scene.planets) {
     if (!planet.visible) continue;

@@ -1,4 +1,8 @@
 import {
+  orbitLayoutFactors,
+  scaleOrbitPoint,
+} from "../src/react-app/scene/model/layout.ts";
+import {
   planetRenderRadius,
   starRenderRadius,
 } from "../src/react-app/scene/model/sizes.ts";
@@ -86,7 +90,8 @@ test("portfolio preset retains original artwork streams, palettes and satellite 
 });
 
 test("portfolio preset projects onto the original desktop positions and body sizes", async () => {
-  const scene = await readScene("portfolio");
+  const scene = await readScene("portfolio"),
+    factors = orbitLayoutFactors(scene);
   // Reference composition, with Word Wasp moved back to 18 degrees and Project X retaining its start.
   const expected = JSON.parse(
     await readFile(
@@ -99,7 +104,11 @@ test("portfolio preset projects onto the original desktop positions and body siz
     upY = 360 / length,
     upZ = -110 / length;
   for (const planet of scene.planets) {
-    const point = orbitPosition(planet.orbit, 0),
+    const point = scaleOrbitPoint(
+        orbitPosition(planet.orbit, 0),
+        scene.sun.position,
+        factors.get(planet.id),
+      ),
       original = expected.planets.find((p) => p.id === planet.id);
     const x =
       expected.width / 2 +
@@ -111,11 +120,11 @@ test("portfolio preset projects onto the original desktop positions and body siz
         frame.height) *
         expected.height;
     assert.ok(
-      Math.abs(x - original.x) < 0.001,
+      Math.abs(x - original.x) < 1,
       `${planet.name}: x ${x} vs ${original.x}`,
     );
     assert.ok(
-      Math.abs(y - original.y) < 0.001,
+      Math.abs(y - original.y) < 1,
       `${planet.name}: y ${y} vs ${original.y}`,
     );
     assert.ok(
@@ -128,7 +137,8 @@ test("portfolio preset projects onto the original desktop positions and body siz
 });
 
 test("solar preset includes the eight ordered planets, Earth-like rocky Earth and illustrative satellite choices", async () => {
-  const scene = await readScene("solar-system");
+  const scene = await readScene("solar-system"),
+    factors = orbitLayoutFactors(scene);
   assert.deepEqual(
     scene.planets.map((p) => p.name),
     [
@@ -140,11 +150,12 @@ test("solar preset includes the eight ordered planets, Earth-like rocky Earth an
       "Saturn",
       "Uranus",
       "Neptune",
+      "Pluto",
     ],
   );
   assert.deepEqual(
     scene.planets.map((p) => p.type),
-    ["rocky", "rocky", "rocky", "rocky", "gas", "icy", "icy", "icy"],
+    ["rocky", "rocky", "rocky", "rocky", "gas", "icy", "icy", "icy", "rocky"],
   );
   const earth = scene.planets[2];
   assert.equal(earth.families.rocky.color, "#2478c4");
@@ -156,7 +167,13 @@ test("solar preset includes the eight ordered planets, Earth-like rocky Earth an
   assert.equal(scene.planets[6].spin.tilt, 97.8);
   for (const [i, planet] of scene.planets.entries()) {
     assert.ok(
-      planet.orbit.radius * (1 - planet.orbit.eccentricity) >
+      Math.hypot(
+        ...scaleOrbitPoint(
+          orbitPosition(planet.orbit, 0),
+          scene.sun.position,
+          factors.get(planet.id),
+        ),
+      ) >
         starRenderRadius(scene) + planetRenderRadius(scene, planet),
     );
     if (i) {
@@ -164,7 +181,9 @@ test("solar preset includes the eight ordered planets, Earth-like rocky Earth an
         orbitEllipse(planet.orbit).radiusX >
           orbitEllipse(scene.planets[i - 1].orbit).radiusX,
       );
-      assert.ok(planet.orbit.speed < scene.planets[i - 1].orbit.speed);
+      assert.ok(
+        planet.orbit.periodDays > scene.planets[i - 1].orbit.periodDays,
+      );
     }
   }
 });

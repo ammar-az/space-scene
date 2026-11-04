@@ -1,3 +1,4 @@
+import { defaultMoonSystem } from "./notableMoons.ts";
 import { defaultSizing, roundDiameter } from "./sizes.ts";
 import { seededRandom } from "../utils/seededRandom.ts";
 import type { Planet, SceneModel } from "./schema.ts";
@@ -46,6 +47,9 @@ export function createPlanet(
     locked: false,
     diameter: type === "rocky" ? 12.76 : 120,
     moonCount: type === "rocky" ? 1 : 4,
+    proceduralMoons: false,
+    notableMoons: [],
+    moonSystem: { ...defaultMoonSystem },
     ringCount: type === "gas" ? 1 : 0,
     rings: {
       amount: type === "gas" ? 0.55 : 0,
@@ -72,12 +76,12 @@ export function createPlanet(
       detail: [0.4, 1.4],
     },
     orbit: {
-      radius: Math.min(225, 80 + index * 36),
-      eccentricity: 0.04,
       inclination: Math.min(30, index * 2),
       orientation: 0,
       phase: (25 + index * 115) % 360,
-      speed: 3 / (1 + index * 0.7),
+      periodDays: 365 * (1 + index * 0.7),
+      reverse: false,
+      playing: true,
       center: [0, 0, 0],
       ellipse: {
         radiusX: Math.min(225, 80 + index * 36),
@@ -90,7 +94,9 @@ export function createPlanet(
       tilt: 12,
       orientation: 0,
       phase: 0,
-      speed: type === "rocky" ? 4 : 8,
+      periodHours: type === "rocky" ? 24 : 10,
+      reverse: false,
+      playing: true,
     },
   };
   return planet;
@@ -111,7 +117,13 @@ export function createScene(): SceneModel {
   icy.rings!.amount = 0.4;
   return {
     name: "Untitled space",
-    timeline: { elapsed: 0, solar: 0 },
+    timeline: {
+      elapsed: 0,
+      solar: 0,
+      rotationHours: 0,
+      orbitDays: 0,
+      moonDays: 0,
+    },
     background: {
       visible: true,
       seed: 1871,
@@ -141,8 +153,18 @@ export function createScene(): SceneModel {
     },
     planets: [rocky, gas, icy],
     sizing: { ...defaultSizing },
+    layout: { distanceCompression: 0.7, orbitScale: 1, orbitSpacing: 1 },
     view: { preset: "offset", framing: "portfolio", zoom: 1, pan: [0, 0, 0] },
-    motion: { playing: true, speed: 1, orbitLines: true, orbitEpoch: 0 },
+    motion: {
+      playing: true,
+      speed: 1,
+      orbitLines: true,
+      orbitEpochDays: 0,
+      moonEpochDays: 0,
+      moonRate: { unit: "day/minute", multiplier: 3 },
+      rotationRate: { unit: "hour/second", multiplier: 1 },
+      orbitRate: { unit: "day/second", multiplier: 1 },
+    },
   };
 }
 

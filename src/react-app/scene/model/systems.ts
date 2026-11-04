@@ -54,6 +54,7 @@ export type MoonProfile = {
   phase: number;
 };
 export function moonProfiles(planet: Planet): MoonProfile[] {
+  if (!planet.proceduralMoons) return [];
   const settings = planet.moons ?? defaultMoons,
     edge = planetRing(planet)?.outer ?? 1;
   return Array.from({ length: planet.moonCount }, (_, index) => {

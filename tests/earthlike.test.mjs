@@ -117,7 +117,7 @@ test("seeded Earth maps generate mostly ocean, obey land coverage, and keep shap
 
 test("cloud evolution changes a stationary shell, loops smoothly, and can be disabled independently of drift", () => {
   const p = setEarthlike(createScene().planets[0], true);
-  p.spin.speed = 0;
+  p.spin.playing = false;
   p.clouds.speed = 0;
   p.spin.phase = 0;
   assert.equal(cloudRotation(p, 0), cloudRotation(p, 12));

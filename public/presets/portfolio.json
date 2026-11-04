@@ -1,12 +1,15 @@
 {
   "kind": "space-scene",
-  "schemaVersion": 2,
-  "generatorVersion": "2",
+  "schemaVersion": 4,
+  "generatorVersion": "4",
   "scene": {
     "name": "Portfolio solar system",
     "timeline": {
       "elapsed": 0,
-      "solar": 0
+      "solar": 0,
+      "rotationHours": 0,
+      "orbitDays": 0,
+      "moonDays": 0
     },
     "background": {
       "visible": true,
@@ -132,25 +135,75 @@
           ]
         },
         "orbit": {
-          "radius": 83.19435026,
-          "eccentricity": 0,
           "inclination": 3.18165067,
           "orientation": 20.34699224,
           "phase": 357.89695539,
-          "speed": 1.2,
           "center": [
             6.40357143,
             0.46963693,
             -0.14350017
-          ]
+          ],
+          "ellipse": {
+            "radiusX": 83.19435026,
+            "radiusZ": 83.19435026,
+            "rotation": 0,
+            "anchor": "center"
+          },
+          "periodDays": 300,
+          "reverse": false,
+          "playing": true
         },
         "spin": {
           "tilt": 16.99082329,
           "orientation": -90,
           "phase": 101.93324002,
-          "speed": 3.82641134
+          "periodHours": 94.082933,
+          "reverse": false,
+          "playing": true
         },
-        "diameter": 49.11
+        "diameter": 49.11,
+        "proceduralMoons": false,
+        "notableMoons": [
+          {
+            "id": "word-wasp-i",
+            "name": "Word Wasp I",
+            "visible": true,
+            "locked": false,
+            "diameter": 13.801454,
+            "seed": "word-wasp:moon:0",
+            "surface": {
+              "color": "#d1c5ae",
+              "accent": "#5e594e",
+              "detail": 0.9
+            },
+            "orbit": {
+              "radiusX": 38.846634,
+              "radiusZ": 38.846634,
+              "rotation": 0,
+              "inclination": 1.8327188789844513,
+              "orientation": -47.21505185589194,
+              "phase": 141.35467065498233,
+              "periodDays": 4.587966,
+              "reverse": false,
+              "playing": true
+            },
+            "spin": {
+              "tidallyLocked": true,
+              "periodHours": 110.111184,
+              "tilt": 0,
+              "orientation": 0,
+              "phase": 0,
+              "reverse": false,
+              "playing": true
+            }
+          }
+        ],
+        "moonSystem": {
+          "distanceCompression": 0.7,
+          "orbitScale": 1,
+          "sizeCompression": 0,
+          "sizeScale": 1
+        }
       },
       {
         "id": "potential",
@@ -244,25 +297,141 @@
           ]
         },
         "orbit": {
-          "radius": 102.26661413,
-          "eccentricity": 0,
           "inclination": 1.55140743,
           "orientation": 58.2645258,
           "phase": 252.04200663,
-          "speed": 0.82,
           "center": [
             6.40357143,
             -0.93927386,
             0.28700035
-          ]
+          ],
+          "ellipse": {
+            "radiusX": 102.26661413,
+            "radiusZ": 102.26661413,
+            "rotation": 0,
+            "anchor": "center"
+          },
+          "periodDays": 439.02439,
+          "reverse": false,
+          "playing": true
         },
         "spin": {
           "tilt": 16.99082329,
           "orientation": -90,
           "phase": 304.45672193,
-          "speed": -3.0895032
+          "periodHours": 116.523589,
+          "reverse": true,
+          "playing": true
         },
-        "diameter": 60.02
+        "diameter": 60.02,
+        "proceduralMoons": false,
+        "notableMoons": [
+          {
+            "id": "future-project-i",
+            "name": "Future Project I",
+            "visible": true,
+            "locked": false,
+            "diameter": 9.969855,
+            "seed": "potential:moon:0",
+            "surface": {
+              "color": "#a3998b",
+              "accent": "#49453f",
+              "detail": 0.9
+            },
+            "orbit": {
+              "radiusX": 43.811297,
+              "radiusZ": 43.811297,
+              "rotation": 0,
+              "inclination": -4.292326249182224,
+              "orientation": 148.90201915986836,
+              "phase": 262.81357884407043,
+              "periodDays": 2.701465,
+              "reverse": false,
+              "playing": true
+            },
+            "spin": {
+              "tidallyLocked": true,
+              "periodHours": 64.83516,
+              "tilt": 0,
+              "orientation": 0,
+              "phase": 0,
+              "reverse": false,
+              "playing": true
+            }
+          },
+          {
+            "id": "future-project-ii",
+            "name": "Future Project II",
+            "visible": true,
+            "locked": false,
+            "diameter": 16.004924,
+            "seed": "potential:moon:1",
+            "surface": {
+              "color": "#989ca1",
+              "accent": "#444648",
+              "detail": 0.9
+            },
+            "orbit": {
+              "radiusX": 56.437162,
+              "radiusZ": 56.437162,
+              "rotation": 0,
+              "inclination": 0.0036966539919376373,
+              "orientation": 126.24723013490438,
+              "phase": 136.17981950752437,
+              "periodDays": 2.967174,
+              "reverse": false,
+              "playing": true
+            },
+            "spin": {
+              "tidallyLocked": true,
+              "periodHours": 71.212176,
+              "tilt": 0,
+              "orientation": 0,
+              "phase": 0,
+              "reverse": false,
+              "playing": true
+            }
+          },
+          {
+            "id": "future-project-iii",
+            "name": "Future Project III",
+            "visible": true,
+            "locked": false,
+            "diameter": 15.301085,
+            "seed": "potential:moon:2",
+            "surface": {
+              "color": "#989ca1",
+              "accent": "#444648",
+              "detail": 0.9
+            },
+            "orbit": {
+              "radiusX": 54.030181,
+              "radiusZ": 54.030181,
+              "rotation": 0,
+              "inclination": 4.206203185021877,
+              "orientation": -160.98802104592323,
+              "phase": 194.49871527962387,
+              "periodDays": 2.247428,
+              "reverse": false,
+              "playing": true
+            },
+            "spin": {
+              "tidallyLocked": true,
+              "periodHours": 53.938272000000005,
+              "tilt": 0,
+              "orientation": 0,
+              "phase": 0,
+              "reverse": false,
+              "playing": true
+            }
+          }
+        ],
+        "moonSystem": {
+          "distanceCompression": 0.7,
+          "orbitScale": 1,
+          "sizeCompression": 0,
+          "sizeScale": 1
+        }
       },
       {
         "id": "tasked",
@@ -356,25 +525,141 @@
           ]
         },
         "orbit": {
-          "radius": 121.3435164,
-          "eccentricity": 0,
           "inclination": 1.73066195,
           "orientation": 117.71999574,
           "phase": 287.64957306,
-          "speed": 0.56,
           "center": [
             6.40357143,
             -2.11336619,
             0.64575078
-          ]
+          ],
+          "ellipse": {
+            "radiusX": 121.3435164,
+            "radiusZ": 121.3435164,
+            "rotation": 0,
+            "anchor": "center"
+          },
+          "periodDays": 642.857143,
+          "reverse": false,
+          "playing": true
         },
         "spin": {
           "tilt": 5.47904144,
           "orientation": 109.97150669,
           "phase": 217.99038709,
-          "speed": -7.14648189
+          "periodHours": 50.374437,
+          "reverse": true,
+          "playing": true
         },
-        "diameter": 106.4
+        "diameter": 106.4,
+        "proceduralMoons": false,
+        "notableMoons": [
+          {
+            "id": "tasked-i",
+            "name": "Tasked I",
+            "visible": true,
+            "locked": false,
+            "diameter": 8.502919,
+            "seed": "tasked:moon:0",
+            "surface": {
+              "color": "#989ca1",
+              "accent": "#444648",
+              "detail": 0.9
+            },
+            "orbit": {
+              "radiusX": 137.68218,
+              "radiusZ": 137.68218,
+              "rotation": 0,
+              "inclination": 2.6407220996916294,
+              "orientation": -60.31312580220401,
+              "phase": 302.6773971039802,
+              "periodDays": 2.253852,
+              "reverse": false,
+              "playing": true
+            },
+            "spin": {
+              "tidallyLocked": true,
+              "periodHours": 54.092448000000005,
+              "tilt": 0,
+              "orientation": 0,
+              "phase": 0,
+              "reverse": false,
+              "playing": true
+            }
+          },
+          {
+            "id": "tasked-ii",
+            "name": "Tasked II",
+            "visible": true,
+            "locked": false,
+            "diameter": 13.067186,
+            "seed": "tasked:moon:1",
+            "surface": {
+              "color": "#989ca1",
+              "accent": "#444648",
+              "detail": 0.9
+            },
+            "orbit": {
+              "radiusX": 137.417958,
+              "radiusZ": 137.417958,
+              "rotation": 0,
+              "inclination": 7.939774952828884,
+              "orientation": 91.83572891168296,
+              "phase": 232.92640381492674,
+              "periodDays": 2.009089,
+              "reverse": false,
+              "playing": true
+            },
+            "spin": {
+              "tidallyLocked": true,
+              "periodHours": 48.218136,
+              "tilt": 0,
+              "orientation": 0,
+              "phase": 0,
+              "reverse": false,
+              "playing": true
+            }
+          },
+          {
+            "id": "tasked-iii",
+            "name": "Tasked III",
+            "visible": true,
+            "locked": false,
+            "diameter": 12.087351,
+            "seed": "tasked:moon:2",
+            "surface": {
+              "color": "#d1c5ae",
+              "accent": "#5e594e",
+              "detail": 0.9
+            },
+            "orbit": {
+              "radiusX": 139.311884,
+              "radiusZ": 139.311884,
+              "rotation": 0,
+              "inclination": -7.857289180159569,
+              "orientation": -54.11574290134013,
+              "phase": 219.4597395323217,
+              "periodDays": 2.111213,
+              "reverse": false,
+              "playing": true
+            },
+            "spin": {
+              "tidallyLocked": true,
+              "periodHours": 50.669112,
+              "tilt": 0,
+              "orientation": 0,
+              "phase": 0,
+              "reverse": false,
+              "playing": true
+            }
+          }
+        ],
+        "moonSystem": {
+          "distanceCompression": 0.7,
+          "orbitScale": 1,
+          "sizeCompression": 0,
+          "sizeScale": 1
+        }
       },
       {
         "id": "ltg",
@@ -468,25 +753,372 @@
           ]
         },
         "orbit": {
-          "radius": 140.42677961,
-          "eccentricity": 0,
           "inclination": 1.78404619,
           "orientation": 79.9448957,
           "phase": 240.46807147,
-          "speed": 0.38,
           "center": [
             6.40357143,
             0,
             0
-          ]
+          ],
+          "ellipse": {
+            "radiusX": 140.42677961,
+            "radiusZ": 140.42677961,
+            "rotation": 0,
+            "anchor": "center"
+          },
+          "periodDays": 947.368421,
+          "reverse": false,
+          "playing": true
         },
         "spin": {
           "tilt": 7.03945193,
           "orientation": 143.73327808,
           "phase": 194.41822933,
-          "speed": 10.52242247
+          "periodHours": 34.212654,
+          "reverse": false,
+          "playing": true
         },
-        "diameter": 95.49
+        "diameter": 95.49,
+        "proceduralMoons": false,
+        "notableMoons": [
+          {
+            "id": "lol-theme-guess-i",
+            "name": "LoL Theme Guess I",
+            "visible": true,
+            "locked": false,
+            "diameter": 9.793277,
+            "seed": "ltg:moon:0",
+            "surface": {
+              "color": "#d1c5ae",
+              "accent": "#5e594e",
+              "detail": 0.9
+            },
+            "orbit": {
+              "radiusX": 115.151954,
+              "radiusZ": 115.151954,
+              "rotation": 0,
+              "inclination": -7.860362194478512,
+              "orientation": 117.88904246874154,
+              "phase": 60.925535978749394,
+              "periodDays": 4.576336,
+              "reverse": false,
+              "playing": true
+            },
+            "spin": {
+              "tidallyLocked": true,
+              "periodHours": 109.832064,
+              "tilt": 0,
+              "orientation": 0,
+              "phase": 0,
+              "reverse": false,
+              "playing": true
+            }
+          },
+          {
+            "id": "lol-theme-guess-ii",
+            "name": "LoL Theme Guess II",
+            "visible": true,
+            "locked": false,
+            "diameter": 8.814783,
+            "seed": "ltg:moon:1",
+            "surface": {
+              "color": "#989ca1",
+              "accent": "#444648",
+              "detail": 0.9
+            },
+            "orbit": {
+              "radiusX": 116.179582,
+              "radiusZ": 116.179582,
+              "rotation": 0,
+              "inclination": -4.367960024625063,
+              "orientation": 164.37898065894842,
+              "phase": 3.2140668388456106,
+              "periodDays": 3.016961,
+              "reverse": false,
+              "playing": true
+            },
+            "spin": {
+              "tidallyLocked": true,
+              "periodHours": 72.40706399999999,
+              "tilt": 0,
+              "orientation": 0,
+              "phase": 0,
+              "reverse": false,
+              "playing": true
+            }
+          },
+          {
+            "id": "lol-theme-guess-iii",
+            "name": "LoL Theme Guess III",
+            "visible": true,
+            "locked": false,
+            "diameter": 9.372125,
+            "seed": "ltg:moon:2",
+            "surface": {
+              "color": "#a3998b",
+              "accent": "#49453f",
+              "detail": 0.9
+            },
+            "orbit": {
+              "radiusX": 114.370853,
+              "radiusZ": 114.370853,
+              "rotation": 0,
+              "inclination": -6.956962261348963,
+              "orientation": 90.67077085375786,
+              "phase": 57.43138734251261,
+              "periodDays": 2.226003,
+              "reverse": false,
+              "playing": true
+            },
+            "spin": {
+              "tidallyLocked": true,
+              "periodHours": 53.424071999999995,
+              "tilt": 0,
+              "orientation": 0,
+              "phase": 0,
+              "reverse": false,
+              "playing": true
+            }
+          },
+          {
+            "id": "lol-theme-guess-iv",
+            "name": "LoL Theme Guess IV",
+            "visible": true,
+            "locked": false,
+            "diameter": 12.498339,
+            "seed": "ltg:moon:3",
+            "surface": {
+              "color": "#d1c5ae",
+              "accent": "#5e594e",
+              "detail": 0.9
+            },
+            "orbit": {
+              "radiusX": 133.231564,
+              "radiusZ": 133.231564,
+              "rotation": 0,
+              "inclination": -5.485129959881306,
+              "orientation": -149.10614750348032,
+              "phase": 17.73627072572708,
+              "periodDays": 2.670717,
+              "reverse": false,
+              "playing": true
+            },
+            "spin": {
+              "tidallyLocked": true,
+              "periodHours": 64.097208,
+              "tilt": 0,
+              "orientation": 0,
+              "phase": 0,
+              "reverse": false,
+              "playing": true
+            }
+          },
+          {
+            "id": "lol-theme-guess-v",
+            "name": "LoL Theme Guess V",
+            "visible": true,
+            "locked": false,
+            "diameter": 11.980313,
+            "seed": "ltg:moon:4",
+            "surface": {
+              "color": "#d1c5ae",
+              "accent": "#5e594e",
+              "detail": 0.9
+            },
+            "orbit": {
+              "radiusX": 115.658894,
+              "radiusZ": 115.658894,
+              "rotation": 0,
+              "inclination": -1.413942489773035,
+              "orientation": 71.05509546585381,
+              "phase": 180.30675628222525,
+              "periodDays": 5.075437,
+              "reverse": false,
+              "playing": true
+            },
+            "spin": {
+              "tidallyLocked": true,
+              "periodHours": 121.81048799999999,
+              "tilt": 0,
+              "orientation": 0,
+              "phase": 0,
+              "reverse": false,
+              "playing": true
+            }
+          },
+          {
+            "id": "lol-theme-guess-vi",
+            "name": "LoL Theme Guess VI",
+            "visible": true,
+            "locked": false,
+            "diameter": 9.303437,
+            "seed": "ltg:moon:5",
+            "surface": {
+              "color": "#aaa79d",
+              "accent": "#4d4b47",
+              "detail": 0.9
+            },
+            "orbit": {
+              "radiusX": 114.488654,
+              "radiusZ": 114.488654,
+              "rotation": 0,
+              "inclination": 5.116566479206085,
+              "orientation": 70.64518033526838,
+              "phase": 80.33330362290144,
+              "periodDays": 5.163699,
+              "reverse": false,
+              "playing": true
+            },
+            "spin": {
+              "tidallyLocked": true,
+              "periodHours": 123.928776,
+              "tilt": 0,
+              "orientation": 0,
+              "phase": 0,
+              "reverse": false,
+              "playing": true
+            }
+          },
+          {
+            "id": "lol-theme-guess-vii",
+            "name": "LoL Theme Guess VII",
+            "visible": true,
+            "locked": false,
+            "diameter": 8.940671,
+            "seed": "ltg:moon:6",
+            "surface": {
+              "color": "#aaa79d",
+              "accent": "#4d4b47",
+              "detail": 0.9
+            },
+            "orbit": {
+              "radiusX": 116.582486,
+              "radiusZ": 116.582486,
+              "rotation": 0,
+              "inclination": 1.6330362111330032,
+              "orientation": 82.28878000751138,
+              "phase": 2.8643065318465233,
+              "periodDays": 3.348153,
+              "reverse": false,
+              "playing": true
+            },
+            "spin": {
+              "tidallyLocked": true,
+              "periodHours": 80.355672,
+              "tilt": 0,
+              "orientation": 0,
+              "phase": 0,
+              "reverse": false,
+              "playing": true
+            }
+          },
+          {
+            "id": "lol-theme-guess-viii",
+            "name": "LoL Theme Guess VIII",
+            "visible": true,
+            "locked": false,
+            "diameter": 7.973814,
+            "seed": "ltg:moon:7",
+            "surface": {
+              "color": "#d1c5ae",
+              "accent": "#5e594e",
+              "detail": 0.9
+            },
+            "orbit": {
+              "radiusX": 126.285812,
+              "radiusZ": 126.285812,
+              "rotation": 0,
+              "inclination": 6.757463533431292,
+              "orientation": -72.51520531252027,
+              "phase": 130.8220064174384,
+              "periodDays": 4.663364,
+              "reverse": false,
+              "playing": true
+            },
+            "spin": {
+              "tidallyLocked": true,
+              "periodHours": 111.92073599999999,
+              "tilt": 0,
+              "orientation": 0,
+              "phase": 0,
+              "reverse": false,
+              "playing": true
+            }
+          },
+          {
+            "id": "lol-theme-guess-9",
+            "name": "LoL Theme Guess 9",
+            "visible": true,
+            "locked": false,
+            "diameter": 9.679531,
+            "seed": "ltg:moon:8",
+            "surface": {
+              "color": "#989ca1",
+              "accent": "#444648",
+              "detail": 0.9
+            },
+            "orbit": {
+              "radiusX": 120.416341,
+              "radiusZ": 120.416341,
+              "rotation": 0,
+              "inclination": 7.662243667989969,
+              "orientation": -168.46454213373363,
+              "phase": 104.2589446529746,
+              "periodDays": 3.260027,
+              "reverse": false,
+              "playing": true
+            },
+            "spin": {
+              "tidallyLocked": true,
+              "periodHours": 78.240648,
+              "tilt": 0,
+              "orientation": 0,
+              "phase": 0,
+              "reverse": false,
+              "playing": true
+            }
+          },
+          {
+            "id": "lol-theme-guess-10",
+            "name": "LoL Theme Guess 10",
+            "visible": true,
+            "locked": false,
+            "diameter": 11.002106,
+            "seed": "ltg:moon:9",
+            "surface": {
+              "color": "#aaa79d",
+              "accent": "#4d4b47",
+              "detail": 0.9
+            },
+            "orbit": {
+              "radiusX": 115.599861,
+              "radiusZ": 115.599861,
+              "rotation": 0,
+              "inclination": -1.3417162634432316,
+              "orientation": 77.91299287229776,
+              "phase": 39.838319420814514,
+              "periodDays": 3.962734,
+              "reverse": false,
+              "playing": true
+            },
+            "spin": {
+              "tidallyLocked": true,
+              "periodHours": 95.105616,
+              "tilt": 0,
+              "orientation": 0,
+              "phase": 0,
+              "reverse": false,
+              "playing": true
+            }
+          }
+        ],
+        "moonSystem": {
+          "distanceCompression": 0.7,
+          "orbitScale": 1,
+          "sizeCompression": 0,
+          "sizeScale": 1
+        }
       },
       {
         "id": "potential-cpp",
@@ -580,25 +1212,174 @@
           ]
         },
         "orbit": {
-          "radius": 159.51707646,
-          "eccentricity": 0,
           "inclination": 2.66931066,
           "orientation": 48.02802207,
           "phase": 342.42253397,
-          "speed": 0.27,
           "center": [
             6.40357143,
             0,
             0
-          ]
+          ],
+          "ellipse": {
+            "radiusX": 159.51707646,
+            "radiusZ": 159.51707646,
+            "rotation": 0,
+            "anchor": "center"
+          },
+          "periodDays": 1333.333333,
+          "reverse": false,
+          "playing": true
         },
         "spin": {
           "tilt": 17.20846629,
           "orientation": -80.60079247,
           "phase": 32.51548664,
-          "speed": -4.22201176
+          "periodHours": 85.267408,
+          "reverse": true,
+          "playing": true
         },
-        "diameter": 76.39
+        "diameter": 76.39,
+        "proceduralMoons": false,
+        "notableMoons": [
+          {
+            "id": "future-project-c-i",
+            "name": "Future Project (C++) I",
+            "visible": true,
+            "locked": false,
+            "diameter": 5.991006,
+            "seed": "potential-cpp:moon:0",
+            "surface": {
+              "color": "#989ca1",
+              "accent": "#444648",
+              "detail": 0.9
+            },
+            "orbit": {
+              "radiusX": 61.904283,
+              "radiusZ": 61.904283,
+              "rotation": 0,
+              "inclination": -4.739921942353249,
+              "orientation": -27.231340678408742,
+              "phase": 64.00958927348256,
+              "periodDays": 4.168927,
+              "reverse": false,
+              "playing": true
+            },
+            "spin": {
+              "tidallyLocked": true,
+              "periodHours": 100.054248,
+              "tilt": 0,
+              "orientation": 0,
+              "phase": 0,
+              "reverse": false,
+              "playing": true
+            }
+          },
+          {
+            "id": "future-project-c-ii",
+            "name": "Future Project (C++) II",
+            "visible": true,
+            "locked": false,
+            "diameter": 7.958674,
+            "seed": "potential-cpp:moon:1",
+            "surface": {
+              "color": "#aaa79d",
+              "accent": "#4d4b47",
+              "detail": 0.9
+            },
+            "orbit": {
+              "radiusX": 61.819312,
+              "radiusZ": 61.819312,
+              "rotation": 0,
+              "inclination": 1.8122755363583565,
+              "orientation": -40.07266687229276,
+              "phase": 40.886522848159075,
+              "periodDays": 2.049873,
+              "reverse": false,
+              "playing": true
+            },
+            "spin": {
+              "tidallyLocked": true,
+              "periodHours": 49.196951999999996,
+              "tilt": 0,
+              "orientation": 0,
+              "phase": 0,
+              "reverse": false,
+              "playing": true
+            }
+          },
+          {
+            "id": "future-project-c-iii",
+            "name": "Future Project (C++) III",
+            "visible": true,
+            "locked": false,
+            "diameter": 10.560347,
+            "seed": "potential-cpp:moon:2",
+            "surface": {
+              "color": "#aaa79d",
+              "accent": "#4d4b47",
+              "detail": 0.9
+            },
+            "orbit": {
+              "radiusX": 61.053528,
+              "radiusZ": 61.053528,
+              "rotation": 0,
+              "inclination": 7.992198418825865,
+              "orientation": 33.36973979137838,
+              "phase": 145.60946183279157,
+              "periodDays": 5.440574,
+              "reverse": false,
+              "playing": true
+            },
+            "spin": {
+              "tidallyLocked": true,
+              "periodHours": 130.573776,
+              "tilt": 0,
+              "orientation": 0,
+              "phase": 0,
+              "reverse": false,
+              "playing": true
+            }
+          },
+          {
+            "id": "future-project-c-iv",
+            "name": "Future Project (C++) IV",
+            "visible": true,
+            "locked": false,
+            "diameter": 8.761398,
+            "seed": "potential-cpp:moon:3",
+            "surface": {
+              "color": "#989ca1",
+              "accent": "#444648",
+              "detail": 0.9
+            },
+            "orbit": {
+              "radiusX": 54.981692,
+              "radiusZ": 54.981692,
+              "rotation": 0,
+              "inclination": 6.899743180721998,
+              "orientation": 170.71506469510496,
+              "phase": 87.02002437785268,
+              "periodDays": 4.033844,
+              "reverse": false,
+              "playing": true
+            },
+            "spin": {
+              "tidallyLocked": true,
+              "periodHours": 96.812256,
+              "tilt": 0,
+              "orientation": 0,
+              "phase": 0,
+              "reverse": false,
+              "playing": true
+            }
+          }
+        ],
+        "moonSystem": {
+          "distanceCompression": 0.7,
+          "orbitScale": 1,
+          "sizeCompression": 0,
+          "sizeScale": 1
+        }
       },
       {
         "id": "project-x",
@@ -692,12 +1473,9 @@
           ]
         },
         "orbit": {
-          "radius": 168.2538714,
-          "eccentricity": 0,
           "inclination": 9.76986365,
           "orientation": -85.49894703,
           "phase": 85.82452956,
-          "speed": -0.22,
           "center": [
             0,
             0,
@@ -708,15 +1486,194 @@
             "radiusZ": 168.2538714,
             "rotation": 0,
             "anchor": "sun"
-          }
+          },
+          "periodDays": 1636.363636,
+          "reverse": true,
+          "playing": true
         },
         "spin": {
           "tilt": 2.31585854,
           "orientation": 44.06664759,
           "phase": 6.88854686,
-          "speed": -4.63578609
+          "periodHours": 77.656732,
+          "reverse": true,
+          "playing": true
         },
-        "diameter": 45.01
+        "diameter": 45.01,
+        "proceduralMoons": false,
+        "notableMoons": [
+          {
+            "id": "project-x-i",
+            "name": "Project X I",
+            "visible": true,
+            "locked": false,
+            "diameter": 5.468934,
+            "seed": "planet-x:moon:0",
+            "surface": {
+              "color": "#989ca1",
+              "accent": "#444648",
+              "detail": 0.9
+            },
+            "orbit": {
+              "radiusX": 60.080928,
+              "radiusZ": 60.080928,
+              "rotation": 0,
+              "inclination": 1.1563744023442268,
+              "orientation": 4.524120921269059,
+              "phase": 94.81988467276096,
+              "periodDays": 3.190576,
+              "reverse": false,
+              "playing": true
+            },
+            "spin": {
+              "tidallyLocked": true,
+              "periodHours": 76.573824,
+              "tilt": 0,
+              "orientation": 0,
+              "phase": 0,
+              "reverse": false,
+              "playing": true
+            }
+          },
+          {
+            "id": "project-x-ii",
+            "name": "Project X II",
+            "visible": true,
+            "locked": false,
+            "diameter": 4.816576,
+            "seed": "planet-x:moon:1",
+            "surface": {
+              "color": "#989ca1",
+              "accent": "#444648",
+              "detail": 0.9
+            },
+            "orbit": {
+              "radiusX": 56.751864,
+              "radiusZ": 56.751864,
+              "rotation": 0,
+              "inclination": 1.5400754399597645,
+              "orientation": -147.74610919877887,
+              "phase": 254.95538243092597,
+              "periodDays": 2.435004,
+              "reverse": false,
+              "playing": true
+            },
+            "spin": {
+              "tidallyLocked": true,
+              "periodHours": 58.440096000000004,
+              "tilt": 0,
+              "orientation": 0,
+              "phase": 0,
+              "reverse": false,
+              "playing": true
+            }
+          },
+          {
+            "id": "project-x-iii",
+            "name": "Project X III",
+            "visible": true,
+            "locked": false,
+            "diameter": 6.280516,
+            "seed": "planet-x:moon:2",
+            "surface": {
+              "color": "#aaa79d",
+              "accent": "#4d4b47",
+              "detail": 0.9
+            },
+            "orbit": {
+              "radiusX": 52.994886,
+              "radiusZ": 52.994886,
+              "rotation": 0,
+              "inclination": -0.4486220069229603,
+              "orientation": -138.06273308582604,
+              "phase": 186.01544371806085,
+              "periodDays": 5.385189,
+              "reverse": false,
+              "playing": true
+            },
+            "spin": {
+              "tidallyLocked": true,
+              "periodHours": 129.24453599999998,
+              "tilt": 0,
+              "orientation": 0,
+              "phase": 0,
+              "reverse": false,
+              "playing": true
+            }
+          },
+          {
+            "id": "project-x-iv",
+            "name": "Project X IV",
+            "visible": true,
+            "locked": false,
+            "diameter": 5.873685,
+            "seed": "planet-x:moon:3",
+            "surface": {
+              "color": "#d1c5ae",
+              "accent": "#5e594e",
+              "detail": 0.9
+            },
+            "orbit": {
+              "radiusX": 62.582445,
+              "radiusZ": 62.582445,
+              "rotation": 0,
+              "inclination": -4.112621434032917,
+              "orientation": 169.90200952626765,
+              "phase": 223.40599645860493,
+              "periodDays": 4.991522,
+              "reverse": false,
+              "playing": true
+            },
+            "spin": {
+              "tidallyLocked": true,
+              "periodHours": 119.796528,
+              "tilt": 0,
+              "orientation": 0,
+              "phase": 0,
+              "reverse": false,
+              "playing": true
+            }
+          },
+          {
+            "id": "project-x-v",
+            "name": "Project X V",
+            "visible": true,
+            "locked": false,
+            "diameter": 4.421902,
+            "seed": "planet-x:moon:4",
+            "surface": {
+              "color": "#989ca1",
+              "accent": "#444648",
+              "detail": 0.9
+            },
+            "orbit": {
+              "radiusX": 62.841989,
+              "radiusZ": 62.841989,
+              "rotation": 0,
+              "inclination": 2.361578956246376,
+              "orientation": 168.7139483448118,
+              "phase": 102.8767384774983,
+              "periodDays": 3.788888,
+              "reverse": false,
+              "playing": true
+            },
+            "spin": {
+              "tidallyLocked": true,
+              "periodHours": 90.933312,
+              "tilt": 0,
+              "orientation": 0,
+              "phase": 0,
+              "reverse": false,
+              "playing": true
+            }
+          }
+        ],
+        "moonSystem": {
+          "distanceCompression": 0.7,
+          "orbitScale": 1,
+          "sizeCompression": 0,
+          "sizeScale": 1
+        }
       }
     ],
     "view": {
@@ -733,12 +1690,30 @@
       "playing": true,
       "speed": 1,
       "orbitLines": true,
-      "orbitEpoch": 0
+      "orbitEpochDays": 0,
+      "rotationRate": {
+        "unit": "hour/second",
+        "multiplier": 1
+      },
+      "orbitRate": {
+        "unit": "day/second",
+        "multiplier": 1
+      },
+      "moonRate": {
+        "unit": "day/minute",
+        "multiplier": 3
+      },
+      "moonEpochDays": 0
     },
     "sizing": {
       "planetCompression": 0,
       "planetScale": 1,
       "starScale": 0.63
+    },
+    "layout": {
+      "distanceCompression": 0,
+      "orbitScale": 1,
+      "orbitSpacing": 1
     }
   }
 }

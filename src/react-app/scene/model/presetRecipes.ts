@@ -13,7 +13,13 @@ export function generateScenePreset(
     ...rerollScene(source, seed),
     background: source.background,
     sun: source.sun,
-    timeline: { elapsed: 0, solar: 0 },
+    timeline: {
+      elapsed: 0,
+      solar: 0,
+      rotationHours: 0,
+      orbitDays: 0,
+      moonDays: 0,
+    },
   };
 }
 const defaultPreset = presetSchema.parse(portfolio);

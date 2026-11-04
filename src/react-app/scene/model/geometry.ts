@@ -1,3 +1,4 @@
+import { orbitPhase } from "./time.ts";
 import type { Planet, SceneModel } from "./schema.ts";
 
 type Vector = [number, number, number];
@@ -16,24 +17,13 @@ function orient(orbit: Planet["orbit"], x: number, z: number): Vector {
 export function orbitEllipse(
   orbit: Planet["orbit"],
 ): NonNullable<Planet["orbit"]["ellipse"]> {
-  return (
-    orbit.ellipse ?? {
-      radiusX: orbit.radius,
-      radiusZ: orbit.radius * Math.sqrt(1 - orbit.eccentricity ** 2),
-      rotation: 0,
-      anchor: "center",
-    }
-  );
+  return orbit.ellipse;
 }
-/** Geometric center, including legacy focus-offset orbits. */
+/** Physical geometric center in millions of kilometres. */
 export function orbitCenter(
   orbit: Planet["orbit"],
   sun: Vector = [0, 0, 0],
 ): Vector {
-  if (!orbit.ellipse) {
-    const offset = orient(orbit, -orbit.radius * orbit.eccentricity, 0);
-    return orbit.center.map((v, i) => v + offset[i]) as Vector;
-  }
   if (orbit.ellipse.anchor === "center") return [...orbit.center];
   const { radiusX, radiusZ, rotation } = orbit.ellipse;
   const focus = Math.sqrt(Math.abs(radiusX ** 2 - radiusZ ** 2));
@@ -47,7 +37,7 @@ export function orbitCenter(
   );
   return sun.map((v, i) => v + offset[i]) as Vector;
 }
-/** Upgrade a legacy ellipse without shifting it; shape edits then retain its center. */
+/** Shape/anchor edits retain the existing geometric center. */
 export function editOrbit(
   orbit: Planet["orbit"],
   patch: Partial<NonNullable<Planet["orbit"]["ellipse"]>>,
@@ -61,11 +51,11 @@ export function editOrbit(
 }
 export function orbitPosition(
   orbit: Planet["orbit"],
-  elapsedSeconds: number,
+  elapsedDays: number,
   sun: Vector = [0, 0, 0],
 ): Vector {
   const ellipse = orbitEllipse(orbit);
-  const phase = (orbit.phase + elapsedSeconds * orbit.speed) * radians,
+  const phase = orbitPhase(orbit, elapsedDays) * radians,
     angle = ellipse.rotation * radians;
   const x = ellipse.radiusX * Math.cos(phase),
     z = ellipse.radiusZ * Math.sin(phase);
@@ -84,12 +74,15 @@ export const PORTFOLIO_FRAMING = {
   visibleLimbRatio: (1.12 * 0.86) / 2 - 0.11,
 };
 
+/** Every camera composition can reach the same absolute close-up scale. */
+export const MIN_VIEW_HEIGHT = 1;
+
 export function viewFrame(view: SceneModel["view"], aspect: number) {
   if (view.camera) {
     const { azimuth, elevation, target, baseHeight } = view.camera;
     const a = azimuth * radians,
       e = elevation * radians;
-    const height = baseHeight / view.zoom;
+    const height = Math.max(MIN_VIEW_HEIGHT, baseHeight / view.zoom);
     const direction = [
       Math.sin(a) * Math.cos(e),
       Math.sin(e),
@@ -107,7 +100,7 @@ export function viewFrame(view: SceneModel["view"], aspect: number) {
   const baseHeight = portfolio
     ? (PORTFOLIO_FRAMING.sunRadius * 2) / PORTFOLIO_FRAMING.heightRatio
     : 325;
-  const height = baseHeight / view.zoom;
+  const height = Math.max(MIN_VIEW_HEIGHT, baseHeight / view.zoom);
   const crop =
     PORTFOLIO_FRAMING.heightRatio / 2 - PORTFOLIO_FRAMING.visibleLimbRatio;
   const offset = portfolio

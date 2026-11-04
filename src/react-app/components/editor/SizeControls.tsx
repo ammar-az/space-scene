@@ -13,7 +13,7 @@ const format = (value: number) =>
     maximumFractionDigits: 2,
     minimumFractionDigits: 2,
   });
-function NumberField({
+export function NumberField({
   label,
   value,
   min,

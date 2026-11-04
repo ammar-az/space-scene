@@ -49,12 +49,10 @@ export function cloudSeedOffset(planet: Planet): [number, number, number] {
 export function cloudRotation(
   planet: Planet,
   time: number,
-  spin = planet.spin,
+  spinDegrees = planet.spin.phase,
 ) {
   return (
-    ((spin.phase +
-      time * (spin.speed + (planet.clouds ?? defaultClouds).speed)) *
-      Math.PI) /
+    ((spinDegrees + time * (planet.clouds ?? defaultClouds).speed) * Math.PI) /
     180
   );
 }

@@ -1,3 +1,8 @@
+import { notableMoonLayout } from "../src/react-app/scene/model/notableMoons.ts";
+import {
+  orbitLayoutFactors,
+  scaleOrbitPoint,
+} from "../src/react-app/scene/model/layout.ts";
 import {
   planetRenderRadius,
   starRenderRadius,
@@ -14,10 +19,6 @@ import {
   serializeScene,
 } from "../src/react-app/scene/model/schema.ts";
 import { orbitPosition } from "../src/react-app/scene/model/geometry.ts";
-import {
-  moonProfiles,
-  planetRing,
-} from "../src/react-app/scene/model/systems.ts";
 import { giantArtwork } from "../src/react-app/scene/utils/planetTextures.ts";
 import { seededRandom } from "../src/react-app/scene/utils/seededRandom.ts";
 const template = async (id) =>
@@ -110,7 +111,7 @@ test("Project X has a closed Sun-centered orbit that clears the solar surface th
     );
   }
   const start = orbitPosition(x.orbit, 0),
-    end = orbitPosition(x.orbit, 360 / Math.abs(x.orbit.speed));
+    end = orbitPosition(x.orbit, x.orbit.periodDays);
   start.forEach((v, i) => assert.ok(Math.abs(v - end[i]) < 1e-7));
   const reference = JSON.parse(
     await readFile(
@@ -142,6 +143,7 @@ test("solar recipes keep warm Jupiter, icy-style Saturn, narrow Uranus rings and
     assert.ok(
       uranus.rings.amount > 0 && uranus.rings.amount < saturn.rings.amount,
     );
+    const factors = orbitLayoutFactors(scene);
     for (const p of scene.planets) {
       for (let phase = 0; phase < 360; phase += 2) {
         const point = orbitPosition(
@@ -150,16 +152,19 @@ test("solar recipes keep warm Jupiter, icy-style Saturn, narrow Uranus rings and
           scene.sun.position,
         );
         assert.ok(
-          Math.hypot(...point) >
+          Math.hypot(
+            ...scaleOrbitPoint(point, scene.sun.position, factors.get(p.id)),
+          ) >
             starRenderRadius(scene) + planetRenderRadius(scene, p),
           `${p.name} must clear the configured rendered Sun`,
         );
       }
-      for (const moon of moonProfiles(p)) {
-        assert.ok(moon.distance <= 2.8);
-        assert.ok(moon.distance >= 1 + moon.size);
-        const ring = planetRing(p);
-        if (ring) assert.ok(moon.distance >= ring.outer + moon.size);
+      assert.equal(p.proceduralMoons, false);
+      const moons = notableMoonLayout(p);
+      for (const moon of p.notableMoons) {
+        assert.equal(moon.spin.periodHours, moon.orbit.periodDays * 24);
+        assert.ok(moons.get(moon.id).radius > 0);
+        assert.ok(Number.isFinite(moons.get(moon.id).extent));
       }
     }
   }

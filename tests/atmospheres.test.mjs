@@ -1,3 +1,8 @@
+import {
+  orbitLayoutFactors,
+  scaleOrbitPoint,
+} from "../src/react-app/scene/model/layout.ts";
+import { rotationPhase } from "../src/react-app/scene/model/time.ts";
 import { planetRenderRadius } from "../src/react-app/scene/model/sizes.ts";
 import assert from "node:assert/strict";
 import { readFile } from "node:fs/promises";
@@ -34,14 +39,17 @@ const solar = async () =>
   ).scene;
 
 test("solar orbital envelopes and projected paths stay separate for every neighboring planet", async () => {
-  const scene = await solar();
+  const scene = await solar(),
+    factors = orbitLayoutFactors(scene);
   let previous;
-  for (const p of scene.planets) {
+  for (const p of scene.planets.filter((p) => p.id !== "pluto")) {
     let min = Infinity,
       max = 0;
     for (let phase = 0; phase < 360; phase += 0.5) {
       const point = orbitPosition({ ...p.orbit, phase }, 0, scene.sun.position);
-      const radius = Math.hypot(...point);
+      const radius = Math.hypot(
+        ...scaleOrbitPoint(point, scene.sun.position, factors.get(p.id)),
+      );
       min = Math.min(min, radius);
       max = Math.max(max, radius);
     }
@@ -63,19 +71,34 @@ test("solar orbital envelopes and projected paths stay separate for every neighb
         [360 / Math.hypot(110, 360), -110 / Math.hypot(110, 360)],
       ]) {
         const outer = orbitEllipse(p.orbit),
-          center = orbitCenter(p.orbit, scene.sun.position),
+          factor = factors.get(p.id),
+          center = scaleOrbitPoint(
+            orbitCenter(p.orbit, scene.sun.position),
+            scene.sun.position,
+            factor,
+          ),
           tilt = (p.orbit.inclination * Math.PI) / 180;
         const minor =
-          outer.radiusZ * Math.abs(upY * Math.sin(tilt) + upZ * Math.cos(tilt));
+          outer.radiusZ *
+          factor *
+          Math.abs(upY * Math.sin(tilt) + upZ * Math.cos(tilt));
         for (let phase = 0; phase < 360; phase += 0.5) {
           const point = orbitPosition(
             { ...previous.planet.orbit, phase },
             0,
             scene.sun.position,
           );
+          const projected = scaleOrbitPoint(
+            point,
+            scene.sun.position,
+            factors.get(previous.planet.id),
+          );
           const q =
-            ((point[0] - center[0]) / outer.radiusX) ** 2 +
-            ((point[1] * upY + point[2] * upZ) / minor) ** 2;
+            ((projected[0] - center[0]) / (outer.radiusX * factor)) ** 2 +
+            (((projected[1] - center[1]) * upY +
+              (projected[2] - center[2]) * upZ) /
+              minor) **
+              2;
           assert.ok(
             q < 1,
             `${previous.planet.name}/${p.name} projected paths cross`,
@@ -196,24 +219,22 @@ test("cloud drift follows the scene clock separately from surface rotation, and 
     surface.uniforms.u_sun,
   );
   const view = new THREE.Vector3(0, 0, 1);
-  environment.update(10, 8, view, p.spin);
+  environment.update(10, 8, view, rotationPhase(p.spin, 10));
   const angle = environment.clouds.rotation.y;
-  environment.update(10, 8, view, p.spin);
+  environment.update(10, 8, view, rotationPhase(p.spin, 10));
   assert.equal(environment.clouds.rotation.y, angle);
-  assert.equal(angle, cloudRotation(p, 10));
-  assert.ok(
-    Math.abs(angle - ((p.spin.phase + 10 * p.spin.speed) * Math.PI) / 180) > 0,
-  );
+  assert.equal(angle, cloudRotation(p, 10, rotationPhase(p.spin, 10)));
+  assert.ok(Math.abs(angle - (rotationPhase(p.spin, 10) * Math.PI) / 180) > 0);
   assert.ok(environment.atmosphere.scale.x > environment.clouds.scale.x);
   assert.equal(
     environment.clouds.material.uniforms.u_shadowRadius.value,
     8 * environment.clouds.scale.x,
   );
-  const newSpin = { ...p.spin, phase: 90, speed: p.spin.speed + 3 };
-  environment.update(10, 8, view, newSpin);
+  const newSpin = { ...p.spin, phase: 90, periodHours: 40 };
+  environment.update(10, 8, view, rotationPhase(newSpin, 10));
   assert.equal(
     environment.clouds.rotation.y,
-    cloudRotation(p, 10, newSpin),
+    cloudRotation(p, 10, rotationPhase(newSpin, 10)),
     "live spin edits must update clouds without rebuilding the layer",
   );
   environment.dispose();

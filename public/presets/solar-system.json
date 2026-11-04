@@ -1,12 +1,15 @@
 {
   "kind": "space-scene",
-  "schemaVersion": 2,
-  "generatorVersion": "2",
+  "schemaVersion": 4,
+  "generatorVersion": "4",
   "scene": {
     "name": "Our solar system",
     "timeline": {
       "elapsed": 0,
-      "solar": 0
+      "solar": 0,
+      "rotationHours": 0,
+      "orbitDays": 0,
+      "moonDays": 0
     },
     "background": {
       "visible": true,
@@ -131,31 +134,41 @@
           ]
         },
         "orbit": {
-          "radius": 110,
-          "eccentricity": 0.206,
           "inclination": 7,
           "orientation": 0,
           "phase": 315,
-          "speed": 12.45,
           "center": [
             0,
             0,
             0
           ],
           "ellipse": {
-            "radiusX": 110,
-            "radiusZ": 107.64071906,
+            "radiusX": 57.9,
+            "radiusZ": 56.65816,
             "rotation": 0,
             "anchor": "sun"
-          }
+          },
+          "periodDays": 88,
+          "reverse": false,
+          "playing": true
         },
         "spin": {
           "tilt": 0.034,
           "orientation": 0,
           "phase": 0,
-          "speed": 0.05093777
+          "periodHours": 1407.6,
+          "reverse": false,
+          "playing": true
         },
-        "diameter": 4.88
+        "diameter": 4.88,
+        "proceduralMoons": false,
+        "notableMoons": [],
+        "moonSystem": {
+          "distanceCompression": 0.65,
+          "orbitScale": 1,
+          "sizeCompression": 0.35,
+          "sizeScale": 1
+        }
       },
       {
         "id": "venus",
@@ -264,31 +277,41 @@
           ]
         },
         "orbit": {
-          "radius": 145,
-          "eccentricity": 0.007,
           "inclination": 3.4,
           "orientation": 0,
           "phase": 45,
-          "speed": 4.87583445,
           "center": [
             0,
             0,
             0
           ],
           "ellipse": {
-            "radiusX": 145,
-            "radiusZ": 144.99644746,
+            "radiusX": 108.2,
+            "radiusZ": 108.197349,
             "rotation": 0,
             "anchor": "sun"
-          }
+          },
+          "periodDays": 224.7,
+          "reverse": false,
+          "playing": true
         },
         "spin": {
           "tilt": 177.4,
           "orientation": 0,
           "phase": 30,
-          "speed": 0.01229318
+          "periodHours": 5832.5,
+          "reverse": false,
+          "playing": true
         },
-        "diameter": 12.1
+        "diameter": 12.1,
+        "proceduralMoons": false,
+        "notableMoons": [],
+        "moonSystem": {
+          "distanceCompression": 0.65,
+          "orbitScale": 1,
+          "sizeCompression": 0.35,
+          "sizeScale": 1
+        }
       },
       {
         "id": "earth",
@@ -398,29 +421,31 @@
           ]
         },
         "orbit": {
-          "radius": 160,
-          "eccentricity": 0.017,
           "inclination": 0,
           "orientation": 0,
           "phase": 130,
-          "speed": 3,
           "center": [
             0,
             0,
             0
           ],
           "ellipse": {
-            "radiusX": 160,
-            "radiusZ": 159.97687833,
+            "radiusX": 149.6,
+            "radiusZ": 149.578381,
             "rotation": 0,
             "anchor": "sun"
-          }
+          },
+          "periodDays": 365.2,
+          "reverse": false,
+          "playing": true
         },
         "spin": {
           "tilt": 23.4,
           "orientation": 0,
           "phase": 60,
-          "speed": 3
+          "periodHours": 24,
+          "reverse": false,
+          "playing": true
         },
         "earthlike": {
           "enabled": true,
@@ -430,7 +455,49 @@
           "landCoverage": 0.3,
           "continentScale": 1.8
         },
-        "diameter": 12.76
+        "diameter": 12.76,
+        "proceduralMoons": false,
+        "notableMoons": [
+          {
+            "id": "moon",
+            "name": "Moon",
+            "visible": true,
+            "locked": false,
+            "diameter": 3.4748,
+            "seed": "moon",
+            "surface": {
+              "color": "#b8b8b0",
+              "accent": "#62645f",
+              "detail": 0.9
+            },
+            "orbit": {
+              "radiusX": 384.4,
+              "radiusZ": 383.82027,
+              "rotation": 0,
+              "inclination": 23.4,
+              "orientation": 0,
+              "phase": 25,
+              "periodDays": 27.3217,
+              "reverse": false,
+              "playing": true
+            },
+            "spin": {
+              "tidallyLocked": true,
+              "periodHours": 655.7208,
+              "tilt": 0,
+              "orientation": 0,
+              "phase": 0,
+              "reverse": false,
+              "playing": true
+            }
+          }
+        ],
+        "moonSystem": {
+          "distanceCompression": 0.65,
+          "orbitScale": 1,
+          "sizeCompression": 0,
+          "sizeScale": 1
+        }
       },
       {
         "id": "mars",
@@ -523,31 +590,108 @@
           ]
         },
         "orbit": {
-          "radius": 190,
-          "eccentricity": 0.094,
           "inclination": 1.8,
           "orientation": 0,
           "phase": 225,
-          "speed": 1.59475983,
           "center": [
             0,
             0,
             0
           ],
           "ellipse": {
-            "radiusX": 190,
-            "radiusZ": 189.15871748,
+            "radiusX": 228,
+            "radiusZ": 226.990461,
             "rotation": 0,
             "anchor": "sun"
-          }
+          },
+          "periodDays": 687,
+          "reverse": false,
+          "playing": true
         },
         "spin": {
           "tilt": 25.2,
           "orientation": 0,
           "phase": 90,
-          "speed": 2.91463415
+          "periodHours": 24.6,
+          "reverse": false,
+          "playing": true
         },
-        "diameter": 6.79
+        "diameter": 6.79,
+        "proceduralMoons": false,
+        "notableMoons": [
+          {
+            "id": "phobos",
+            "name": "Phobos",
+            "visible": true,
+            "locked": false,
+            "diameter": 0.02216,
+            "seed": "phobos",
+            "surface": {
+              "color": "#a59683",
+              "accent": "#605346",
+              "detail": 0.9
+            },
+            "orbit": {
+              "radiusX": 9.375,
+              "radiusZ": 9.373945,
+              "rotation": 0,
+              "inclination": 1.1,
+              "orientation": 0,
+              "phase": 25,
+              "periodDays": 0.3187,
+              "reverse": false,
+              "playing": true
+            },
+            "spin": {
+              "tidallyLocked": true,
+              "periodHours": 7.6488,
+              "tilt": 0,
+              "orientation": 0,
+              "phase": 0,
+              "reverse": false,
+              "playing": true
+            }
+          },
+          {
+            "id": "deimos",
+            "name": "Deimos",
+            "visible": true,
+            "locked": false,
+            "diameter": 0.0124,
+            "seed": "deimos",
+            "surface": {
+              "color": "#b9aa92",
+              "accent": "#756754",
+              "detail": 0.9
+            },
+            "orbit": {
+              "radiusX": 23.457,
+              "radiusZ": 23.457,
+              "rotation": 0,
+              "inclination": 1.8,
+              "orientation": 0,
+              "phase": 122,
+              "periodDays": 1.2625,
+              "reverse": false,
+              "playing": true
+            },
+            "spin": {
+              "tidallyLocked": true,
+              "periodHours": 30.299999999999997,
+              "tilt": 0,
+              "orientation": 0,
+              "phase": 0,
+              "reverse": false,
+              "playing": true
+            }
+          }
+        ],
+        "moonSystem": {
+          "distanceCompression": 0.65,
+          "orbitScale": 1,
+          "sizeCompression": 0.6,
+          "sizeScale": 1
+        }
       },
       {
         "id": "jupiter",
@@ -645,31 +789,174 @@
           ]
         },
         "orbit": {
-          "radius": 240,
-          "eccentricity": 0.049,
           "inclination": 1.3,
           "orientation": 0,
           "phase": 45,
-          "speed": 0.25296698,
           "center": [
             0,
             0,
             0
           ],
           "ellipse": {
-            "radiusX": 240,
-            "radiusZ": 239.71170685,
+            "radiusX": 778.5,
+            "radiusZ": 777.564849,
             "rotation": 0,
             "anchor": "sun"
-          }
+          },
+          "periodDays": 4331,
+          "reverse": false,
+          "playing": true
         },
         "spin": {
           "tilt": 3.1,
           "orientation": 0,
           "phase": 120,
-          "speed": 7.24242424
+          "periodHours": 9.9,
+          "reverse": false,
+          "playing": true
         },
-        "diameter": 142.98
+        "diameter": 142.98,
+        "proceduralMoons": false,
+        "notableMoons": [
+          {
+            "id": "io",
+            "name": "Io",
+            "visible": true,
+            "locked": false,
+            "diameter": 3.64298,
+            "seed": "io",
+            "surface": {
+              "color": "#c7b167",
+              "accent": "#8f6c38",
+              "detail": 0.9
+            },
+            "orbit": {
+              "radiusX": 421.8,
+              "radiusZ": 421.796626,
+              "rotation": 0,
+              "inclination": 0,
+              "orientation": 0,
+              "phase": 25,
+              "periodDays": 1.762732,
+              "reverse": false,
+              "playing": true
+            },
+            "spin": {
+              "tidallyLocked": true,
+              "periodHours": 42.305568,
+              "tilt": 0,
+              "orientation": 0,
+              "phase": 0,
+              "reverse": false,
+              "playing": true
+            }
+          },
+          {
+            "id": "europa",
+            "name": "Europa",
+            "visible": true,
+            "locked": false,
+            "diameter": 3.1216,
+            "seed": "europa",
+            "surface": {
+              "color": "#d8cfb4",
+              "accent": "#8d7257",
+              "detail": 0.9
+            },
+            "orbit": {
+              "radiusX": 671.1,
+              "radiusZ": 671.07282,
+              "rotation": 0,
+              "inclination": 0.5,
+              "orientation": 0,
+              "phase": 122,
+              "periodDays": 3.525463,
+              "reverse": false,
+              "playing": true
+            },
+            "spin": {
+              "tidallyLocked": true,
+              "periodHours": 84.61111199999999,
+              "tilt": 0,
+              "orientation": 0,
+              "phase": 0,
+              "reverse": false,
+              "playing": true
+            }
+          },
+          {
+            "id": "ganymede",
+            "name": "Ganymede",
+            "visible": true,
+            "locked": false,
+            "diameter": 5.2624,
+            "seed": "ganymede",
+            "surface": {
+              "color": "#a09c8c",
+              "accent": "#5b574b",
+              "detail": 0.9
+            },
+            "orbit": {
+              "radiusX": 1070.4,
+              "radiusZ": 1070.399465,
+              "rotation": 0,
+              "inclination": 0.2,
+              "orientation": 0,
+              "phase": 219,
+              "periodDays": 7.155588,
+              "reverse": false,
+              "playing": true
+            },
+            "spin": {
+              "tidallyLocked": true,
+              "periodHours": 171.73411199999998,
+              "tilt": 0,
+              "orientation": 0,
+              "phase": 0,
+              "reverse": false,
+              "playing": true
+            }
+          },
+          {
+            "id": "callisto",
+            "name": "Callisto",
+            "visible": true,
+            "locked": false,
+            "diameter": 4.8206,
+            "seed": "callisto",
+            "surface": {
+              "color": "#827e75",
+              "accent": "#444640",
+              "detail": 0.9
+            },
+            "orbit": {
+              "radiusX": 1882.7,
+              "radiusZ": 1882.653873,
+              "rotation": 0,
+              "inclination": 0.3,
+              "orientation": 0,
+              "phase": 316,
+              "periodDays": 16.69044,
+              "reverse": false,
+              "playing": true
+            },
+            "spin": {
+              "tidallyLocked": true,
+              "periodHours": 400.57056,
+              "tilt": 0,
+              "orientation": 0,
+              "phase": 0,
+              "reverse": false,
+              "playing": true
+            }
+          }
+        ],
+        "moonSystem": {
+          "distanceCompression": 0.65,
+          "orbitScale": 1,
+          "sizeCompression": 0.35,
+          "sizeScale": 1
+        }
       },
       {
         "id": "saturn",
@@ -762,31 +1049,273 @@
           ]
         },
         "orbit": {
-          "radius": 240,
-          "eccentricity": 0.052,
           "inclination": 2.5,
           "orientation": 0,
           "phase": 310,
-          "speed": 0.10194473,
           "center": [
             0,
             0,
             0
           ],
           "ellipse": {
-            "radiusX": 295,
-            "radiusZ": 294.60089002,
+            "radiusX": 1432,
+            "radiusZ": 1430.062625,
             "rotation": 0,
             "anchor": "sun"
-          }
+          },
+          "periodDays": 10747,
+          "reverse": false,
+          "playing": true
         },
         "spin": {
           "tilt": 26.7,
           "orientation": 0,
           "phase": 150,
-          "speed": 6.70093458
+          "periodHours": 10.7,
+          "reverse": false,
+          "playing": true
         },
-        "diameter": 120.54
+        "diameter": 120.54,
+        "proceduralMoons": false,
+        "notableMoons": [
+          {
+            "id": "mimas",
+            "name": "Mimas",
+            "visible": true,
+            "locked": false,
+            "diameter": 0.3964,
+            "seed": "mimas",
+            "surface": {
+              "color": "#bcbdb6",
+              "accent": "#6d716d",
+              "detail": 0.9
+            },
+            "orbit": {
+              "radiusX": 186,
+              "radiusZ": 185.962796,
+              "rotation": 0,
+              "inclination": 1.6,
+              "orientation": 0,
+              "phase": 25,
+              "periodDays": 0.942422,
+              "reverse": false,
+              "playing": true
+            },
+            "spin": {
+              "tidallyLocked": true,
+              "periodHours": 22.618128,
+              "tilt": 0,
+              "orientation": 0,
+              "phase": 0,
+              "reverse": false,
+              "playing": true
+            }
+          },
+          {
+            "id": "enceladus",
+            "name": "Enceladus",
+            "visible": true,
+            "locked": false,
+            "diameter": 0.5042,
+            "seed": "enceladus",
+            "surface": {
+              "color": "#dce6e5",
+              "accent": "#8fa5a9",
+              "detail": 0.9
+            },
+            "orbit": {
+              "radiusX": 238.4,
+              "radiusZ": 238.39702,
+              "rotation": 0,
+              "inclination": 0,
+              "orientation": 0,
+              "phase": 122,
+              "periodDays": 1.370218,
+              "reverse": false,
+              "playing": true
+            },
+            "spin": {
+              "tidallyLocked": true,
+              "periodHours": 32.885232,
+              "tilt": 0,
+              "orientation": 0,
+              "phase": 0,
+              "reverse": false,
+              "playing": true
+            }
+          },
+          {
+            "id": "tethys",
+            "name": "Tethys",
+            "visible": true,
+            "locked": false,
+            "diameter": 1.0622,
+            "seed": "tethys",
+            "surface": {
+              "color": "#ced7d2",
+              "accent": "#7e9191",
+              "detail": 0.9
+            },
+            "orbit": {
+              "radiusX": 295,
+              "radiusZ": 294.999852,
+              "rotation": 0,
+              "inclination": 1.1,
+              "orientation": 0,
+              "phase": 219,
+              "periodDays": 1.887802,
+              "reverse": false,
+              "playing": true
+            },
+            "spin": {
+              "tidallyLocked": true,
+              "periodHours": 45.307248,
+              "tilt": 0,
+              "orientation": 0,
+              "phase": 0,
+              "reverse": false,
+              "playing": true
+            }
+          },
+          {
+            "id": "dione",
+            "name": "Dione",
+            "visible": true,
+            "locked": false,
+            "diameter": 1.1228,
+            "seed": "dione",
+            "surface": {
+              "color": "#bfc8c7",
+              "accent": "#738384",
+              "detail": 0.9
+            },
+            "orbit": {
+              "radiusX": 377.7,
+              "radiusZ": 377.699245,
+              "rotation": 0,
+              "inclination": 0,
+              "orientation": 0,
+              "phase": 316,
+              "periodDays": 2.736916,
+              "reverse": false,
+              "playing": true
+            },
+            "spin": {
+              "tidallyLocked": true,
+              "periodHours": 65.68598399999999,
+              "tilt": 0,
+              "orientation": 0,
+              "phase": 0,
+              "reverse": false,
+              "playing": true
+            }
+          },
+          {
+            "id": "rhea",
+            "name": "Rhea",
+            "visible": true,
+            "locked": false,
+            "diameter": 1.527,
+            "seed": "rhea",
+            "surface": {
+              "color": "#b7bcb4",
+              "accent": "#686f69",
+              "detail": 0.9
+            },
+            "orbit": {
+              "radiusX": 527.2,
+              "radiusZ": 527.199736,
+              "rotation": 0,
+              "inclination": 0.3,
+              "orientation": 0,
+              "phase": 53,
+              "periodDays": 4.517503,
+              "reverse": false,
+              "playing": true
+            },
+            "spin": {
+              "tidallyLocked": true,
+              "periodHours": 108.42007199999999,
+              "tilt": 0,
+              "orientation": 0,
+              "phase": 0,
+              "reverse": false,
+              "playing": true
+            }
+          },
+          {
+            "id": "titan",
+            "name": "Titan",
+            "visible": true,
+            "locked": false,
+            "diameter": 5.14952,
+            "seed": "titan",
+            "surface": {
+              "color": "#c7a969",
+              "accent": "#8e683a",
+              "detail": 0.9
+            },
+            "orbit": {
+              "radiusX": 1221.9,
+              "radiusZ": 1221.386083,
+              "rotation": 0,
+              "inclination": 0.3,
+              "orientation": 0,
+              "phase": 150,
+              "periodDays": 15.945448,
+              "reverse": false,
+              "playing": true
+            },
+            "spin": {
+              "tidallyLocked": true,
+              "periodHours": 382.69075200000003,
+              "tilt": 0,
+              "orientation": 0,
+              "phase": 0,
+              "reverse": false,
+              "playing": true
+            }
+          },
+          {
+            "id": "iapetus",
+            "name": "Iapetus",
+            "visible": true,
+            "locked": false,
+            "diameter": 1.469,
+            "seed": "iapetus",
+            "surface": {
+              "color": "#a79d89",
+              "accent": "#494537",
+              "detail": 0.9
+            },
+            "orbit": {
+              "radiusX": 3561.7,
+              "radiusZ": 3560.30354,
+              "rotation": 0,
+              "inclination": 15.5,
+              "orientation": 0,
+              "phase": 247,
+              "periodDays": 79.331002,
+              "reverse": false,
+              "playing": true
+            },
+            "spin": {
+              "tidallyLocked": true,
+              "periodHours": 1903.9440479999998,
+              "tilt": 0,
+              "orientation": 0,
+              "phase": 0,
+              "reverse": false,
+              "playing": true
+            }
+          }
+        ],
+        "moonSystem": {
+          "distanceCompression": 0.8,
+          "orbitScale": 1,
+          "sizeCompression": 0.35,
+          "sizeScale": 1
+        }
       },
       {
         "id": "uranus",
@@ -879,31 +1408,207 @@
           ]
         },
         "orbit": {
-          "radius": 240,
-          "eccentricity": 0.047,
           "inclination": 0.8,
           "orientation": 0,
           "phase": 160,
-          "speed": 0.0358168,
           "center": [
             0,
             0,
             0
           ],
           "ellipse": {
-            "radiusX": 345,
-            "radiusZ": 344.61873683,
+            "radiusX": 2867,
+            "radiusZ": 2863.831648,
             "rotation": 0,
             "anchor": "sun"
-          }
+          },
+          "periodDays": 30589,
+          "reverse": false,
+          "playing": true
         },
         "spin": {
           "tilt": 97.8,
           "orientation": 45,
           "phase": 180,
-          "speed": 4.16860465
+          "periodHours": 17.2,
+          "reverse": false,
+          "playing": true
         },
-        "diameter": 51.12
+        "diameter": 51.12,
+        "proceduralMoons": false,
+        "notableMoons": [
+          {
+            "id": "miranda",
+            "name": "Miranda",
+            "visible": true,
+            "locked": false,
+            "diameter": 0.4716,
+            "seed": "miranda",
+            "surface": {
+              "color": "#b7b8ab",
+              "accent": "#6a7068",
+              "detail": 0.9
+            },
+            "orbit": {
+              "radiusX": 129.9,
+              "radiusZ": 129.899935,
+              "rotation": 0,
+              "inclination": 4.3,
+              "orientation": 0,
+              "phase": 25,
+              "periodDays": 1.413479,
+              "reverse": false,
+              "playing": true
+            },
+            "spin": {
+              "tidallyLocked": true,
+              "periodHours": 33.923496,
+              "tilt": 0,
+              "orientation": 0,
+              "phase": 0,
+              "reverse": false,
+              "playing": true
+            }
+          },
+          {
+            "id": "ariel",
+            "name": "Ariel",
+            "visible": true,
+            "locked": false,
+            "diameter": 1.1578,
+            "seed": "ariel",
+            "surface": {
+              "color": "#c6cebf",
+              "accent": "#7b8b86",
+              "detail": 0.9
+            },
+            "orbit": {
+              "radiusX": 190.9,
+              "radiusZ": 190.899905,
+              "rotation": 0,
+              "inclination": 0.1,
+              "orientation": 0,
+              "phase": 122,
+              "periodDays": 2.520379,
+              "reverse": false,
+              "playing": true
+            },
+            "spin": {
+              "tidallyLocked": true,
+              "periodHours": 60.489096,
+              "tilt": 0,
+              "orientation": 0,
+              "phase": 0,
+              "reverse": false,
+              "playing": true
+            }
+          },
+          {
+            "id": "umbriel",
+            "name": "Umbriel",
+            "visible": true,
+            "locked": false,
+            "diameter": 1.1694,
+            "seed": "umbriel",
+            "surface": {
+              "color": "#8e958a",
+              "accent": "#4c5751",
+              "detail": 0.9
+            },
+            "orbit": {
+              "radiusX": 266,
+              "radiusZ": 265.997872,
+              "rotation": 0,
+              "inclination": 0.1,
+              "orientation": 0,
+              "phase": 219,
+              "periodDays": 4.144177,
+              "reverse": false,
+              "playing": true
+            },
+            "spin": {
+              "tidallyLocked": true,
+              "periodHours": 99.460248,
+              "tilt": 0,
+              "orientation": 0,
+              "phase": 0,
+              "reverse": false,
+              "playing": true
+            }
+          },
+          {
+            "id": "titania",
+            "name": "Titania",
+            "visible": true,
+            "locked": false,
+            "diameter": 1.5778,
+            "seed": "titania",
+            "surface": {
+              "color": "#b3bbad",
+              "accent": "#6b766b",
+              "detail": 0.9
+            },
+            "orbit": {
+              "radiusX": 436.3,
+              "radiusZ": 436.299782,
+              "rotation": 0,
+              "inclination": 0.1,
+              "orientation": 0,
+              "phase": 316,
+              "periodDays": 8.705872,
+              "reverse": false,
+              "playing": true
+            },
+            "spin": {
+              "tidallyLocked": true,
+              "periodHours": 208.94092799999999,
+              "tilt": 0,
+              "orientation": 0,
+              "phase": 0,
+              "reverse": false,
+              "playing": true
+            }
+          },
+          {
+            "id": "oberon",
+            "name": "Oberon",
+            "visible": true,
+            "locked": false,
+            "diameter": 1.5228,
+            "seed": "oberon",
+            "surface": {
+              "color": "#a89f92",
+              "accent": "#655d51",
+              "detail": 0.9
+            },
+            "orbit": {
+              "radiusX": 583.5,
+              "radiusZ": 583.499708,
+              "rotation": 0,
+              "inclination": 0.1,
+              "orientation": 0,
+              "phase": 53,
+              "periodDays": 13.463239,
+              "reverse": false,
+              "playing": true
+            },
+            "spin": {
+              "tidallyLocked": true,
+              "periodHours": 323.117736,
+              "tilt": 0,
+              "orientation": 0,
+              "phase": 0,
+              "reverse": false,
+              "playing": true
+            }
+          }
+        ],
+        "moonSystem": {
+          "distanceCompression": 0.65,
+          "orbitScale": 1,
+          "sizeCompression": 0.35,
+          "sizeScale": 1
+        }
       },
       {
         "id": "neptune",
@@ -996,31 +1701,236 @@
           ]
         },
         "orbit": {
-          "radius": 240,
-          "eccentricity": 0.01,
           "inclination": 1.8,
           "orientation": 0,
           "phase": 220,
-          "speed": 0.01832107,
           "center": [
             0,
             0,
             0
           ],
           "ellipse": {
-            "radiusX": 380,
-            "radiusZ": 379.98099952,
+            "radiusX": 4515,
+            "radiusZ": 4514.774244,
             "rotation": 0,
             "anchor": "sun"
-          }
+          },
+          "periodDays": 59800,
+          "reverse": false,
+          "playing": true
         },
         "spin": {
           "tilt": 28.3,
           "orientation": 0,
           "phase": 210,
-          "speed": 4.45341615
+          "periodHours": 16.1,
+          "reverse": false,
+          "playing": true
         },
-        "diameter": 49.53
+        "diameter": 49.53,
+        "proceduralMoons": false,
+        "notableMoons": [
+          {
+            "id": "triton",
+            "name": "Triton",
+            "visible": true,
+            "locked": false,
+            "diameter": 2.7068,
+            "seed": "triton",
+            "surface": {
+              "color": "#c9c3b8",
+              "accent": "#8e7c70",
+              "detail": 0.9
+            },
+            "orbit": {
+              "radiusX": 354.8,
+              "radiusZ": 354.8,
+              "rotation": 0,
+              "inclination": 156.8,
+              "orientation": 0,
+              "phase": 25,
+              "periodDays": 5.876854,
+              "reverse": false,
+              "playing": true
+            },
+            "spin": {
+              "tidallyLocked": true,
+              "periodHours": 141.04449599999998,
+              "tilt": 0,
+              "orientation": 0,
+              "phase": 0,
+              "reverse": false,
+              "playing": true
+            }
+          }
+        ],
+        "moonSystem": {
+          "distanceCompression": 0.65,
+          "orbitScale": 1,
+          "sizeCompression": 0.35,
+          "sizeScale": 1
+        }
+      },
+      {
+        "id": "pluto",
+        "name": "Pluto",
+        "visible": true,
+        "type": "rocky",
+        "locked": false,
+        "moonCount": 0,
+        "ringCount": 0,
+        "rings": {
+          "amount": 0,
+          "width": 1,
+          "opacity": 1,
+          "innerRadius": 1.35
+        },
+        "moons": {
+          "colors": [
+            "#aaa79d",
+            "#d1c5ae",
+            "#a3998b",
+            "#989ca1"
+          ],
+          "radius": [
+            1.35,
+            1.95
+          ],
+          "speed": [
+            3,
+            9
+          ],
+          "size": [
+            0.16,
+            0.24
+          ],
+          "inclination": [
+            -8,
+            8
+          ]
+        },
+        "seeds": {
+          "surface": "pluto",
+          "moons": "pluto-moons",
+          "rings": "pluto-rings",
+          "weather": "pluto-weather"
+        },
+        "families": {
+          "rocky": {
+            "color": "#b89e87",
+            "accent": "#755946",
+            "detail": 0.8,
+            "palette": [
+              {
+                "color": "#b89e87",
+                "accent": "#755946"
+              }
+            ]
+          },
+          "gas": {
+            "color": "#528bea",
+            "accent": "#d8e7f2",
+            "detail": 1
+          },
+          "icy": {
+            "color": "#73b7b7",
+            "accent": "#d2e7e2",
+            "detail": 0.35
+          }
+        },
+        "ranges": {
+          "moons": [
+            0,
+            0
+          ],
+          "rings": [
+            0,
+            0
+          ],
+          "ringAmount": [
+            0,
+            0
+          ],
+          "ringProbability": 0,
+          "detail": [
+            0.8,
+            0.8
+          ],
+          "diameter": [
+            2.38,
+            2.38
+          ]
+        },
+        "orbit": {
+          "inclination": 17.16,
+          "orientation": 110.30347,
+          "phase": 300,
+          "periodDays": 90560,
+          "reverse": false,
+          "playing": true,
+          "center": [
+            0,
+            0,
+            0
+          ],
+          "ellipse": {
+            "radiusX": 5869.656,
+            "radiusZ": 5691.655759,
+            "rotation": 0,
+            "anchor": "sun"
+          }
+        },
+        "spin": {
+          "tilt": 119.51,
+          "orientation": 0,
+          "phase": 0,
+          "periodHours": 153.2928,
+          "reverse": false,
+          "playing": true
+        },
+        "diameter": 2.38,
+        "proceduralMoons": false,
+        "notableMoons": [
+          {
+            "id": "charon",
+            "name": "Charon",
+            "visible": true,
+            "locked": false,
+            "diameter": 1.212,
+            "seed": "charon",
+            "surface": {
+              "color": "#b8b4ae",
+              "accent": "#6c6767",
+              "detail": 0.9
+            },
+            "orbit": {
+              "radiusX": 19.596,
+              "radiusZ": 19.596,
+              "rotation": 0,
+              "inclination": 0,
+              "orientation": 0,
+              "phase": 25,
+              "periodDays": 6.3872,
+              "reverse": false,
+              "playing": true
+            },
+            "spin": {
+              "tidallyLocked": true,
+              "periodHours": 153.2928,
+              "tilt": 0,
+              "orientation": 0,
+              "phase": 0,
+              "reverse": false,
+              "playing": true
+            }
+          }
+        ],
+        "moonSystem": {
+          "distanceCompression": 0.65,
+          "orbitScale": 1.4,
+          "sizeCompression": 0,
+          "sizeScale": 1
+        }
       }
     ],
     "view": {
@@ -1037,12 +1947,30 @@
       "playing": true,
       "speed": 1,
       "orbitLines": true,
-      "orbitEpoch": 0
+      "orbitEpochDays": 0,
+      "rotationRate": {
+        "unit": "hour/second",
+        "multiplier": 1
+      },
+      "orbitRate": {
+        "unit": "day/second",
+        "multiplier": 3
+      },
+      "moonRate": {
+        "unit": "day/minute",
+        "multiplier": 3
+      },
+      "moonEpochDays": 0
     },
     "sizing": {
       "planetCompression": 0.5,
       "planetScale": 1,
       "starScale": 0.63
+    },
+    "layout": {
+      "distanceCompression": 0.7,
+      "orbitScale": 1,
+      "orbitSpacing": 1
     }
   }
 }
