@@ -258,3 +258,32 @@ Keep UI colors, typography, and the header close to the portfolio’s blue glass
 - Reuse procedural moon palette/crater surface generation on displaced icosahedra, batching a small pool with instance transforms. Bodies have their own orbital/rotation variations. Avoid allocating belt surfaces until shown. No per-asteroid editor yet.
 - Interpolate the planet radial display mapping for compressed belt positions without feeding the population back into planet spacing. Include complete belt bounds in clipping/fit. Preserve local pause/reverse phase, reset with planetary orbital positions, and save configuration/clock offsets in JSON.
 - Controls under Scene presets → Asteroid belt; ranges regenerate deterministically for the current seed, reroll explicitly changes it. Shared scene/planet-orbit time controls apply.
+
+
+## Stellar appearance presets — November 4, 2026
+
+- Add nine one-shot recipes in the Star inspector: White dwarf, Sun-like G, Red giant and the remaining main-sequence O/B/A/F/K/M color families. Use representative physical sizes in existing ×10,000 km units, with the current solar palette for Sun-like. Other palettes follow the site's stylized rendering.
+- A recipe sets diameter and the three surface colors only. Preserve seed, activity, visibility, position, display scales and the rest of the scene. Custom controls remain available; match explicit appearance values to derive the preset label and show Custom star after manual edits. Do not store a preset link or change the JSON schema.
+- Add Frame star to center/fit the displayed star at the current view angle, clearing planet follow without editing physical/display sizes. Tiny white dwarfs and enlarged giants remain easy to inspect. Keep existing surface animation/shaders.
+
+
+## Sunspot controls — November 4, 2026
+
+- Replace the Star inspector's Reroll surface action with sunspot frequency (0–4×, zero disables) and size (25–300%). Store optional sun.sunspots configuration with 1×/100% fallback; both built-in scenes and new scenes declare defaults.
+- Use the original eight independent event slots at 1× and a bounded pool of 32 at 4×. Fractional populations deterministically accept some epochs. Preserve event timing/drift and convection speed while changing the event rate. Scale the angular radius separately. Keep the original default event output/seed hash exactly.
+- Apply controls through existing per-frame sunspot uniforms, clear unused slots when reducing frequency, and avoid material/solar-map regeneration. Solar activity still pauses the surface and spot clock together; settings can change while paused. Star color/size presets preserve the settings.
+
+
+## Compact stellar glow and independent scene lighting — November 4, 2026
+
+- Replace the broad 3.2-star-radius additive glow with a smooth compact falloff ending at exactly 1.5 radii. Add Star glow strength 0–100%, including off; preserve it through star appearance presets. Include halo bounds in framing/clipping.
+- Scene presets gains Fully lit / Realistic lighting independently of star visibility. Realistic lighting is the default. Fully lit restores the original softer night-side shading and keeps eclipses. Realistic uses the configured star position even when hidden, 14% ambient fill, directional shading and eclipses. Remove the hidden-star fallback light source.
+- Apply the mode consistently to planet and moon surfaces, clouds, atmosphere rims, rings and asteroid batches. Shared uniforms update live without regenerating surfaces.
+- Store optional scene.lighting and sun.glow, with defaults in new/built-in scenes and fallbacks for older JSON. Keep star visibility scoped to its visible meshes/glow.
+- The wide existing shader halo is a plausible explanation for different near-black visibility on the user's VA/IPS displays; physical-panel verification remains manual.
+
+
+## Lighting refinement — November 4, 2026
+
+- Default new scenes, both built-in recipes and missing JSON modes to Realistic lighting. Respect explicitly saved Fully lit choices.
+- Fully lit means the original gentler star-visible lighting: planet fill40%, moon fill28%, ring fill55%, asteroid fill30% and softer terminators. Keep directional shading, atmosphere depth and eclipses in both modes, independently of star visibility.

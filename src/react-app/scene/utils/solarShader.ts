@@ -1,6 +1,7 @@
 export const solarCycleSeconds = 32;
 export const solarCellCount = 256;
-export const solarSpotCount = 8;
+export const solarBaseSpotCount = 8;
+export const solarSpotCount = solarBaseSpotCount * 4;
 
 /** Growing/cooling cells rebuild their contact lanes; no moving UVs or displaced artwork. */
 export const solarFragment = `

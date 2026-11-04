@@ -24,8 +24,11 @@ import {
 } from "./scene/model/sizes.ts";
 import { defaultLayout } from "./scene/model/layout.ts";
 import CameraControls from "./components/editor/CameraControls.tsx";
+import StarPresets from "./components/editor/StarPresets.tsx";
+import { applyStarPreset, matchingStarPreset } from "./data/starPresets.ts";
 import {
   fitSceneView,
+  frameStarView,
   panView,
   rotateView,
   setViewAngles,
@@ -83,6 +86,7 @@ import {
   generateScenePreset,
 } from "./scene/model/presetRecipes.ts";
 import { SceneClock } from "./scene/rendering/clock.ts";
+import { defaultSunspots } from "./scene/utils/solarActivity.ts";
 import {
   asteroidBeltDays,
   defaultAsteroidBelt,
@@ -730,7 +734,10 @@ export default function App() {
                 <Icon name="sun" />
               </span>
               <span className="object-name">
-                Sun<small>Stellar body</small>
+                Star
+                <small>
+                  {matchingStarPreset(scene.sun)?.name ?? "Custom star"}
+                </small>
               </span>
               <Icon name="chevron" size={13} />
             </button>
@@ -2102,7 +2109,7 @@ export default function App() {
             <div className="inspector-scroll settings-panel">
               <div className="settings-identity solar">
                 <Icon name="sun" size={32} />
-                <h2>Sun</h2>
+                <h2>Star</h2>
                 <p>The heart of this little system.</p>
               </div>
               <label className="check-field">
@@ -2116,8 +2123,24 @@ export default function App() {
                     })
                   }
                 />
-                Show sun
+                Show star
               </label>
+              <StarPresets
+                star={scene.sun}
+                onApply={(preset) =>
+                  setScene((current) => ({
+                    ...current,
+                    sun: applyStarPreset(current.sun, preset),
+                  }))
+                }
+                onFrame={() => {
+                  const { aspect } = cameraViewport();
+                  setScene((current) => ({
+                    ...current,
+                    view: frameStarView(current, aspect),
+                  }));
+                }}
+              />
               <StarDiameterControl
                 scene={scene}
                 onChange={(diameter) =>
@@ -2138,6 +2161,21 @@ export default function App() {
                   changeSizing({ starScale: percent / 100 })
                 }
               />
+              <Slider
+                label="Star glow"
+                value={(scene.sun.glow ?? 1) * 100}
+                min={0}
+                max={100}
+                step={1}
+                unit="%"
+                precise
+                onChange={(percent) =>
+                  setScene((current) => ({
+                    ...current,
+                    sun: { ...current.sun, glow: percent / 100 },
+                  }))
+                }
+              />
               <div className="color-fields sun-colors">
                 {(
                   [
@@ -2148,7 +2186,7 @@ export default function App() {
                 ).map(([key, label]) => (
                   <label key={key}>
                     <ColorInput
-                      aria-label={`Sun ${label.toLowerCase()} color`}
+                      aria-label={`Star ${label.toLowerCase()} color`}
                       value={scene.sun[key]}
                       onCommit={(color) =>
                         setScene((current) => ({
@@ -2174,25 +2212,61 @@ export default function App() {
                 />
                 Solar activity
               </label>
-              <button
-                className="button full"
-                onClick={() =>
-                  setScene({
-                    ...scene,
-                    sun: { ...scene.sun, seed: freshSeed() },
-                  })
+              <Slider
+                label="Sunspot frequency"
+                value={(scene.sun.sunspots ?? defaultSunspots).frequency}
+                min={0}
+                max={4}
+                step={0.1}
+                unit="×"
+                precise
+                onChange={(frequency) =>
+                  setScene((current) => ({
+                    ...current,
+                    sun: {
+                      ...current.sun,
+                      sunspots: {
+                        ...(current.sun.sunspots ?? defaultSunspots),
+                        frequency,
+                      },
+                    },
+                  }))
                 }
-              >
-                <Icon name="dice" size={16} />
-                Reroll surface
-              </button>
+              />
+              <Slider
+                label="Sunspot size"
+                value={(scene.sun.sunspots ?? defaultSunspots).size * 100}
+                min={25}
+                max={300}
+                step={5}
+                unit="%"
+                precise
+                onChange={(percent) =>
+                  setScene((current) => ({
+                    ...current,
+                    sun: {
+                      ...current.sun,
+                      sunspots: {
+                        ...(current.sun.sunspots ?? defaultSunspots),
+                        size: percent / 100,
+                      },
+                    },
+                  }))
+                }
+              />
               <p className="field-note">
-                Convection and sunspots can pause independently of the rest of
-                the scene.
+                1× frequency and 100% size keep the original sunspots. Zero
+                frequency removes spots. Solar activity pauses convection and
+                sunspot lifecycles together; these controls still work while
+                paused.
               </p>
             </div>
           ) : (
             <ScenePresets
+              lighting={scene.lighting}
+              onLighting={(lighting) =>
+                setScene((current) => ({ ...current, lighting }))
+              }
               asteroidBelt={scene.asteroidBelt}
               onAsteroidBelt={changeAsteroidBelt}
               onRerollAsteroids={() =>

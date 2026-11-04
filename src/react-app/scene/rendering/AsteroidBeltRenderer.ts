@@ -116,7 +116,7 @@ export class AsteroidBeltRenderer {
     orbitDays: number,
     rotationHours: number,
     lightPosition: THREE.Vector3,
-    sunVisible: boolean,
+    fullyLit: boolean,
   ) {
     const belt = this.settings;
     if (!this.root.visible || !belt) return;
@@ -125,8 +125,8 @@ export class AsteroidBeltRenderer {
     for (const batch of this.batches) {
       const uniforms = batch.surface.material.uniforms;
       uniforms.u_sun.value.copy(lightPosition);
-      uniforms.u_fill.value = sunVisible ? 0.3 : 0.58;
-      uniforms.u_terminatorStart.value = sunVisible ? -0.5 : -0.24;
+      uniforms.u_fill.value = fullyLit ? 0.3 : 0.14;
+      uniforms.u_terminatorStart.value = fullyLit ? -0.5 : -0.24;
       for (let i = 0; i < batch.profiles.length; i++) {
         const p = batch.profiles[i],
           radius = asteroidRenderRadius(belt, p.diameter);

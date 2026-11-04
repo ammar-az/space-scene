@@ -41,6 +41,7 @@ import { createPlanetEnvironment } from "./atmospheres.ts";
 import type { PlanetEnvironment } from "./atmospheres.ts";
 import type { PlanetSurface } from "./materials.ts";
 import { AsteroidBeltRenderer } from "./AsteroidBeltRenderer.ts";
+import { sceneLighting, stellarGlowRadius } from "../model/lighting.ts";
 
 type Moon = MoonProfile & {
   mesh: THREE.Mesh;
@@ -574,20 +575,32 @@ export class SceneRenderer {
     if (!this.active) return;
     if (this.model.view.camera?.followPlanetId) this.updateCamera();
     const sun = this.model.sun;
-    this.sun.visible = this.glow.visible = sun.visible;
+    this.sun.visible = sun.visible;
+    this.glow.visible = sun.visible && (sun.glow ?? 1) > 0;
     this.sun.position.set(...starRenderPosition(this.model));
     const sunRadius = starRenderRadius(this.model);
     this.sun.scale.setScalar(sunRadius);
     this.glow.position.copy(this.sun.position);
-    this.glow.scale.setScalar(sunRadius * 3.2);
+    this.glow.scale.setScalar(sunRadius * stellarGlowRadius);
+    (this.glow.material as THREE.ShaderMaterial).uniforms.u_strength.value =
+      sun.glow ?? 1;
     this.glow.quaternion.copy(this.camera.quaternion);
-    const solar = getSolarActivity(sun.seed, this.solarElapsed * 1000),
+    const solar = getSolarActivity(
+        sun.seed,
+        this.solarElapsed * 1000,
+        sun.sunspots,
+      ),
       solarUniforms = this.sunSurface.material.uniforms;
     solarUniforms.u_solarPhase.value =
       (this.solarElapsed / solarCycleSeconds) * Math.PI * 2;
     for (let i = 0; i < solarUniforms.u_sunspots.value.length; i++) {
-      solarUniforms.u_sunspots.value[i].fromArray(solar.centers, i * 4);
-      solarUniforms.u_sunspotFrames.value[i].fromArray(solar.frames, i * 4);
+      if (i * 4 < solar.centers.length) {
+        solarUniforms.u_sunspots.value[i].fromArray(solar.centers, i * 4);
+        solarUniforms.u_sunspotFrames.value[i].fromArray(solar.frames, i * 4);
+      } else {
+        solarUniforms.u_sunspots.value[i].set(0, 0, 0, 0);
+        solarUniforms.u_sunspotFrames.value[i].set(0, 0, 0, 0);
+      }
     }
     const viewDirection = this.camera
       .getWorldDirection(new THREE.Vector3())
@@ -724,37 +737,33 @@ export class SceneRenderer {
         radius: frame.radius,
         opacity: 1,
       });
-    const lightPosition = sun.visible
-      ? this.sun.position
-      : new THREE.Vector3(-120, 80, 60);
+    const lighting = sceneLighting(this.model);
+    const lightPosition = new THREE.Vector3(...lighting.position);
     this.asteroidBelt.update(
       this.orbitDays,
       this.rotationHours,
       lightPosition,
-      sun.visible,
+      lighting.fullyLit,
     );
     for (const entry of this.entries.values())
-      for (const ring of entry.rings)
+      for (const ring of entry.rings) {
         ring.uniforms.u_sun.value.copy(lightPosition);
+        ring.uniforms.u_fill.value = lighting.ringFill;
+      }
     for (const frame of frames) {
       const uniforms = frame.surface.material.uniforms;
       uniforms.u_sun.value.copy(lightPosition);
-      // Match the portfolio's gentle ambient fill; preserve the existing unlit-sun look.
-      uniforms.u_fill.value = sun.visible ? (frame.moon ? 0.28 : 0.4) : 0.14;
-      uniforms.u_terminatorStart.value = sun.visible
-        ? -Math.max(
-            0.4,
-            Math.min(0.65, sunRadius / lightPosition.distanceTo(frame.center)),
-          )
-        : -0.24;
+      uniforms.u_fill.value = frame.moon ? lighting.moonFill : lighting.fill;
+      uniforms.u_terminatorStart.value = -Math.max(
+        lighting.fullyLit ? 0.4 : 0.08,
+        Math.min(0.65, sunRadius / lightPosition.distanceTo(frame.center)),
+      );
       const receiver = spheres.find((sphere) => sphere.id === frame.id)!;
       const shadowSun = {
         center: lightPosition.toArray() as [number, number, number],
         radius: sunRadius,
       };
-      const casters = sun.visible
-        ? getPlanetShadowCasters(receiver, spheres, shadowSun)
-        : [];
+      const casters = getPlanetShadowCasters(receiver, spheres, shadowSun);
       uniforms.u_shadowCount.value = casters.length;
       uniforms.u_shadowRadius.value = frame.radius;
       uniforms.u_shadowSun.value.set(

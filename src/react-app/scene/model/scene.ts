@@ -1,4 +1,5 @@
 import { defaultMoonSystem } from "./notableMoons.ts";
+import { defaultLighting } from "./lighting.ts";
 import { defaultAsteroidBelt } from "./asteroidBelt.ts";
 import { defaultSizing, roundDiameter } from "./sizes.ts";
 import { seededRandom } from "../utils/seededRandom.ts";
@@ -150,11 +151,14 @@ export function createScene(): SceneModel {
       highlight: "#fff01d",
       shadow: "#b52d00",
       activity: true,
+      glow: 1,
+      sunspots: { frequency: 1, size: 1 },
       position: [0, 0, 0],
     },
     planets: [rocky, gas, icy],
     asteroidBelt: structuredClone(defaultAsteroidBelt),
     sizing: { ...defaultSizing },
+    lighting: defaultLighting,
     layout: { distanceCompression: 0.7, orbitScale: 1, orbitSpacing: 1 },
     view: { preset: "offset", framing: "portfolio", zoom: 1, pan: [0, 0, 0] },
     motion: {

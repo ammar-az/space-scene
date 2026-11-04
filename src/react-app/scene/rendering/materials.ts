@@ -14,6 +14,7 @@ import { maxPlanetShadowCasters } from "../utils/planetShadows.ts";
 import { ringPixels } from "../utils/planetSystems.ts";
 import type { RingProfile } from "../utils/planetSystems.ts";
 import type { SceneModel } from "../model/schema.ts";
+import { stellarGlowRadius } from "../model/lighting.ts";
 
 export function dataTexture(
   map: Pick<PlanetMap, "width" | "height" | "pixels">,
@@ -296,11 +297,20 @@ export function createGlow(color: string) {
     transparent: true,
     depthWrite: false,
     blending: THREE.AdditiveBlending,
-    uniforms: { u_color: { value: new THREE.Color(color) } },
+    uniforms: {
+      u_color: { value: new THREE.Color(color) },
+      u_strength: { value: 1 },
+    },
     vertexShader:
       "varying vec2 v_uv; void main(){v_uv=uv;gl_Position=projectionMatrix*modelViewMatrix*vec4(position,1.0);}",
-    fragmentShader:
-      "varying vec2 v_uv; uniform vec3 u_color; void main(){float d=length(v_uv-0.5)*2.0;float glow=exp(-d*5.8)*0.5*(1.0-smoothstep(0.7,1.0,d));gl_FragColor=vec4(u_color,glow);}",
+    fragmentShader: `varying vec2 v_uv; uniform vec3 u_color; uniform float u_strength;
+      void main(){
+        float radius=length(v_uv-0.5)*2.0*${stellarGlowRadius.toFixed(2)};
+        if(radius>=${stellarGlowRadius.toFixed(2)} || u_strength<=0.0) discard;
+        float fade=1.0-smoothstep(1.0,${stellarGlowRadius.toFixed(2)},radius);
+        float glow=0.09*fade*fade*fade*u_strength;
+        gl_FragColor=vec4(u_color,glow);
+      }`,
   });
 }
 export function createRingMaterial(
@@ -321,6 +331,7 @@ export function createRingMaterial(
       u_profile: { value: texture },
       u_color: { value: new THREE.Vector3(...profile.tint) },
       u_opacity: { value: profile.opacity },
+      u_fill: { value: 0.55 },
       u_inner: { value: inner },
       u_outer: { value: outer },
       u_sun: { value: new THREE.Vector3() },
@@ -331,11 +342,11 @@ export function createRingMaterial(
         gl_Position=projectionMatrix*viewMatrix*world; }`,
     fragmentShader: `varying vec3 v_position; varying vec3 v_worldPosition; varying vec3 v_normal;
       uniform sampler2D u_profile; uniform vec3 u_color; uniform vec3 u_sun;
-      uniform float u_opacity; uniform float u_inner; uniform float u_outer;
+      uniform float u_opacity; uniform float u_inner; uniform float u_outer; uniform float u_fill;
       void main() {
         float r=(length(v_position.xy)-u_inner)/(u_outer-u_inner);
         float density=texture2D(u_profile,vec2(r,0.5)).r;
-        float light=0.55+0.45*sqrt(abs(dot(normalize(v_normal),normalize(u_sun-v_worldPosition))));
+        float light=u_fill+(1.0-u_fill)*sqrt(abs(dot(normalize(v_normal),normalize(u_sun-v_worldPosition))));
         gl_FragColor=vec4(u_color*light,density*u_opacity);
       }`,
   });

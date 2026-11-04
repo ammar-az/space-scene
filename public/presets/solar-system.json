@@ -36,7 +36,12 @@
       "shadow": "#b52d00",
       "activity": true,
       "position": [0, 0, 0],
-      "diameter": 139.14
+      "diameter": 139.14,
+      "sunspots": {
+        "frequency": 1,
+        "size": 1
+      },
+      "glow": 1
     },
     "planets": [
       {
@@ -1656,6 +1661,7 @@
       "reverse": false,
       "epochDays": 0,
       "offsetDays": 0
-    }
+    },
+    "lighting": "realistic"
   }
 }

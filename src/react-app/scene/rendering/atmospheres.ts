@@ -42,12 +42,13 @@ gl_FragColor=vec4(u_color*volume*light,alpha);
 }`;
 const atmosphereFragment = `precision highp float;
 varying vec3 v_localNormal;varying vec3 v_normal;varying vec3 v_worldPosition;
-uniform vec3 u_color;uniform vec3 u_view;uniform vec3 u_sun;uniform float u_density;uniform float u_outer;
+uniform vec3 u_color;uniform vec3 u_view;uniform vec3 u_sun;uniform float u_density;uniform float u_outer;uniform float u_fill;
 void main(){vec3 normal=normalize(v_normal);float facing=max(0.0,dot(normal,u_view));
 float impact=u_outer*sqrt(max(0.0,1.0-facing*facing));
 float edge=1.0-smoothstep(1.0,u_outer,impact);
 float rim=pow(1.0-facing,2.8);
 float daylight=smoothstep(-0.35,0.25,dot(normal,normalize(u_sun-v_worldPosition)));
+daylight=mix(daylight,1.0,step(1.0,u_fill));
 float alpha=rim*edge*u_density*(0.18+0.82*daylight);
 gl_FragColor=vec4(u_color*1.15,alpha);
 }`;
@@ -115,6 +116,7 @@ export function createPlanetEnvironment(
       blending: THREE.AdditiveBlending,
       uniforms: {
         u_sun: surface.uniforms.u_sun,
+        u_fill: surface.uniforms.u_fill,
         u_view: { value: new THREE.Vector3() },
         u_color: { value: rgb(settings.atmosphere.color) },
         u_density: { value: settings.atmosphere.density },

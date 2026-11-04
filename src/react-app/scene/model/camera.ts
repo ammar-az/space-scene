@@ -1,4 +1,5 @@
 import { starRenderPosition } from "./sizes.ts";
+import { starVisualRadius } from "./lighting.ts";
 import type { SceneModel, ViewPreset } from "./schema.ts";
 import {
   orbitLayoutFactors,
@@ -157,6 +158,24 @@ export function snapView(view: View, preset: ViewPreset = view.preset): View {
   };
   delete next.camera;
   return next;
+}
+
+/** Inspect tiny remnants and large giants without changing their physical/display sizes. */
+export function frameStarView(scene: SceneModel, aspect: number): View {
+  return {
+    ...scene.view,
+    zoom: 1,
+    camera: {
+      ...viewAngles(scene.view),
+      target: starRenderPosition(scene),
+      baseHeight: clamp(
+        (starVisualRadius(scene) * 2 * 1.1) /
+          Math.min(1, Math.max(0.1, aspect)),
+        1,
+        1000000,
+      ),
+    },
+  };
 }
 
 /** Frame full orbital paths and their satellite systems while retaining the current viewing angle. */

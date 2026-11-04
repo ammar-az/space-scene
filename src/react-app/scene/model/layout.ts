@@ -1,5 +1,6 @@
 import { notableSystemExtent } from "./notableMoons.ts";
 import { asteroidBeltBounds } from "./asteroidBelt.ts";
+import { starVisualRadius } from "./lighting.ts";
 import {
   planetRenderRadius,
   starRenderRadius,
@@ -125,7 +126,7 @@ export function sceneEnvelopes(
   factors = orbitLayoutFactors(scene),
 ) {
   const spheres: { center: Vector; radius: number }[] = scene.sun.visible
-    ? [{ center: starRenderPosition(scene), radius: starRenderRadius(scene) }]
+    ? [{ center: starRenderPosition(scene), radius: starVisualRadius(scene) }]
     : [];
   for (const planet of scene.planets) {
     if (!planet.visible) continue;
@@ -154,7 +155,7 @@ export function sceneEnvelopes(
 export function sceneFitSamples(scene: SceneModel) {
   const factors = orbitLayoutFactors(scene);
   const samples: { center: Vector; radius: number }[] = scene.sun.visible
-    ? [{ center: starRenderPosition(scene), radius: starRenderRadius(scene) }]
+    ? [{ center: starRenderPosition(scene), radius: starVisualRadius(scene) }]
     : [];
   for (const planet of scene.planets) {
     if (!planet.visible) continue;

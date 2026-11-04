@@ -244,6 +244,7 @@ export const sceneSchema = z
       moonDays: number(0, 1e18),
     }),
     background: backgroundSchema,
+    lighting: z.enum(["realistic", "fully-lit"]).optional(),
     sun: z.strictObject({
       visible: z.boolean(),
       seed,
@@ -252,6 +253,13 @@ export const sceneSchema = z
       highlight: color,
       shadow: color,
       activity: z.boolean(),
+      glow: number(0, 1).optional(),
+      sunspots: z
+        .strictObject({
+          frequency: number(0, 4),
+          size: number(0.25, 3),
+        })
+        .optional(),
       position: physicalVector,
     }),
     planets: z.array(planetSchema).max(64),

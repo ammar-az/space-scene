@@ -6,6 +6,7 @@ import type { SceneModel } from "../../scene/model/schema.ts";
 import { defaultLayout } from "../../scene/model/layout.ts";
 import AsteroidBeltControls from "./AsteroidBeltControls.tsx";
 import type { AsteroidBelt } from "../../scene/model/schema.ts";
+import { defaultLighting } from "../../scene/model/lighting.ts";
 export default function ScenePresets({
   loadingPreset,
   onLoad,
@@ -20,6 +21,8 @@ export default function ScenePresets({
   asteroidBelt,
   onAsteroidBelt,
   onRerollAsteroids,
+  lighting,
+  onLighting,
 }: {
   loadingPreset: string | null;
   onLoad(preset: ScenePreset): void;
@@ -34,6 +37,8 @@ export default function ScenePresets({
   asteroidBelt?: AsteroidBelt;
   onAsteroidBelt(patch: Partial<AsteroidBelt>): void;
   onRerollAsteroids(): void;
+  lighting: SceneModel["lighting"];
+  onLighting(mode: NonNullable<SceneModel["lighting"]>): void;
 }) {
   const settings = layout ?? defaultLayout;
   return (
@@ -43,6 +48,27 @@ export default function ScenePresets({
         <h2>Start with a system.</h2>
         <p>Generate a scene, then make it your own.</p>
       </div>
+      <div className="section-separator" />
+      <div className="field-heading">SCENE LIGHTING</div>
+      <label className="rate-unit">
+        <span>Lighting mode</span>
+        <select
+          aria-label="Scene lighting"
+          value={lighting ?? defaultLighting}
+          onChange={(event) =>
+            onLighting(
+              event.target.value as NonNullable<SceneModel["lighting"]>,
+            )
+          }
+        >
+          <option value="realistic">Realistic lighting</option>
+          <option value="fully-lit">Fully lit</option>
+        </select>
+      </label>
+      <p className="field-note">
+        Realistic lighting uses the star's position even when it is hidden.
+        Fully lit softens dark night sides. Both modes retain eclipses.
+      </p>
       <div className="section-separator" />
       <div className="field-heading">SCENE LAYOUT</div>
       <Slider
