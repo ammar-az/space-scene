@@ -35,6 +35,11 @@ export function dataTexture(
 
 /** Reference-count pending work too, so stale async maps never leak GPU textures. */
 export class TextureStore {
+  private pendingMaps = 0;
+  lastGeneratedAt = -Infinity;
+  get loading() {
+    return this.pendingMaps > 0;
+  }
   private entries = new Map<
     string,
     {
@@ -54,6 +59,7 @@ export class TextureStore {
     if (!entry) {
       entry = { refs: 0, promise: Promise.resolve(null as never) };
       const current = entry;
+      this.pendingMaps++;
       current.promise = Promise.resolve()
         .then(() => generatePlanetMap(options))
         .then((map) => {
@@ -70,6 +76,10 @@ export class TextureStore {
             normalTexture?.dispose();
           }
           return { texture, normalTexture, map };
+        })
+        .finally(() => {
+          this.pendingMaps--;
+          this.lastGeneratedAt = performance.now();
         });
       this.entries.set(key, entry);
     }

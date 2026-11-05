@@ -25,11 +25,6 @@ export default function AsteroidBeltControls({
       </label>
       {settings.visible && (
         <>
-          <p className="field-note intro-note">
-            A procedural population around the Sun. Its physical distances
-            follow the scene's compressed orbital layout; its bodies are
-            independent of planet moons.
-          </p>
           <Slider
             label="Asteroid count"
             value={settings.count}
@@ -70,11 +65,7 @@ export default function AsteroidBeltControls({
             precise
             onChange={(sizeScale) => onChange({ sizeScale })}
           />
-          <p className="field-note">
-            Size boost makes small rocks visible without changing their saved
-            physical diameters. The belt follows planet-orbit render time and
-            the shared pause/speed.
-          </p>
+          <p className="field-note">Size boost affects display only.</p>
           <div className="color-fields belt-colors">
             {settings.colors.map((color, index) => (
               <label key={index}>
@@ -112,9 +103,7 @@ export default function AsteroidBeltControls({
               onChange={(eccentricity) => onChange({ eccentricity })}
             />
             <p className="field-note">
-              Eccentricity is limited when needed to keep each complete orbit
-              inside the belt's distance range. Outer members get longer periods
-              within the allowed range.
+              Orbits stay within the belt. Outer members have longer periods.
             </p>
             <RangeField
               label="Asteroid orbital periods (days)"

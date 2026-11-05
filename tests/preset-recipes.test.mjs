@@ -29,10 +29,10 @@ const template = async (id) =>
     ),
   ).scene;
 
-test("portfolio is the immediate generated default and bundled JSON matches public recipes", async () => {
-  const source = await template("portfolio");
+test("solar system is the immediate generated default and bundled JSON matches public recipes", async () => {
+  const source = await template("solar-system");
   assert.deepEqual(createDefaultScene(91), generateScenePreset(source, 91));
-  assert.equal(createDefaultScene().planets.length, 6);
+  assert.equal(createDefaultScene().planets.length, 9);
   for (const id of ["portfolio", "solar-system"])
     assert.equal(
       await readFile(

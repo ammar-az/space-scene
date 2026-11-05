@@ -17,9 +17,8 @@ export default function AtmosphereControls({
   return (
     <>
       <div className="field-heading">ATMOSPHERIC HAZE</div>
-      <p className="field-note intro-note">
-        A separate sunlit rim around the rocky surface. Height and cloud
-        altitude use fractions of the planet radius.
+      <p className="field-note">
+        Height and altitude are fractions of the planet radius.
       </p>
       <label className="check-field">
         <input
@@ -134,10 +133,8 @@ export default function AtmosphereControls({
         Reroll clouds
       </button>
       <p className="field-note">
-        Cloud drift adds to surface spin, in degrees per second. Evolution
-        gently reshapes the clouds independently; set it to 0 to keep their
-        pattern fixed. Rerolling clouds leaves terrain, moons and rings
-        unchanged. Haze expands when needed to stay above the cloud layer.
+        Drift adds to surface rotation. Evolution reshapes clouds; 0 holds the
+        pattern fixed.
       </p>
     </>
   );

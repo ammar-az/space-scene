@@ -34,10 +34,6 @@ export default function GasSurfaceControls({
         max={2}
         onCommit={(detail) => onChange({ ...settings, detail })}
       />
-      <p className="field-note">
-        Surface changes apply on release. Storm activity controls the moving
-        storm systems separately.
-      </p>
     </>
   );
 }

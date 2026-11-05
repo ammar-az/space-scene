@@ -75,10 +75,6 @@ export default function EarthlikeControls({
         unit="%"
         onCommit={(percent) => onChange({ oceanReflectivity: percent / 100 })}
       />
-      <p className="field-note">
-        Surface rerolls generate new continents while keeping your ocean, land
-        and desert colors. Clouds and haze have their own Atmosphere tab.
-      </p>
     </>
   );
 }

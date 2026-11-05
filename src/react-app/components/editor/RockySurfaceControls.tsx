@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react";
+import { useRef, useState } from "react";
 import type {
   RockyTerrain,
   RockyTerrainRanges,
@@ -13,7 +13,11 @@ const fields = [
 ] as const;
 
 /** Preview the numeric value while dragging; regenerate only on release/keyboard commit. */
-export function SurfaceSlider({
+export function SurfaceSlider(props: Parameters<typeof DraftSurfaceSlider>[0]) {
+  return <DraftSurfaceSlider key={props.value} {...props} />;
+}
+
+function DraftSurfaceSlider({
   value,
   label,
   min,
@@ -32,10 +36,6 @@ export function SurfaceSlider({
 }) {
   const [draft, setDraft] = useState(value),
     latest = useRef(value);
-  useEffect(() => {
-    latest.current = value;
-    setDraft(value);
-  }, [value]);
   const commit = () => {
     if (latest.current !== value) onCommit(latest.current);
   };
@@ -84,10 +84,7 @@ export default function RockySurfaceControls({
           onCommit={(next) => onChange({ ...value, [key]: next })}
         />
       ))}
-      <p className="field-note">
-        Terrain changes apply on release. Density and size keep the same seeded
-        impact locations; roughness controls the underlying terrain.
-      </p>
+
       <div className="field-heading">SMOOTH PLAINS</div>
       <SurfaceSlider
         label={`${prefix}Plains coverage`}
@@ -122,9 +119,7 @@ export default function RockySurfaceControls({
             Plains color
           </label>
           <p className="field-note">
-            Smooth contrasting regions with fewer old impacts. Lower scale
-            favors fewer, broader basins. Use dark volcanic colors or bright icy
-            plains.
+            Lower scale creates fewer, broader plains.
           </p>
         </>
       )}
@@ -158,9 +153,7 @@ export function RockySurfaceRanges({
           onChange={(next) => onChange({ ...value, [key]: next })}
         />
       ))}
-      <p className="field-note">
-        These ranges apply to the next surface reroll.
-      </p>
+
       <details className="procedural-details">
         <summary>Smooth plains ranges</summary>
         <RangeField

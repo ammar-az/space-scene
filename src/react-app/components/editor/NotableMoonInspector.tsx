@@ -154,10 +154,9 @@ export default function NotableMoonInspector({
         <div className="field-heading">
           ORBIT AROUND {planet.name.toUpperCase()}
         </div>
-        <p className="field-note intro-note">
-          Axes use thousands of kilometres. The orbit lies in the parent
-          equatorial plane by default, like its rings; inclination and
-          orientation are relative to that plane.
+        <p className="field-note">
+          Inclination and orientation are relative to the parent’s equatorial
+          plane.
         </p>
         <PhysicalValueControl
           label="Moon orbit X radius"

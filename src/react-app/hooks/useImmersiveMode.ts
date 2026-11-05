@@ -36,6 +36,7 @@ export function useImmersiveMode(
       if (!document.fullscreenElement) setActive(false);
     };
     const keydown = (event: KeyboardEvent) => {
+      if (document.querySelector("dialog[open]")) return;
       if (event.key === "Escape" && active) {
         exit();
         return;
@@ -71,7 +72,7 @@ export function useImmersiveMode(
   }, [active, edges.header, enabled, exit, focused, shell, toggle]);
 
   function pointerMove(event: PointerEvent<HTMLDivElement>) {
-    if (!active || !shell.current) return;
+    if (!enabled || !shell.current) return;
     const rect = shell.current.getBoundingClientRect();
     const x = event.clientX - rect.left,
       y = event.clientY - rect.top;
@@ -115,6 +116,8 @@ export function useImmersiveMode(
     exit,
     pointerMove,
     pointerLeave: () => setEdges(hidden),
+    reveal: (region: Region) =>
+      setEdges((previous) => ({ ...previous, [region]: true })),
     focus: (event: FocusEvent<HTMLDivElement>) =>
       setFocused(
         event.target instanceof HTMLElement &&

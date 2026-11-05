@@ -3,6 +3,7 @@ import type { RefObject } from "react";
 import { SceneRenderer } from "../../scene/rendering/SceneRenderer.ts";
 import type { SceneModel } from "../../scene/model/schema.ts";
 import type { SceneClock } from "../../scene/rendering/clock.ts";
+import type { PerformanceWarning } from "../../scene/rendering/performance.ts";
 
 type Props = {
   runtime: RefObject<(() => SceneModel["timeline"]) | null>;
@@ -19,6 +20,7 @@ type Props = {
   onRotate(dx: number, dy: number): void;
   onZoom(factor: number): void;
   onError(message: string): void;
+  onPerformanceWarning(warning: PerformanceWarning): void;
 };
 export default function SceneCanvas(props: Props) {
   const ref = useRef<HTMLCanvasElement>(null);
@@ -44,6 +46,8 @@ export default function SceneCanvas(props: Props) {
           rotate: (dx, dy) => latest.current.onRotate(dx, dy),
           zoom: (factor) => latest.current.onZoom(factor),
           error: (message) => latest.current.onError(message),
+          performanceWarning: (warning) =>
+            latest.current.onPerformanceWarning(warning),
         },
       );
       renderer.current = instance;
@@ -86,7 +90,7 @@ export default function SceneCanvas(props: Props) {
     <canvas
       ref={ref}
       className="scene-canvas"
-      aria-label="Interactive space scene. Click a planet, named moon or the Sun to select; left drag to pan; right drag to rotate; scroll to zoom."
+      aria-label="Interactive space scene. Tap or click a planet, named moon or the Sun to select; drag to pan; pinch or scroll to zoom. Use View controls or right drag to change the camera angle."
       data-testid="scene-canvas"
     />
   );

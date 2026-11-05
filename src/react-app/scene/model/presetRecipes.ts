@@ -1,4 +1,4 @@
-import portfolio from "../presets/portfolio.json" with { type: "json" };
+import solarSystem from "../presets/solar-system.json" with { type: "json" };
 import { presetSchema } from "./schema.ts";
 import type { SceneModel } from "./schema.ts";
 import { rerollScene } from "./scene.ts";
@@ -27,7 +27,7 @@ export function generateScenePreset(
     },
   };
 }
-const defaultPreset = presetSchema.parse(portfolio);
+const defaultPreset = presetSchema.parse(solarSystem);
 export function createDefaultScene(seed = 1871): SceneModel {
   if (defaultPreset.kind !== "space-scene")
     throw new Error("The default preset must contain a scene.");

@@ -17,10 +17,7 @@ export default function MoonSystemControls({
   return (
     <>
       <div className="field-heading">NOTABLE MOONS</div>
-      <p className="field-note intro-note">
-        Named, individually configurable satellites. Click one here, under its
-        parent in the object list, or directly in the scene.
-      </p>
+
       <div className="named-moon-list">
         {moons.map((moon) => (
           <button
@@ -88,9 +85,8 @@ export default function MoonSystemControls({
         onChange={(percent) => onSystem({ sizeScale: percent / 100 })}
       />
       <p className="field-note">
-        These controls keep the group compact relative to its parent. Physical
-        moon sizes and distances stay unchanged. Ring and surface clearance set
-        the nearest allowed display orbit.
+        Compression brings moon sizes or distances closer together. Physical
+        values stay unchanged.
       </p>
       <div className="section-separator" />
       <div className="field-heading">PROCEDURAL POPULATION</div>
@@ -102,10 +98,7 @@ export default function MoonSystemControls({
         />
         Show procedural moons
       </label>
-      <p className="field-note">
-        The existing small-moon generator is retained and defaults off. Its
-        count and palette are separate from named moons.
-      </p>
+
       <Slider
         label="Procedural moon count"
         value={planet.moonCount}

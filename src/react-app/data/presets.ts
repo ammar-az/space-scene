@@ -1,12 +1,11 @@
 /** Editable JSON recipes; built-in generation samples their declared ranges. */
-export const scenePresets = [
+const presets = [
   {
     id: "portfolio",
     name: "Portfolio system",
     path: "/presets/portfolio.json",
-    description:
-      "The six portfolio worlds, with their original colors and new surfaces, moons and rings on each generation.",
-    note: "The default scene. Keeps the portfolio layout while generating within its allowed ranges.",
+    description: "Six worlds from the portfolio, with randomized surfaces.",
+    note: "Portfolio layout and palettes.",
     colors: ["#dfaa2b", "#b75330", "#528bea", "#a787d9", "#73b7b7", "#65b97b"],
   },
   {
@@ -14,8 +13,8 @@ export const scenePresets = [
     name: "Our solar system",
     path: "/presets/solar-system.json",
     description:
-      "Mercury through Pluto, with named moons, physical periods, Earth-like oceans and moving clouds.",
-    note: "50% planet-size compression, independent star scaling, named satellites including Charon, and rings for Saturn and Uranus. Saturn uses the icy visual family.",
+      "Mercury through Pluto, with named moons and Earth-like clouds.",
+    note: "Physical sizes and periods with compressed display scales.",
     colors: [
       "#a6a39b",
       "#d7b675",
@@ -32,4 +31,5 @@ export const scenePresets = [
     },
   },
 ] as const;
+export const scenePresets = [presets[1], presets[0]] as const;
 export type ScenePreset = (typeof scenePresets)[number];

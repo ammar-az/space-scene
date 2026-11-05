@@ -286,6 +286,7 @@ export const sceneSchema = z
       visible: z.boolean(),
       seed,
       diameter: number(0.01, 1000000000).transform(roundDiameter),
+      scaleOrbitsWithSize: z.boolean().optional(),
       color,
       highlight: color,
       shadow: color,

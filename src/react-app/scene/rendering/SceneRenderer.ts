@@ -44,6 +44,10 @@ import { AsteroidBeltRenderer } from "./AsteroidBeltRenderer.ts";
 import { sceneLighting, stellarGlowRadius } from "../model/lighting.ts";
 import { rockyTerrain, defaultRockyTerrain } from "../model/rockySurfaces.ts";
 import { defaultGasSurface } from "../model/gas.ts";
+import { accelerationWarning, FramePerformanceMonitor } from "./performance.ts";
+import type { PerformanceWarning } from "./performance.ts";
+import { CanvasGestures } from "./gestures.ts";
+import type { ScenePointer } from "./gestures.ts";
 
 type Moon = MoonProfile & {
   mesh: THREE.Mesh;
@@ -109,19 +113,14 @@ export class SceneRenderer {
   private observer: ResizeObserver;
   private raycaster = new THREE.Raycaster();
   private pointer = new THREE.Vector2();
-  private drag: {
-    pointerId: number;
-    x: number;
-    y: number;
-    moved: boolean;
-    rotate: boolean;
-  } | null = null;
+  private gestures: CanvasGestures;
   private solarElapsed = 0;
   private rotationHours = 0;
   private orbitDays = 0;
   private moonDays = 0;
   private previousElapsed = 0;
   private disposed = false;
+  private performanceMonitor = new FramePerformanceMonitor(performance.now());
 
   constructor(
     privateCanvas: HTMLCanvasElement,
@@ -135,23 +134,46 @@ export class SceneRenderer {
       rotate(dx: number, dy: number): void;
       zoom(factor: number): void;
       error(message: string): void;
+      performanceWarning(warning: PerformanceWarning): void;
     },
   ) {
     this.canvas = privateCanvas;
     this.clock = clock;
     this.callbacks = callbacks;
+    this.gestures = new CanvasGestures({ ...callbacks, select: this.pick });
     this.model = model;
     this.solarElapsed = model.timeline.solar;
     this.rotationHours = model.timeline.rotationHours;
     this.orbitDays = model.timeline.orbitDays;
     this.moonDays = model.timeline.moonDays;
     this.previousElapsed = model.timeline.elapsed;
-    this.renderer = new THREE.WebGLRenderer({
-      canvas: this.canvas,
+    const attributes: WebGLContextAttributes = {
       alpha: true,
       antialias: true,
+      depth: true,
+      stencil: false,
       powerPreference: "high-performance",
+    };
+    let context = this.canvas.getContext("webgl2", {
+      ...attributes,
+      failIfMajorPerformanceCaveat: true,
     });
+    const majorCaveat = !context;
+    context ??= this.canvas.getContext("webgl2", {
+      ...attributes,
+      failIfMajorPerformanceCaveat: false,
+    });
+    if (!context)
+      throw new Error(
+        "WebGL 2 is unavailable. Check your browser’s graphics settings or try another browser.",
+      );
+    this.renderer = new THREE.WebGLRenderer({
+      canvas: this.canvas,
+      context,
+      ...attributes,
+    });
+    const warning = accelerationWarning(context, majorCaveat);
+    if (warning) callbacks.performanceWarning(warning);
     this.renderer.setClearColor(0x000000, 0);
     this.renderer.outputColorSpace = THREE.SRGBColorSpace;
     this.renderer.toneMapping = THREE.NoToneMapping;
@@ -211,6 +233,8 @@ export class SceneRenderer {
     this.canvas.addEventListener("wheel", this.wheel, { passive: false });
     this.canvas.addEventListener("contextmenu", this.contextMenu);
     this.canvas.addEventListener("webglcontextlost", this.contextLost);
+    document.addEventListener("visibilitychange", this.resetPerformance);
+    window.addEventListener("blur", this.cancelGestures);
     this.setModel(model, null);
     this.resize();
     this.frame = requestAnimationFrame(this.render);
@@ -225,6 +249,7 @@ export class SceneRenderer {
     rotate(dx: number, dy: number): void;
     zoom(factor: number): void;
     error(message: string): void;
+    performanceWarning(warning: PerformanceWarning): void;
   };
   private sunSignature(model: SceneModel) {
     return JSON.stringify([
@@ -236,8 +261,13 @@ export class SceneRenderer {
   }
 
   setActive(active: boolean) {
+    if (this.active !== active) this.resetPerformance();
     this.active = active;
   }
+  private resetPerformance = () => {
+    this.performanceMonitor.suspend(performance.now());
+    if (document.hidden) this.cancelGestures();
+  };
   snapshotTimeline() {
     return {
       elapsed: this.clock.elapsed,
@@ -583,7 +613,10 @@ export class SceneRenderer {
   private render = (now: number) => {
     if (this.disposed) return;
     this.frame = requestAnimationFrame(this.render);
-    if (document.hidden) return;
+    if (document.hidden) {
+      this.performanceMonitor.suspend(now);
+      return;
+    }
     const time = this.clock.sample(now),
       delta = Math.max(0, time - this.previousElapsed);
     this.previousElapsed = time;
@@ -592,7 +625,10 @@ export class SceneRenderer {
       delta * rotationHoursPerSecond(this.model.motion.rotationRate);
     this.orbitDays += delta * orbitDaysPerSecond(this.model.motion.orbitRate);
     this.moonDays += delta * orbitDaysPerSecond(this.model.motion.moonRate);
-    if (!this.active) return;
+    if (!this.active) {
+      this.performanceMonitor.suspend(now);
+      return;
+    }
     if (this.model.view.camera?.followPlanetId) this.updateCamera();
     const sun = this.model.sun;
     this.sun.visible = sun.visible;
@@ -838,58 +874,53 @@ export class SceneRenderer {
       this.selection.scale.setScalar((sunRadius * 1.05) / 1.28);
     }
     this.renderer.render(this.world, this.camera);
+    if (this.textures.loading || now < this.textures.lastGeneratedAt + 2000)
+      this.performanceMonitor.suspend(now);
+    else if (this.performanceMonitor.sample(now))
+      this.callbacks.performanceWarning("slow");
   };
-  private pointerDown = (event: PointerEvent) => {
-    if (this.drag || (event.button !== 0 && event.button !== 2)) return;
-    event.preventDefault();
-    this.drag = {
-      pointerId: event.pointerId,
+  private scenePointer(event: PointerEvent): ScenePointer {
+    return {
+      id: event.pointerId,
       x: event.clientX,
       y: event.clientY,
-      moved: false,
-      rotate: event.button === 2,
+      touch: event.pointerType === "touch",
+      button: event.button,
     };
+  }
+  private pointerDown = (event: PointerEvent) => {
+    if (!this.gestures.down(this.scenePointer(event))) return;
+    event.preventDefault();
     this.canvas.setPointerCapture(event.pointerId);
   };
-  private pointerMove = (event: PointerEvent) => {
-    if (!this.drag || event.pointerId !== this.drag.pointerId) return;
-    const dx = event.clientX - this.drag.x,
-      dy = event.clientY - this.drag.y;
-    if (!this.drag.moved && Math.hypot(dx, dy) < 4) return;
-    this.drag.moved = true;
-    this.drag.x = event.clientX;
-    this.drag.y = event.clientY;
-    if (this.drag.rotate) this.callbacks.rotate(dx, dy);
-    else this.callbacks.pan(dx, dy);
-  };
+  private pointerMove = (event: PointerEvent) =>
+    this.gestures.move(this.scenePointer(event));
   private pointerUp = (event: PointerEvent) => {
-    if (!this.drag || event.pointerId !== this.drag.pointerId) return;
-    if (!this.drag.rotate && !this.drag.moved) {
-      const bounds = this.canvas.getBoundingClientRect();
-      this.pointer.set(
-        ((event.clientX - bounds.left) / bounds.width) * 2 - 1,
-        (-(event.clientY - bounds.top) / bounds.height) * 2 + 1,
-      );
-      this.raycaster.setFromCamera(this.pointer, this.camera);
-      const targets: THREE.Object3D[] = this.sun.visible ? [this.sun] : [];
-      for (const entry of this.entries.values())
-        if (entry.root.visible) targets.push(entry.axis);
-      const intersection = this.raycaster.intersectObjects(targets, true)[0];
-      if (intersection?.object === this.sun) this.callbacks.selectSun();
-      else if (intersection?.object.userData.moonId)
-        this.callbacks.selectMoon(
-          intersection.object.userData.planetId,
-          intersection.object.userData.moonId,
-        );
-      else
-        this.callbacks.select(intersection?.object.userData.planetId ?? null);
-    }
-    this.drag = null;
+    this.gestures.up(this.scenePointer(event));
     if (this.canvas.hasPointerCapture(event.pointerId))
       this.canvas.releasePointerCapture(event.pointerId);
   };
-  private pointerCancel = (event: PointerEvent) => {
-    if (this.drag?.pointerId === event.pointerId) this.drag = null;
+  private pointerCancel = (event: PointerEvent) =>
+    this.gestures.cancel(event.pointerId);
+  private cancelGestures = () => this.gestures.clear();
+  private pick = (x: number, y: number) => {
+    const bounds = this.canvas.getBoundingClientRect();
+    this.pointer.set(
+      ((x - bounds.left) / bounds.width) * 2 - 1,
+      (-(y - bounds.top) / bounds.height) * 2 + 1,
+    );
+    this.raycaster.setFromCamera(this.pointer, this.camera);
+    const targets: THREE.Object3D[] = this.sun.visible ? [this.sun] : [];
+    for (const entry of this.entries.values())
+      if (entry.root.visible) targets.push(entry.axis);
+    const intersection = this.raycaster.intersectObjects(targets, true)[0];
+    if (intersection?.object === this.sun) this.callbacks.selectSun();
+    else if (intersection?.object.userData.moonId)
+      this.callbacks.selectMoon(
+        intersection.object.userData.planetId,
+        intersection.object.userData.moonId,
+      );
+    else this.callbacks.select(intersection?.object.userData.planetId ?? null);
   };
   private wheel = (event: WheelEvent) => {
     event.preventDefault();
@@ -904,6 +935,9 @@ export class SceneRenderer {
   };
   dispose() {
     this.disposed = true;
+    document.removeEventListener("visibilitychange", this.resetPerformance);
+    window.removeEventListener("blur", this.cancelGestures);
+    this.cancelGestures();
     cancelAnimationFrame(this.frame);
     this.observer.disconnect();
     this.canvas.removeEventListener("pointerdown", this.pointerDown);

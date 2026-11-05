@@ -7,31 +7,35 @@ export default function CameraControls({
   onZoom,
   onClose,
   onFit,
+  embedded = false,
 }: {
   view: SceneModel["view"];
   onAngle(patch: Partial<ReturnType<typeof viewAngles>>): void;
   onZoom(zoom: number): void;
   onClose(): void;
   onFit(): void;
+  embedded?: boolean;
 }) {
   const angles = viewAngles(view);
   const zoom = zoomBounds(view);
   return (
     <section
-      className="camera-controls"
+      className={`camera-controls ${embedded ? "embedded" : ""}`}
       id="camera-controls"
       aria-label="Camera controls"
     >
-      <div className="camera-heading">
-        <span>CAMERA</span>
-        <button
-          className="icon-button"
-          aria-label="Close camera controls"
-          onClick={onClose}
-        >
-          ×
-        </button>
-      </div>
+      {!embedded && (
+        <div className="camera-heading">
+          <span>CAMERA</span>
+          <button
+            className="icon-button"
+            aria-label="Close camera controls"
+            onClick={onClose}
+          >
+            ×
+          </button>
+        </div>
+      )}
       <Slider
         label="Camera horizontal angle"
         value={angles.azimuth}
@@ -65,10 +69,6 @@ export default function CameraControls({
       <button className="button full camera-fit" onClick={onFit}>
         Fit scene
       </button>
-      <p className="field-note">
-        Left drag to pan, right drag to rotate, scroll to zoom. View buttons
-        snap back to their starting positions.
-      </p>
     </section>
   );
 }

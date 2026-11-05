@@ -10,7 +10,7 @@ import { defaultLighting } from "../../scene/model/lighting.ts";
 export default function ScenePresets({
   loadingPreset,
   onLoad,
-  onAddPlanet,
+  onCreateSystem,
   layout,
   onLayout,
   onFit,
@@ -26,7 +26,7 @@ export default function ScenePresets({
 }: {
   loadingPreset: string | null;
   onLoad(preset: ScenePreset): void;
-  onAddPlanet(): void;
+  onCreateSystem(): void;
   layout: SceneModel["layout"];
   onLayout(patch: Partial<NonNullable<SceneModel["layout"]>>): void;
   onFit(): void;
@@ -43,12 +43,6 @@ export default function ScenePresets({
   const settings = layout ?? defaultLayout;
   return (
     <div className="inspector-scroll preset-inspector">
-      <div className="settings-identity">
-        <Icon name="orbit" size={38} />
-        <h2>Start with a system.</h2>
-        <p>Generate a scene, then make it your own.</p>
-      </div>
-      <div className="section-separator" />
       <div className="field-heading">SCENE LIGHTING</div>
       <label className="rate-unit">
         <span>Lighting mode</span>
@@ -66,8 +60,7 @@ export default function ScenePresets({
         </select>
       </label>
       <p className="field-note">
-        Realistic lighting uses the star's position even when it is hidden.
-        Fully lit softens dark night sides. Both modes retain eclipses.
+        Fully lit softens the night side. Both modes retain eclipses.
       </p>
       <div className="section-separator" />
       <div className="field-heading">SCENE LAYOUT</div>
@@ -81,9 +74,8 @@ export default function ScenePresets({
         onChange={(percent) => onLayout({ distanceCompression: percent / 100 })}
       />
       <p className="field-note">
-        Compression pulls distant orbits inward while preserving each ellipse. A
-        baseline around the displayed star leaves room for the innermost system.
-        Originally separate, centered paths retain small gaps.
+        Higher compression brings distant orbits closer. Shapes and physical
+        distances stay unchanged.
       </p>
       <Slider
         label="Orbit scale"
@@ -106,10 +98,8 @@ export default function ScenePresets({
         onChange={(value) => onLayout({ orbitSpacing: value / 100 })}
       />
       <p className="field-note">
-        Scale and spacing are percentages; 100 leaves their compressed layout
-        unchanged. Scale changes every orbit. Spacing keeps the innermost orbit
-        fixed and stretches the gaps outward. Planet sizes, moons and timing
-        stay the same.
+        Scale resizes all orbits. Spacing stretches gaps while keeping the
+        innermost orbit fixed. 100% is unchanged.
       </p>
       <div className="layout-actions">
         <button className="button" onClick={onFit}>
@@ -134,9 +124,8 @@ export default function ScenePresets({
         onChange={(percent) => onSizing({ planetCompression: percent / 100 })}
       />
       <p className="field-note">
-        0% keeps physical planet ratios; 100% makes every planet as large as the
-        largest. The star is independent. Saved physical diameters stay
-        unchanged.
+        0% keeps physical size ratios. 100% makes all planets as large as the
+        largest. Physical diameters and the star stay unchanged.
       </p>
       <Slider
         label="Planet display scale"
@@ -180,7 +169,7 @@ export default function ScenePresets({
             </div>
             <h3>
               {preset.name}
-              {preset.id === "portfolio" && (
+              {preset.id === "solar-system" && (
                 <small className="preset-default">DEFAULT</small>
               )}
             </h3>
@@ -193,10 +182,9 @@ export default function ScenePresets({
               }}
               aria-label={`Generate ${preset.name}`}
             >
-              <Icon name="orbit" size={15} />
+              <Icon name="planet" size={18} />
               {loadingPreset === preset.id ? "Generating…" : "Generate scene"}
             </button>
-            <p className="field-note">{preset.note}</p>
             {"source" in preset && (
               <a
                 className="preset-source"
@@ -211,11 +199,10 @@ export default function ScenePresets({
         ))}
       </div>
       <p className="field-note">
-        Generating replaces this scene. Export JSON first to keep your current
-        changes.
+        Loading a preset replaces this scene. Export JSON to keep it.
       </p>
-      <button className="button full" onClick={onAddPlanet}>
-        <Icon name="plus" size={15} /> Add a planet
+      <button className="button full" onClick={onCreateSystem}>
+        <Icon name="plus" size={18} /> Create a new solar system
       </button>
     </div>
   );

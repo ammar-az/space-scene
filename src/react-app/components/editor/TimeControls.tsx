@@ -49,9 +49,8 @@ export default function TimeControls({
         }
       />
       <p className="field-note">
-        {Number(hours.toPrecision(4))} physical hours per scene second. A
-        24-hour rotation takes {Number((24 / hours).toPrecision(4))} seconds at
-        1× master speed.
+        {Number(hours.toPrecision(4))} hours per second. A 24-hour rotation
+        takes {Number((24 / hours).toPrecision(4))} seconds at 1× speed.
       </p>
       <label className="rate-unit">
         <span>Planet orbits</span>
@@ -90,9 +89,7 @@ export default function TimeControls({
         }
       />
       <p className="field-note">
-        {Number(days.toPrecision(4))} physical days per scene second. Changing
-        these rates keeps current positions. Pause and master speed affect both;
-        cloud drift and procedural moon motion use scene seconds.
+        {Number(days.toPrecision(4))} days per second.
       </p>
       <label className="rate-unit">
         <span>Named moon orbits</span>
@@ -131,9 +128,8 @@ export default function TimeControls({
         }
       />
       <p className="field-note">
-        Named moons have their own orbital clock. Tidally locked rotation
-        follows this orbit directly; free moon rotation follows the body
-        rotation rate.
+        Tidally locked moons rotate with their orbit. Free rotation uses the
+        body rotation rate.
       </p>
     </>
   );

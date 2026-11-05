@@ -67,10 +67,6 @@ export default function StarPresets({
           </span>
         </div>
       </div>
-      <p className="field-note">
-        {current?.description} Presets set diameter and surface colors. Sizes
-        are representative; every field below stays editable.
-      </p>
       <button
         className="button full"
         disabled={!star.visible}

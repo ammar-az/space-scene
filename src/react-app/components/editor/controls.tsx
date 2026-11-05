@@ -1,5 +1,6 @@
 import { useEffect, useRef } from "react";
 import type { CSSProperties, InputHTMLAttributes, ReactNode } from "react";
+import planetIcon from "../../assets/planet.svg";
 
 /** Native change commits a color; React's onChange also handles every picker preview. */
 export function ColorInput({
@@ -31,7 +32,48 @@ export function ColorInput({
 }
 
 export function Icon({ name, size = 18 }: { name: string; size?: number }) {
+  if (name === "planet")
+    return (
+      <img
+        src={planetIcon}
+        width={size}
+        height={size}
+        alt=""
+        aria-hidden="true"
+        className="planet-icon"
+      />
+    );
   const paths: Record<string, ReactNode> = {
+    close: <path d="m6 6 12 12M18 6 6 18" />,
+    minus: <path d="M5 12h14" />,
+    menu: <path d="M4 6h16M4 12h16M4 18h16" />,
+    sliders: (
+      <>
+        <path d="M4 7h4m5 0h7M4 17h8m5 0h3" />
+        <circle cx="10" cy="7" r="2" />
+        <circle cx="15" cy="17" r="2" />
+      </>
+    ),
+    pin: (
+      <>
+        <path d="m9 3 9 9M10 4l-5 8-2 2 7 7 2-2 8-5M5 19l-3 3" />
+      </>
+    ),
+    unpin: (
+      <>
+        <path d="m3 3 18 18M10 4l2-2 9 9-2 2M7 7l-2 5-2 2 7 7 2-2 3-6M5 19l-3 3" />
+      </>
+    ),
+    rewind: (
+      <>
+        <path d="m11 5-8 7 8 7V5Zm10 0-8 7 8 7V5Z" />
+      </>
+    ),
+    home: (
+      <>
+        <path d="m3 11 9-8 9 8M5 10v11h14V10M10 21v-7h4v7" />
+      </>
+    ),
     info: (
       <>
         <circle cx="12" cy="12" r="9" />
